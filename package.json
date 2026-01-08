@@ -1,0 +1,13 @@
+{
+  "name": "claude-config",
+  "version": "1.0.0",
+  "description": "Shared Claude Code CLI configuration",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  }
+}

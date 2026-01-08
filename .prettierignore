@@ -1,0 +1,22 @@
+# Ignored by git (machine-specific)
+debug/
+downloads/
+ide/
+projects/
+session-env/
+shell-snapshots/
+statsig/
+todos/
+telemetry/
+history.jsonl
+
+# Plugin files (external/cached)
+plugins/cache/
+plugins/marketplaces/
+plugins/install-counts-cache.json
+plugins/installed_plugins.json
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock

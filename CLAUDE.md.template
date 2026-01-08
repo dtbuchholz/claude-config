@@ -1,0 +1,126 @@
+# CLAUDE.md
+
+This file provides context to Claude Code about your project. Copy this template to your project
+root and customize it.
+
+## Project Overview
+
+<!-- Brief description of what this project does -->
+
+**Name**: [Project Name] **Type**: [Web app / CLI tool / Library / API / etc.] **Primary Language**:
+[TypeScript / Python / Go / Rust / etc.]
+
+## Tech Stack
+
+<!-- List the main technologies, frameworks, and tools -->
+
+- **Runtime**: [Node.js / Python / Go / etc.]
+- **Framework**: [React / Django / Gin / etc.]
+- **Database**: [PostgreSQL / MongoDB / etc.]
+- **Package Manager**: [npm / pnpm / yarn / pip / etc.]
+
+## Project Structure
+
+<!-- Describe the layout of important directories -->
+
+```
+/
+├── src/           # Source code
+├── tests/         # Test files
+├── docs/          # Documentation
+└── scripts/       # Build and utility scripts
+```
+
+## Common Commands
+
+<!-- Commands Claude should know about -->
+
+```bash
+# Install dependencies
+[your install command]
+
+# Run tests
+[your test command]
+
+# Run linting
+[your lint command]
+
+# Start development server
+[your dev command]
+
+# Build for production
+[your build command]
+```
+
+## Coding Conventions
+
+<!-- Project-specific style and conventions -->
+
+### General
+
+- [ ] Use [tabs / spaces] for indentation
+- [ ] Maximum line length: [80 / 100 / 120]
+- [ ] Use [single / double] quotes for strings
+
+### Naming
+
+- **Files**: [kebab-case / camelCase / snake_case]
+- **Functions**: [camelCase / snake_case]
+- **Classes**: [PascalCase]
+- **Constants**: [UPPER_SNAKE_CASE]
+
+### Imports
+
+<!-- Specify import ordering or patterns -->
+
+```
+1. Standard library imports
+2. Third-party imports
+3. Local imports
+```
+
+### Error Handling
+
+<!-- How errors should be handled -->
+
+- Use [try/catch / Result types / error returns]
+- [Log all errors / Only log unexpected errors]
+- [Throw early / Return errors up the chain]
+
+## Testing Requirements
+
+<!-- Testing standards for the project -->
+
+- Minimum coverage: [X%]
+- Required test types: [unit / integration / e2e]
+- Test file naming: [*.test.ts / *_test.go / test_*.py]
+
+## Git Workflow
+
+<!-- Branch naming, commit conventions, PR process -->
+
+- Branch naming: `<type>/<ticket>-<description>`
+- Commit format: Conventional Commits
+- PR requirements: [Review required / Tests must pass / etc.]
+
+## Environment Setup
+
+<!-- Required environment variables or setup steps -->
+
+```bash
+# Required environment variables
+export API_KEY="..."
+export DATABASE_URL="..."
+```
+
+## Important Notes
+
+<!-- Anything else Claude should know -->
+
+- [ ] Special handling for [specific feature]
+- [ ] Avoid [common pitfall]
+- [ ] Always [important practice]
+
+---
+
+_Last updated: [date]_

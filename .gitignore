@@ -1,0 +1,23 @@
+# Files used by Claude Code instances
+debug/
+downloads/
+ide/
+projects/
+session-env/
+shell-snapshots/
+statsig/
+todos/
+telemetry/
+
+# User-specific history
+history.jsonl
+stats-cache.json
+
+# Plugin machine-specific files
+plugins/cache/
+plugins/install-counts-cache.json
+plugins/installed_plugins.json
+plugins/known_marketplaces.json
+
+# Node.js
+node_modules/
