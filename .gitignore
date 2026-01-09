@@ -8,10 +8,14 @@ shell-snapshots/
 statsig/
 todos/
 telemetry/
+cache/
 
 # User-specific history
 history.jsonl
 stats-cache.json
+plans/
+file-history/
+paste-cache/
 
 # Plugin machine-specific files
 plugins/cache/
