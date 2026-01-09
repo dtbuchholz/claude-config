@@ -9,6 +9,7 @@ statsig/
 todos/
 telemetry/
 cache/
+plugins/
 
 # User-specific history
 history.jsonl

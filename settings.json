@@ -46,15 +46,6 @@
     ]
   },
   "model": "opus",
-  "enabledPlugins": {
-    "ralph-wiggum@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "commit-commands@claude-plugins-official": true,
-    "pr-review-toolkit@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true
-  },
-  "alwaysThinkingEnabled": true,
   "hooks": {
     "PreToolUse": [
       {
@@ -67,24 +58,13 @@
         ]
       }
     ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if command -v prettier >/dev/null 2>&1; then prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null || true; elif [ -f package.json ]; then npx prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null || true; fi"
-          }
-        ]
-      }
-    ],
     "Notification": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "terminal-notifier -title 'Claude Code' -message 'Awaiting your input' -sound default"
+            "command": "python3 -c \"import json,sys,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Awaiting your input');subprocess.run(['terminal-notifier','-title',f'Claude Code · {proj}','-message',msg,'-sound','default','-activate','com.googlecode.iterm2'])\""
           }
         ]
       }
@@ -95,10 +75,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "terminal-notifier -title 'Claude Code' -message 'Task completed' -sound default"
+            "command": "terminal-notifier -title 'Claude Code' -message 'Task completed' -sound default -activate com.googlecode.iterm2"
           }
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "ralph-wiggum@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true
+  },
+  "alwaysThinkingEnabled": true
 }
