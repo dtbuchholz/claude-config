@@ -27,6 +27,8 @@
       "Bash(tail:*)",
       "Bash(head:*)",
       "Bash(tee:*)",
+      "Bash(tree:*)",
+      "Bash(cat:*)",
       "Bash(gh pr view)",
       "Bash(gh pr create)",
       "Bash(gh api)",
