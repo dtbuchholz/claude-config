@@ -1,15 +1,15 @@
 ---
 name: ralph-loop
 description:
-  Autonomous development loop with fresh context per iteration. Uses an external bash loop
-  that spawns fresh Claude sessions, storing state in files to prevent context drift.
-  Based on the original Ralph Wiggum technique by Geoffrey Huntley.
+  Autonomous development loop with fresh context per iteration. Uses an external bash loop that
+  spawns fresh Claude sessions, storing state in files to prevent context drift. Based on the
+  original Ralph Wiggum technique by Geoffrey Huntley.
 ---
 
 # Ralph Loop
 
-An autonomous development loop for Claude Code. The key insight: **fresh context per
-iteration** with **file I/O as state**.
+An autonomous development loop for Claude Code. The key insight: **fresh context per iteration**
+with **file I/O as state**.
 
 ## Core Principles
 
@@ -26,6 +26,7 @@ Iteration 3: claude -p "task.md" → sees files from iter 1+2 → works → exit
 ### 2. File I/O as State
 
 All state lives in `.ralph/`:
+
 - `spec.md` - The task specification (re-read each iteration)
 - `state.json` - Iteration count, attempts, status
 - `progress.log` - Append-only progress tracking
@@ -34,6 +35,7 @@ All state lives in `.ralph/`:
 ### 3. Re-Anchoring Every Iteration
 
 Before each iteration, Claude re-reads:
+
 - The original task specification
 - Current git state
 - Test results from previous iteration
@@ -93,6 +95,7 @@ cat .ralph/evidence/iter-*.log | tail -100
 ### Stop the Loop
 
 The loop stops when:
+
 1. Claude outputs `<promise>DONE</promise>` (completion)
 2. Max iterations reached (default: 25)
 3. Max attempts per task exceeded (default: 5)
@@ -101,6 +104,7 @@ The loop stops when:
 ## Configuration
 
 Environment variables:
+
 - `RALPH_MAX_ITERATIONS` - Max loop iterations (default: 25)
 - `RALPH_MAX_ATTEMPTS` - Attempts before blocking (default: 5)
 - `RALPH_TIMEOUT` - Seconds per iteration (default: 1800)
@@ -110,12 +114,14 @@ Environment variables:
 ## When to Use
 
 **Good for:**
+
 - Well-defined tasks with testable success criteria
 - Tasks requiring iteration (get tests to pass)
 - Overnight/unattended runs
 - Tasks with automatic verification
 
 **Not good for:**
+
 - Tasks requiring human judgment
 - Unclear success criteria
 - Interactive exploration

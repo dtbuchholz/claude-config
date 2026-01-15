@@ -65,11 +65,29 @@
     ],
     "Notification": [
       {
-        "matcher": "",
+        "matcher": "permission_prompt",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -c \"import json,sys,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Awaiting your input');subprocess.run(['terminal-notifier','-title',f'Claude Code · {proj}','-message',msg,'-sound','default','-activate','com.googlecode.iterm2'])\""
+            "command": "python3 -c \"import json,sys,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Awaiting your input');subprocess.run(['terminal-notifier','-title',f'Claude Code · {proj}','-message',msg,'-sound','default'])\""
+          }
+        ]
+      },
+      {
+        "matcher": "plugin",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import json,sys,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Plugin prompt');subprocess.run(['terminal-notifier','-title',f'Claude Code · {proj}','-message',msg,'-sound','default'])\""
+          }
+        ]
+      },
+      {
+        "matcher": "input",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import json,sys,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Input required');subprocess.run(['terminal-notifier','-title',f'Claude Code · {proj}','-message',msg,'-sound','default'])\""
           }
         ]
       }
@@ -80,7 +98,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "terminal-notifier -title 'Claude Code' -message 'Task completed' -sound default -activate com.googlecode.iterm2"
+            "command": "terminal-notifier -title 'Claude Code' -message 'Task completed' -sound default"
           }
         ]
       }
@@ -92,7 +110,9 @@
     "commit-commands@claude-plugins-official": true,
     "pr-review-toolkit@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true
+    "code-simplifier@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "alwaysThinkingEnabled": true
 }

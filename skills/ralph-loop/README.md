@@ -12,14 +12,15 @@ while not complete:
     check for completion
 ```
 
-State persists in **files**, not conversation history. Each iteration re-reads the spec,
-checks git state, and sees previous work in files - then works with fresh context.
+State persists in **files**, not conversation history. Each iteration re-reads the spec, checks git
+state, and sees previous work in files - then works with fresh context.
 
 ## Installation
 
 The skill is installed at `~/.claude/skills/ralph-loop/`.
 
 Commands available:
+
 - `/ralph-init` - Initialize a new Ralph loop
 - `/ralph-status` - Check loop status
 - `/ralph-cancel` - Cancel/cleanup a loop
@@ -57,6 +58,7 @@ tail -f .ralph/progress.log
 ```
 
 Each iteration:
+
 1. Reads spec from `.ralph/spec.md` (re-anchoring)
 2. Checks git state (re-anchoring)
 3. Reads previous iteration output (re-anchoring)
@@ -68,6 +70,7 @@ Each iteration:
 ## Configuration
 
 Environment variables:
+
 - `RALPH_MAX_ITERATIONS` - Max loop iterations (default: 25)
 - `RALPH_MAX_ATTEMPTS` - Attempts before blocking (default: 5)
 - `RALPH_TIMEOUT` - Seconds per iteration (default: 1800)
@@ -75,6 +78,7 @@ Environment variables:
 - `RALPH_MODEL` - Claude model to use (default: system default)
 
 Command line:
+
 ```bash
 ralph.sh --max-iterations 10 --promise "ALL_TESTS_PASS" --verbose
 ```
@@ -96,11 +100,13 @@ ralph.sh --max-iterations 10 --promise "ALL_TESTS_PASS" --verbose
 ## Completion
 
 The loop stops when Claude outputs:
+
 ```
 <promise>DONE</promise>
 ```
 
 Or configure a custom promise:
+
 ```bash
 /ralph-init "..." --promise "ALL_TESTS_PASS"
 ```
@@ -108,11 +114,13 @@ Or configure a custom promise:
 ## Troubleshooting
 
 **Loop never completes:**
+
 - Check if tests are actually passing
 - Review iteration logs: `cat .ralph/evidence/iter-*.log | less`
 - Increase max iterations if making progress
 
 **Task blocked:**
+
 - Check `.ralph/blocked.md` for reason
 - Reset attempts: `jq '.attempts = 0' .ralph/state.json > tmp && mv tmp .ralph/state.json`
 - Remove block: `rm .ralph/blocked.md`
@@ -120,12 +128,14 @@ Or configure a custom promise:
 ## When to Use
 
 **Good for:**
+
 - Well-defined tasks with testable success criteria
 - Tasks requiring iteration (get tests to pass)
 - Overnight/unattended runs
 - Tasks with automatic verification
 
 **Not good for:**
+
 - Tasks requiring human judgment
 - Unclear success criteria
 - Interactive exploration

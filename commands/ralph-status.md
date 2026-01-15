@@ -1,6 +1,5 @@
 ---
-allowed-tools:
-  Bash(cat:*), Bash(jq:*), Bash(tail:*), Bash(ls:*)
+allowed-tools: Bash(cat:*), Bash(jq:*), Bash(tail:*), Bash(ls:*)
 description: Check the status of the current Ralph loop
 ---
 
@@ -36,6 +35,7 @@ fi
 ## Next Steps
 
 If running:
+
 ```bash
 # Monitor progress
 tail -f .ralph/progress.log
@@ -45,6 +45,7 @@ cat .ralph/evidence/iter-*.log | tail -100
 ```
 
 If blocked:
+
 ```bash
 # View block reason
 cat .ralph/blocked.md

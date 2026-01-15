@@ -1,6 +1,5 @@
 ---
-allowed-tools:
-  Bash(rm:*), Bash(cat:*)
+allowed-tools: Bash(rm:*), Bash(cat:*)
 description: Cancel and clean up the current Ralph loop
 ---
 
@@ -27,11 +26,13 @@ To cancel, the user should:
 1. **Stop the running loop** (if active): Press Ctrl+C in the terminal running `ralph.sh`
 
 2. **Remove the state directory**:
+
 ```bash
 rm -rf .ralph/
 ```
 
 Note: This will delete all evidence logs. If you want to preserve them:
+
 ```bash
 cp -r .ralph/evidence ~/ralph-backup-$(date +%Y%m%d)/
 rm -rf .ralph/
@@ -40,5 +41,6 @@ rm -rf .ralph/
 ## Alternative: Pause Without Deleting
 
 To pause the loop without losing state:
+
 1. Press Ctrl+C to stop `ralph.sh`
 2. The loop will resume from where it left off when you run `ralph.sh` again

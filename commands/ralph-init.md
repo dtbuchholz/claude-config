@@ -1,16 +1,16 @@
 ---
-allowed-tools:
-  Bash(~/.claude/skills/ralph-loop/scripts/ralph-init.sh:*)
+allowed-tools: Bash(~/.claude/skills/ralph-loop/scripts/ralph-init.sh:*)
 description: Initialize a Ralph loop with fresh-context-per-iteration design
 argument-hint: "TASK_SPEC [--max-iterations N] [--promise TEXT]"
 ---
 
 # Ralph Loop Initialization
 
-Initialize a Ralph loop - an **external bash loop** that spawns fresh Claude sessions
-for each iteration.
+Initialize a Ralph loop - an **external bash loop** that spawns fresh Claude sessions for each
+iteration.
 
 Key properties:
+
 - External bash loop (not in-session)
 - Fresh context per iteration
 - File I/O as state
@@ -25,6 +25,7 @@ Key properties:
 ## After Initialization
 
 The `.ralph/` directory will be created with:
+
 - `spec.md` - Your task specification
 - `state.json` - Loop state tracking
 - `progress.log` - Append-only progress log
@@ -39,6 +40,7 @@ After initialization, run the loop from your terminal:
 ```
 
 Options:
+
 - `--max-iterations N` - Override max iterations
 - `--timeout SECONDS` - Timeout per iteration (default: 1800)
 - `--verbose` - More detailed output
