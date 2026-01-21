@@ -1,8 +1,9 @@
 ---
+description: Stage changes, create a git commit, push to remote, and open a pull request
+model: sonnet
 allowed-tools:
   Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(git push:*), Bash(git branch:*),
   Bash(gh pr create:*), Bash(gh pr view:*)
-description: Stage changes, create a git commit, push to remote, and open a pull request
 ---
 
 ## Context
@@ -38,6 +39,7 @@ Based on the above changes, perform the complete commit-push-PR workflow:
 - Use GitHub CLI to create a PR: `gh pr create`
 - Generate a descriptive title based on the commit(s)
 - Include a body summarizing the changes
+- Do NOT include any "Generated with Claude Code" footer or similar attribution
 - If a PR already exists for this branch, show its status with `gh pr view`
 
 ## Output
