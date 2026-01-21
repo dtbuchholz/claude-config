@@ -1,6 +1,7 @@
 ---
-allowed-tools: Bash(git fetch:*), Bash(git checkout:*), Bash(git pull:*), Bash(git rebase:*), Bash(git status:*), Bash(git branch:*)
 description: Sync current branch with main/master (fetch, checkout, pull, rebase)
+model: haiku
+allowed-tools: Bash(git fetch:*), Bash(git checkout:*), Bash(git pull:*), Bash(git rebase:*), Bash(git status:*), Bash(git branch:*)
 ---
 
 ## Context

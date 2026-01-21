@@ -1,6 +1,7 @@
 ---
-allowed-tools: Bash(git diff:*), Read, Glob, Grep
 description: Quick code review of recent changes
+model: sonnet
+allowed-tools: Bash(git diff:*), Read, Glob, Grep
 ---
 
 ## Context

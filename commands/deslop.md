@@ -1,6 +1,7 @@
 ---
-allowed-tools: Bash(git diff:*), Read, Edit, Glob, Grep
 description: Remove AI-generated code slop from recent changes
+model: sonnet
+allowed-tools: Bash(git diff:*), Read, Edit, Glob, Grep
 ---
 
 ## Context

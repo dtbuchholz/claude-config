@@ -1,7 +1,8 @@
 ---
-allowed-tools: Bash(~/.claude/skills/git-worktree/scripts/worktree-manager.sh:*)
 description: Manage git worktrees for parallel development
+model: haiku
 argument-hint: "<create|list|switch|cleanup> [branch] [--from base]"
+allowed-tools: Bash(~/.claude/skills/git-worktree/scripts/worktree-manager.sh:*)
 ---
 
 # Git Worktree Manager
