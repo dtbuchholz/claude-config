@@ -1,6 +1,7 @@
 ---
 description: Enhance an existing plan with parallel research agents for depth, best practices, and implementation details
 argument-hint: [path/to/plan.md]
+allowed-tools: Read, Glob, Grep, Bash(ls:*), Bash(find:*), Task, WebSearch, Edit, Write
 ---
 
 # Deepen Plan
@@ -84,27 +85,32 @@ For each learning file:
 
 ### 4. Launch Parallel Research Agents
 
-**CRITICAL: Launch ALL research in parallel using the Task tool.**
+**CRITICAL: Launch ALL research in a SINGLE message with multiple Task tool calls.**
 
-For each plan section, spawn research agents:
+Based on the plan's technologies and sections, spawn these agents IN PARALLEL:
 
 ```
-Task Explore: "Research best practices for: [section topic].
-Find:
-- Industry standards and conventions
-- Performance considerations
-- Common pitfalls to avoid
-- Documentation and tutorials
+Task (model: haiku, subagent_type: Explore): "Research best practices for: [technology 1]
+Find: industry standards, performance tips, common pitfalls, documentation.
 Return concrete, actionable recommendations."
+
+Task (model: haiku, subagent_type: Explore): "Research best practices for: [technology 2]
+..."
+
+Task (model: haiku, subagent_type: Explore): "Research implementation patterns for: [section topic]
+..."
 ```
 
-**Also search the web for current best practices:**
+**Spawn one agent per:**
+- Each major technology mentioned (React, Rails, PostgreSQL, etc.)
+- Each architectural concern (caching, auth, API design, etc.)
+- Each domain area (data models, UI components, etc.)
 
-Use WebSearch for recent articles and documentation on technologies in the plan.
+**Also use WebSearch** for recent documentation on each technology.
 
 ### 5. Run Review Agents
 
-Discover and run all available review agents:
+Discover available review agents:
 
 ```bash
 # Find all agent definitions
@@ -112,19 +118,44 @@ find ~/.claude -path "*/agents/*.md" 2>/dev/null
 find .claude/agents -name "*.md" 2>/dev/null
 ```
 
-Launch ALL review agents in parallel against the plan:
+**Launch ALL review agents in a SINGLE message with multiple Task tool calls.**
+
+Use `model: haiku` for each reviewer to keep costs low:
 
 ```
-Task [agent-type]: "Review this plan using your expertise. Apply all checks and patterns.
+Task (model: haiku, subagent_type: general-purpose): "ARCHITECTURE REVIEW
+Review this plan for architectural concerns:
+- Scalability issues
+- Coupling problems
+- Missing components
+Plan: [content]"
 
-Plan content:
-[full plan content]"
+Task (model: haiku, subagent_type: general-purpose): "SECURITY REVIEW
+Review this plan for security concerns:
+- Auth/authz gaps
+- Data exposure risks
+- Input validation
+Plan: [content]"
+
+Task (model: haiku, subagent_type: general-purpose): "SIMPLICITY REVIEW
+Review this plan for over-engineering:
+- Unnecessary complexity
+- Simpler alternatives
+- YAGNI violations
+Plan: [content]"
+
+Task (model: haiku, subagent_type: general-purpose): "TESTABILITY REVIEW
+Review this plan for testing concerns:
+- Hard-to-test patterns
+- Missing test strategies
+- Edge cases to cover
+Plan: [content]"
 ```
 
 **Rules:**
-- Run ALL discovered agents, don't filter by "relevance"
-- Launch ALL agents in a SINGLE message with multiple Task calls
-- Each agent may catch something others miss
+- Launch ALL agents in a SINGLE message
+- Each agent catches different issues
+- Don't filter by "relevance" - run them all
 
 ### 6. Synthesize Findings
 
