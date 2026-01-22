@@ -61,16 +61,6 @@
             "command": "python3 -c \"import json, sys; data=json.load(sys.stdin); path=data.get('tool_input',{}).get('file_path',''); sys.exit(2 if any(p in path for p in ['.env', 'package-lock.json', 'pnpm-lock.yaml', 'yarn.lock', 'bun.lockb', '.git/']) else 0)\""
           }
         ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/dtb/.vibecraft/hooks/vibecraft-hook.sh",
-            "timeout": 5
-          }
-        ]
       }
     ],
     "Notification": [
@@ -100,15 +90,6 @@
             "command": "python3 -c \"import json,sys,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Input required');subprocess.run(['terminal-notifier','-title',f'Claude Code · {proj}','-message',msg,'-sound','default'])\""
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/dtb/.vibecraft/hooks/vibecraft-hook.sh",
-            "timeout": 5
-          }
-        ]
       }
     ],
     "Stop": [
@@ -118,71 +99,6 @@
           {
             "type": "command",
             "command": "terminal-notifier -title 'Claude Code' -message 'Task completed' -sound default"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/dtb/.vibecraft/hooks/vibecraft-hook.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/dtb/.vibecraft/hooks/vibecraft-hook.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/dtb/.vibecraft/hooks/vibecraft-hook.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/dtb/.vibecraft/hooks/vibecraft-hook.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/dtb/.vibecraft/hooks/vibecraft-hook.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/dtb/.vibecraft/hooks/vibecraft-hook.sh",
-            "timeout": 5
           }
         ]
       }
