@@ -14,7 +14,7 @@ You are tasked with initializing a new repository with a comprehensive, producti
 
 ### For JS/TS Projects (Monorepo with Turbo)
 
-Based on the patterns from `/Users/dtb/rcl/replay-lab`:
+Based on production-grade monorepo patterns:
 
 **Core Stack:**
 - Package manager: pnpm v9.15.0+
@@ -50,7 +50,7 @@ project/
 
 ### For Python Projects
 
-Based on the patterns from `/Users/dtb/rcl/polymarket-convergence-bot`:
+Based on production-grade Python project patterns:
 
 **Core Stack:**
 - Package manager: uv

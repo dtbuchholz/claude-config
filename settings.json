@@ -69,7 +69,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -c \"import json,sys,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Awaiting your input');subprocess.run(['terminal-notifier','-title',f'Claude Code · {proj}','-message',msg,'-sound','default'])\""
+            "command": "python3 -c \"import json,sys,os,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Awaiting your input');subprocess.run([os.path.expanduser('~/.claude/hooks/notify.sh'),f'Claude Code · {proj}',msg])\""
           }
         ]
       },
@@ -78,7 +78,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -c \"import json,sys,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Plugin prompt');subprocess.run(['terminal-notifier','-title',f'Claude Code · {proj}','-message',msg,'-sound','default'])\""
+            "command": "python3 -c \"import json,sys,os,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Plugin prompt');subprocess.run([os.path.expanduser('~/.claude/hooks/notify.sh'),f'Claude Code · {proj}',msg])\""
           }
         ]
       },
@@ -87,7 +87,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -c \"import json,sys,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Input required');subprocess.run(['terminal-notifier','-title',f'Claude Code · {proj}','-message',msg,'-sound','default'])\""
+            "command": "python3 -c \"import json,sys,os,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Input required');subprocess.run([os.path.expanduser('~/.claude/hooks/notify.sh'),f'Claude Code · {proj}',msg])\""
           }
         ]
       }
@@ -98,7 +98,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "terminal-notifier -title 'Claude Code' -message 'Task completed' -sound default"
+            "command": "~/.claude/hooks/notify.sh 'Claude Code' 'Task completed'"
           }
         ]
       }
