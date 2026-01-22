@@ -6,34 +6,65 @@ These instructions apply to all projects.
 
 When the user shares a GitHub URL, **always use the `gh` CLI** instead of WebFetch. This ensures access to private repositories.
 
+### Key Insight: `gh` Accepts URLs Directly
+
+Most `gh` commands accept the full URL as an argument - no need to parse it:
+
+```bash
+# These are equivalent:
+gh issue view 43 --repo owner/repo
+gh issue view https://github.com/owner/repo/issues/43
+
+# Same for PRs:
+gh pr view 123 --repo owner/repo
+gh pr view https://github.com/owner/repo/pull/123
+```
+
 ### URL Patterns and Commands
 
 | URL Pattern | Command |
 |-------------|---------|
-| `github.com/{owner}/{repo}/issues/{number}` | `gh issue view {number} --repo {owner}/{repo}` |
-| `github.com/{owner}/{repo}/pull/{number}` | `gh pr view {number} --repo {owner}/{repo}` |
-| `github.com/{owner}/{repo}/pull/{number}/files` | `gh pr diff {number} --repo {owner}/{repo}` |
-| `github.com/{owner}/{repo}/blob/{ref}/{path}` | `gh api repos/{owner}/{repo}/contents/{path}?ref={ref} --jq '.content' \| base64 -d` |
-| `github.com/{owner}/{repo}` (repo root) | `gh repo view {owner}/{repo}` |
-| `github.com/{owner}/{repo}/commits` | `gh api repos/{owner}/{repo}/commits --jq '.[].commit.message'` |
+| `.../issues/{number}` | `gh issue view <url>` |
+| `.../issues` | `gh issue list --repo owner/repo` |
+| `.../pull/{number}` | `gh pr view <url>` |
+| `.../pull/{number}/files` | `gh pr diff <url>` |
+| `.../pulls` | `gh pr list --repo owner/repo` |
+| `github.com/owner/repo` | `gh repo view owner/repo` |
+| `.../blob/{ref}/{path}` | `gh api repos/owner/repo/contents/path?ref=ref --jq '.content' \| base64 -d` |
 
-### Examples
+### Useful Flags
+
+**For issues:**
+```bash
+gh issue view <url>                    # Basic view
+gh issue view <url> --comments         # Include comments
+gh issue view <url> --json title,body,comments  # Structured JSON
+```
+
+**For PRs:**
+```bash
+gh pr view <url>                       # Basic view
+gh pr view <url> --comments            # Include comments
+gh pr diff <url>                       # View the diff
+gh pr diff <url> --name-only           # Just list changed files
+gh pr checks <url>                     # CI status
+gh pr view <url> --json files --jq '.files[].path'  # List changed files
+```
+
+**For repos:**
+```bash
+gh repo view owner/repo                # Repo info + README
+gh repo view owner/repo --json description,defaultBranchRef
+```
+
+### Searching
 
 ```bash
-# Issue
-gh issue view 43 --repo recallnet/execution-arb-bot
+# Search issues
+gh issue list --repo owner/repo --search "bug in:title"
 
-# PR with comments
-gh pr view 123 --repo recallnet/execution-arb-bot --comments
-
-# PR diff
-gh pr diff 123 --repo recallnet/execution-arb-bot
-
-# File contents at specific ref
-gh api repos/recallnet/execution-arb-bot/contents/src/main.ts?ref=main --jq '.content' | base64 -d
-
-# List PR files changed
-gh pr view 123 --repo recallnet/execution-arb-bot --json files --jq '.files[].path'
+# Search PRs
+gh pr list --repo owner/repo --state all --search "feat"
 ```
 
 ### Why Not WebFetch?
@@ -41,4 +72,4 @@ gh pr view 123 --repo recallnet/execution-arb-bot --json files --jq '.files[].pa
 - Private repos require authentication
 - `gh` is already authenticated via `gh auth login`
 - Provides structured data (JSON) that's easier to parse
-- Can access PR diffs, comments, reviews, and checks
+- Can access PR diffs, comments, reviews, checks, and more
