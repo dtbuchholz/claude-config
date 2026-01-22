@@ -26,3 +26,20 @@ plugins/known_marketplaces.json
 
 # Node.js
 node_modules/
+
+# OS files
+.DS_Store
+
+# Editor configs
+.vscode/
+.idea/
+*.swp
+
+# Environment overrides
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
