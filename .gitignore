@@ -6,6 +6,7 @@ projects/
 session-env/
 shell-snapshots/
 statsig/
+tasks/
 todos/
 telemetry/
 cache/

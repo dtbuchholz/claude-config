@@ -1,21 +1,29 @@
 ---
-description: Quick code review of recent changes
-model: sonnet
-allowed-tools: Bash(git diff:*), Read, Glob, Grep, Task
+name: review
+description:
+  Quick code review of recent changes using parallel specialist agents for security, bugs,
+  performance, and code quality.
 ---
 
-## Context
-
-- Current branch: !`git branch --show-current`
-- Changed files: !`git diff main...HEAD --name-only 2>/dev/null || git diff HEAD~3 --name-only`
-
-## Your Task
+# Code Review
 
 Review recent code changes using parallel specialist agents for thorough coverage.
+
+## When This Skill Applies
+
+- User asks to review code or recent changes
+- User says "review my changes" or "/review"
+- Before creating a PR
+
+## Workflow
 
 ### Step 1: Get the Diff
 
 ```bash
+# Get changed files
+git diff main...HEAD --name-only 2>/dev/null || git diff HEAD~3 --name-only
+
+# Get the full diff
 git diff main...HEAD 2>/dev/null || git diff HEAD~3
 ```
 
@@ -125,9 +133,10 @@ Files reviewed: [count]
 Issues found: [HIGH: n, MEDIUM: n, LOW: n]
 ```
 
-### Output Format
+## Output Format
 
 If issues found:
+
 ```
 [HIGH] path/to/file.ts:42 - SQL injection vulnerability in user query
 [MEDIUM] path/to/other.ts:15 - Missing null check on optional param

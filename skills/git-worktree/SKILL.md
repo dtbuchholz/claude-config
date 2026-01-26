@@ -1,5 +1,5 @@
 ---
-name: git-worktree
+name: worktree
 description:
   Manage Git worktrees for isolated parallel development. Use when reviewing PRs, working on
   multiple features, or running autonomous loops without disturbing your main checkout.
@@ -9,6 +9,27 @@ description:
 
 Git worktrees let you have multiple working directories from the same repo. Each worktree has its
 own branch checked out, so you can work on multiple things in parallel.
+
+## When This Skill Applies
+
+- User asks to create or manage worktrees
+- User wants to review a PR in isolation
+- User says "/worktree" with arguments
+- User wants parallel development environments
+
+## Quick Reference
+
+```bash
+# Via skill invocation
+/worktree create <branch>
+/worktree create <branch> --from <base>
+/worktree list
+/worktree switch <branch>
+/worktree cleanup <branch>
+/worktree cleanup --all
+```
+
+Runs: `~/.claude/skills/git-worktree/scripts/worktree-manager.sh`
 
 ## Why Use Worktrees
 

@@ -1,18 +1,25 @@
 ---
-description: Analyze a dataset with parallel EDA agents and generate insights
-argument-hint: [path/to/data.csv or data directory]
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task, NotebookEdit
+name: analyze-data
+description:
+  Analyze a dataset with parallel EDA agents and generate insights. Creates distribution analysis,
+  missing data reports, correlation analysis, outlier detection, and visualizations.
 ---
 
 # Analyze Data
 
-Perform comprehensive data analysis using parallel specialist agents. Generates insights, visualizations, and recommendations.
+Perform comprehensive data analysis using parallel specialist agents. Generates insights,
+visualizations, and recommendations.
+
+## When This Skill Applies
+
+- User provides a dataset path (CSV, Parquet, JSON)
+- User asks to analyze or explore data
+- User wants to understand data quality or distributions
 
 ## Data Path
 
-<data_path>$ARGUMENTS</data_path>
+The user should provide a path to the data file. If not provided:
 
-**If no path provided:**
 1. Look for data files: `find . -name "*.csv" -o -name "*.parquet" -o -name "*.json" | head -10`
 2. Ask user: "Which dataset would you like to analyze?"
 
@@ -47,7 +54,8 @@ Use AskUserQuestion to clarify:
    - Statistical testing (compare groups)
    - Time series analysis (forecast trends)
 
-2. **Target variable** (if applicable): "Which column is the target/outcome you want to predict or analyze?"
+2. **Target variable** (if applicable): "Which column is the target/outcome you want to predict or
+   analyze?"
 
 3. **Key dimensions**: "Which columns represent important groups or segments to analyze?"
 
@@ -179,12 +187,15 @@ Collect all agent outputs and create unified report:
 ## Data Quality
 
 ### Missing Data
+
 [From missing data agent]
 
 ### Outliers
+
 [From outlier agent]
 
 ### Data Types
+
 [Column type summary]
 
 ## Key Distributions
@@ -194,9 +205,11 @@ Collect all agent outputs and create unified report:
 ## Relationships
 
 ### Correlations
+
 [Top correlations, multicollinearity warnings]
 
 ### Target Analysis (if applicable)
+
 [Target distribution, key predictors]
 
 ## Visualizations
@@ -206,14 +219,17 @@ Collect all agent outputs and create unified report:
 ## Recommendations
 
 ### Data Cleaning
+
 1. [Specific action]
 2. [Specific action]
 
 ### Feature Engineering
+
 1. [Specific suggestion]
 2. [Specific suggestion]
 
 ### Modeling (if applicable)
+
 - Baseline performance: [metric]
 - Recommended approach: [algorithm]
 - Key features: [list]
@@ -231,6 +247,7 @@ mkdir -p analysis_output
 ```
 
 Save:
+
 - `analysis_output/report.md` - Full analysis report
 - `analysis_output/data_profile.json` - Structured data profile
 - `analysis_output/*.png` - Visualizations
@@ -239,6 +256,7 @@ Save:
 ## Output
 
 Provide the user with:
+
 1. Executive summary (3-5 bullet points)
 2. Path to full report
 3. Key visualizations inline

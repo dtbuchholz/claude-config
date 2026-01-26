@@ -63,33 +63,89 @@ This prevents drift and ensures the model stays grounded in reality.
 └── blocked.md           # If task gets stuck (reason + suggestions)
 ```
 
-## Usage
+## Commands
 
-### Initialize a Ralph Loop
+### /ralph-init - Initialize a Loop
 
 ```bash
 # Create spec file and initialize state
 /ralph-init "Build a REST API with CRUD operations. Tests must pass."
+
+# With options
+/ralph-init "TASK_SPEC" --max-iterations 50 --promise "COMPLETE"
 ```
 
-### Run the Loop
+Runs: `~/.claude/skills/ralph-loop/scripts/ralph-init.sh`
+
+Creates `.ralph/` directory with:
+
+- `spec.md` - Your task specification
+- `state.json` - Loop state tracking
+- `progress.log` - Append-only progress log
+- `evidence/` - Iteration output logs
+
+### /ralph-status - Check Loop Status
+
+Check the current state of the Ralph loop:
 
 ```bash
-# External bash loop - run from terminal
+/ralph-status
+```
+
+Shows:
+
+- Current state from `state.json`
+- Recent progress log entries
+- Evidence files
+
+**Interpreting status:**
+
+- `status: pending` - Loop hasn't started or is paused
+- `status: completed` - Task finished successfully
+- `status: max_iterations` - Stopped after hitting iteration limit
+- `status: blocked` - Task blocked after too many failed attempts
+
+### /ralph-cancel - Cancel Loop
+
+Cancel and clean up the current Ralph loop:
+
+```bash
+/ralph-cancel
+```
+
+To cancel:
+
+1. **Stop the running loop** (if active): Press Ctrl+C in the terminal running `ralph.sh`
+2. **Remove the state directory**: `rm -rf .ralph/`
+
+To pause without deleting: just press Ctrl+C. The loop will resume from where it left off when you
+run `ralph.sh` again.
+
+## Running the Loop
+
+After initialization, run the loop from your terminal:
+
+```bash
 ~/.claude/skills/ralph-loop/scripts/ralph.sh
 ```
+
+Options:
+
+- `--max-iterations N` - Override max iterations
+- `--timeout SECONDS` - Timeout per iteration (default: 1800)
+- `--verbose` - More detailed output
 
 ### Monitor Progress
 
 ```bash
-# Check current state
-cat .ralph/state.json | jq .
-
-# View progress log
+# Watch progress
 tail -f .ralph/progress.log
 
-# See latest iteration output
-cat .ralph/evidence/iter-*.log | tail -100
+# Check state
+cat .ralph/state.json | jq .
+
+# View latest output
+cat .ralph/evidence/iter-*.log | tail -50
 ```
 
 ### Stop the Loop

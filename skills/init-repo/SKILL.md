@@ -1,22 +1,25 @@
 ---
-description: Initialize a new repository with standard tooling (JS/TS or Python)
-argument-hint: [project-name]
-allowed-tools:
-  Bash(mkdir:*), Bash(pnpm:*), Bash(npm:*), Bash(uv:*), Bash(git init:*),
-  Bash(ls:*), Bash(cat:*), Bash(touch:*)
+name: init-repo
+description:
+  Initialize a new repository with standard tooling (JS/TS or Python).
 ---
 
 # Initialize Repository
 
-You are tasked with initializing a new repository with a comprehensive, production-grade tooling setup. This follows the patterns established in reference repositories.
+Initialize a new repository with a comprehensive, production-grade tooling setup.
+
+## When This Skill Applies
+
+- User asks to initialize or create a new project
+- User wants to set up a new repository with proper tooling
+- User says "init repo" or "create project"
 
 ## Reference Configurations
 
 ### For JS/TS Projects (Monorepo with Turbo)
 
-Based on production-grade monorepo patterns:
-
 **Core Stack:**
+
 - Package manager: pnpm v9.15.0+
 - Monorepo: Turbo
 - Language: TypeScript (strict mode)
@@ -26,6 +29,7 @@ Based on production-grade monorepo patterns:
 - Git hooks: Husky + lint-staged
 
 **Directory Structure:**
+
 ```
 project/
 ├── apps/
@@ -50,9 +54,8 @@ project/
 
 ### For Python Projects
 
-Based on production-grade Python project patterns:
-
 **Core Stack:**
+
 - Package manager: uv
 - Build system: Hatchling
 - Linting/Formatting: Ruff (unified)
@@ -61,6 +64,7 @@ Based on production-grade Python project patterns:
 - Git hooks: pre-commit
 
 **Directory Structure:**
+
 ```
 project/
 ├── src/
@@ -79,43 +83,31 @@ project/
 
 ## Requirements Gathering
 
-**IMPORTANT**: Ask these questions one at a time. Wait for the user's response before proceeding.
+**Ask these questions one at a time. Wait for the user's response before proceeding.**
 
-1. **Project type** (ask first):
-   "What type of project are you initializing?"
+1. **Project type** (ask first): "What type of project are you initializing?"
    - JavaScript/TypeScript (monorepo with Turbo, pnpm, ESLint, Prettier)
    - Python (uv, Ruff, MyPy, Pytest)
 
-   Wait for response.
-
 2. **Project name** (ask second):
-   - If $ARGUMENTS is provided, use that as the project name and skip this question
-   - Otherwise ask: "What is the project name? (This will be used for the directory and package names)"
+   - If argument is provided, use that as the project name and skip this question
+   - Otherwise ask: "What is the project name? (This will be used for the directory and package
+     names)"
 
-   Wait for response.
+3. **For JS/TS only - Scope** (ask third): "What npm scope/namespace should packages use? (e.g.,
+   @mycompany, @projectname, or leave blank for no scope)"
 
-3. **For JS/TS only - Scope** (ask third):
-   "What npm scope/namespace should packages use? (e.g., @mycompany, @projectname, or leave blank for no scope)"
-
-   Wait for response.
-
-4. **For JS/TS only - Initial apps** (ask fourth):
-   "What apps do you want to create initially?"
+4. **For JS/TS only - Initial apps** (ask fourth): "What apps do you want to create initially?"
    - Next.js web app
    - Node.js service
    - Both
    - None (packages only)
 
-   Wait for response.
-
-5. **For Python only - Project type** (ask third):
-   "What type of Python project is this?"
+5. **For Python only - Project type** (ask third): "What type of Python project is this?"
    - CLI application
    - Library/package
    - Service/API
    - General purpose
-
-   Wait for response.
 
 ## Implementation: JavaScript/TypeScript
 
@@ -124,6 +116,7 @@ After gathering requirements, create the following:
 ### 1. Root Configuration Files
 
 **package.json:**
+
 ```json
 {
   "name": "PROJECT_NAME",
@@ -153,6 +146,7 @@ After gathering requirements, create the following:
 ```
 
 **pnpm-workspace.yaml:**
+
 ```yaml
 packages:
   - "apps/*"
@@ -160,6 +154,7 @@ packages:
 ```
 
 **turbo.json:**
+
 ```json
 {
   "ui": "tui",
@@ -197,6 +192,7 @@ packages:
 ```
 
 **.prettierrc:**
+
 ```json
 {
   "semi": true,
@@ -208,6 +204,7 @@ packages:
 ```
 
 **.prettierignore:**
+
 ```
 **/node_modules/
 **/dist/
@@ -218,6 +215,7 @@ pnpm-lock.yaml
 ```
 
 **eslint.config.mjs:**
+
 ```javascript
 import baseConfig from "@SCOPE/eslint-config/base";
 
@@ -230,6 +228,7 @@ export default [
 ```
 
 **lint-staged.config.mjs:**
+
 ```javascript
 export default {
   "**/*.{ts,tsx,js,jsx,mjs,cjs}": ["prettier --write"],
@@ -242,6 +241,7 @@ export default {
 Create `packages/tsconfig/` with:
 
 **base.json:**
+
 ```json
 {
   "compilerOptions": {
@@ -270,36 +270,10 @@ Create `packages/tsconfig/` with:
 }
 ```
 
-**library.json:**
-```json
-{
-  "extends": "./base.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src"
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
-}
-```
-
-**nextjs.json:** (if Next.js app included)
-```json
-{
-  "extends": "./base.json",
-  "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "jsx": "preserve",
-    "noEmit": true,
-    "allowJs": true,
-    "plugins": [{"name": "next"}]
-  }
-}
-```
-
 ### 3. Shared ESLint Config Package
 
 Create `packages/eslint-config/` with base.js containing:
+
 - @eslint/js
 - typescript-eslint
 - eslint-plugin-import-x
@@ -308,11 +282,13 @@ Create `packages/eslint-config/` with base.js containing:
 ### 4. Husky Hooks
 
 **.husky/pre-commit:**
+
 ```bash
 pnpm lint-staged
 ```
 
 **.husky/pre-push:**
+
 ```bash
 pnpm format:check && pnpm lint && pnpm type-check && pnpm test
 ```
@@ -320,6 +296,7 @@ pnpm format:check && pnpm lint && pnpm type-check && pnpm test
 ### 5. Vitest Config
 
 **vitest.config.ts:**
+
 ```typescript
 import { defineConfig } from "vitest/config";
 
@@ -505,6 +482,7 @@ After creating all files:
 ## Output
 
 Provide a summary of:
+
 1. What was created
 2. How to get started (install, run, test)
 3. Key commands available

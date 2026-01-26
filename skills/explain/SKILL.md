@@ -1,15 +1,21 @@
 ---
-allowed-tools: Read, Glob, Grep
-description: Explain how a piece of code works, tracing through its execution and dependencies
+name: explain
+description:
+  Explain how a piece of code works, tracing through its execution and dependencies.
 ---
 
-## Context
+# Explain Code
 
-$ARGUMENTS
+Provide a clear, thorough explanation of code specified by the user, tracing through its execution
+and dependencies.
 
-## Your Task
+## When This Skill Applies
 
-Provide a clear, thorough explanation of the code specified above. Your explanation should:
+- User asks to explain a function, class, or code block
+- User asks "how does X work?"
+- User wants to understand code flow or dependencies
+
+## Explanation Structure
 
 ### 1. High-Level Overview
 
