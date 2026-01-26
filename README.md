@@ -1,7 +1,7 @@
 # Claude Code CLI Configuration
 
 Shared configuration for [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) to ensure
-consistent tooling, workflows, and best practices across the team.
+consistent tooling, workflows, and best practices across projects.
 
 ## Prerequisites
 
@@ -48,60 +48,73 @@ Before using this configuration, ensure you have the following installed:
 
 ## What's Included
 
+### Skills (`skills/`)
+
+Skills provide contextual knowledge that Claude uses automatically based on your task, or can be
+invoked directly with `/skill-name`.
+
+| Skill            | Purpose                                                   |
+| ---------------- | --------------------------------------------------------- |
+| `agent-browser`  | Browser automation using Vercel's agent-browser CLI       |
+| `analyze-data`   | Data analysis with parallel EDA agents                    |
+| `api-design`     | REST/GraphQL API design conventions                       |
+| `commit-push-pr` | Stage, commit, push, and create PR in one workflow        |
+| `data-science`   | Data science methodology and workflows                    |
+| `debugging`      | Systematic debugging and error analysis                   |
+| `deepen-plan`    | Enhance plans with parallel research agents               |
+| `deslop`         | Remove AI-generated code slop from changes                |
+| `documentation`  | Code comments, docstrings, READMEs                        |
+| `explain`        | Explain code execution and dependencies                   |
+| `git-workflow`   | Conventional commits, branching, PR best practices        |
+| `git-worktree`   | Manage git worktrees for parallel development             |
+| `init-repo`      | Initialize new JS/TS or Python repositories               |
+| `performance`    | Performance optimization and profiling                    |
+| `ralph-loop`     | Autonomous development loop with fresh context            |
+| `review`         | Code review with parallel specialist agents               |
+| `security`       | OWASP top 10, input validation, secrets management        |
+| `sync`           | Sync current branch with main/master                      |
+| `testing`        | TDD, testing pyramid, language-specific test patterns     |
+
 ### Agents (`agents/`)
 
 Agents are specialized AI personas that Claude can spawn for specific tasks.
 
-| Agent                | Purpose                                                     |
-| -------------------- | ----------------------------------------------------------- |
-| `code-simplifier.md` | Simplifies and cleans up code after implementation          |
-| `verify-app.md`      | Runs tests, linting, and builds across multiple tech stacks |
+| Agent           | Purpose                                                     |
+| --------------- | ----------------------------------------------------------- |
+| `verify-app.md` | Runs tests, linting, and builds across multiple tech stacks |
 
-### Commands (`commands/`)
+### Hooks (`hooks/`)
 
-Slash commands you can invoke in Claude Code with `/command-name`.
+Shell scripts that run automatically at specific points in Claude's workflow.
 
-| Command             | Purpose                                              |
-| ------------------- | ---------------------------------------------------- |
-| `commit-push-pr.md` | Stage, commit, push, and create a PR in one workflow |
-| `explain.md`        | Explain how a piece of code works                    |
-
-### Skills (`skills/`)
-
-Skills provide contextual knowledge that Claude uses automatically based on your task.
-
-| Skill           | Topics Covered                                            |
-| --------------- | --------------------------------------------------------- |
-| `testing`       | TDD, testing pyramid, language-specific test patterns     |
-| `git-workflow`  | Conventional commits, branching, PR best practices        |
-| `documentation` | Comments, docstrings, READMEs, API docs                   |
-| `debugging`     | Systematic debugging, error analysis, common bug patterns |
-| `security`      | OWASP top 10, input validation, secrets management        |
-| `api-design`    | REST conventions, status codes, pagination, versioning    |
+| Hook                 | Purpose                                        |
+| -------------------- | ---------------------------------------------- |
+| `check-push-main.sh` | Blocks direct pushes to main/master branches   |
+| `notify.sh`          | Sends macOS notifications via terminal-notifier |
 
 ### Plugins (enabled in `settings.json`)
 
 Pre-built plugins from the official marketplace:
 
-| Plugin              | What it provides                                     |
-| ------------------- | ---------------------------------------------------- |
-| `code-review`       | Code review with confidence scoring                  |
-| `frontend-design`   | Distinctive, production-grade UI design guidance     |
-| `commit-commands`   | `/commit`, `/commit-push-pr`, `/clean_gone` commands |
-| `pr-review-toolkit` | 6 specialized PR review agents                       |
-| `feature-dev`       | 7-phase structured feature development workflow      |
-| `ralph-wiggum`      | Fun personality plugin                               |
+| Plugin                | What it provides                                     |
+| --------------------- | ---------------------------------------------------- |
+| `code-review`         | Code review with confidence scoring                  |
+| `code-simplifier`     | Code simplification and cleanup                      |
+| `commit-commands`     | `/commit`, `/commit-push-pr`, `/clean_gone` commands |
+| `feature-dev`         | 7-phase structured feature development workflow      |
+| `frontend-design`     | Distinctive, production-grade UI design guidance     |
+| `gopls-lsp`           | Go language server integration                       |
+| `pr-review-toolkit`   | 6 specialized PR review agents                       |
+| `rust-analyzer-lsp`   | Rust language server integration                     |
 
-### Hooks (in `settings.json`)
+### Hook Configuration (in `settings.json`)
 
-Hooks are shell commands that run automatically at specific points in Claude's workflow.
-
-| Hook Event     | What it does                                                 |
-| -------------- | ------------------------------------------------------------ |
-| `PreToolUse`   | Blocks edits to sensitive files (`.env`, lockfiles, `.git/`) |
-| `PostToolUse`  | Auto-formats files with Prettier after edits                 |
-| `Notification` | Sends macOS notification when Claude awaits input            |
-| `Stop`         | Sends macOS notification when task completes                 |
+| Hook Event     | What it does                                                        |
+| -------------- | ------------------------------------------------------------------- |
+| `PreToolUse`   | Blocks edits to sensitive files (`.env`, lockfiles, `.git/`)        |
+| `PreToolUse`   | Blocks direct pushes to main/master via `check-push-main.sh`        |
+| `Notification` | Sends macOS notification when Claude awaits input                   |
+| `Stop`         | Sends macOS notification when task completes                        |
 
 ### Permissions (in `settings.json`)
 
@@ -110,7 +123,11 @@ Pre-approved commands that Claude can run without asking:
 - **Package manager**: `pnpm test`, `pnpm lint`, `pnpm build`, `pnpm dev`, etc.
 - **File utilities**: `ls`, `find`, `grep`, `sed`, `awk`, `jq`, etc.
 - **Git operations**: `git status`, `git add`, `git commit`, `git push`, etc.
+- **GitHub CLI**: `gh pr view`, `gh pr create`, `gh api`
 - **Shell config reads**: `~/.zshrc`, `~/.bashrc`, `~/.profile`, etc.
+
+**Note:** While `git push` is allowed, pushes to `main` or `master` are blocked by the
+`check-push-main.sh` hook.
 
 ## Configuration Files
 
@@ -121,6 +138,7 @@ Pre-approved commands that Claude can run without asking:
 | `.prettierrc`        | Prettier formatting configuration                     |
 | `.prettierignore`    | Files excluded from formatting                        |
 | `.gitignore`         | Files excluded from version control                   |
+| `CLAUDE.md`          | Global instructions for Claude Code                   |
 | `CLAUDE.md.template` | Template for project-specific CLAUDE.md files         |
 
 ## Usage
@@ -168,17 +186,7 @@ description: When to use this skill and what triggers it
 ---
 ```
 
-### Adding new commands
-
-Create a new `.md` file in `commands/`:
-
-```yaml
----
-allowed-tools: Bash(command:*), Read, Write
-description: What this command does
----
-Your command instructions here...
-```
+Skills can also include helper scripts in a `scripts/` subdirectory.
 
 ### Adding new agents
 
@@ -193,12 +201,18 @@ model: inherit
 Agent instructions here...
 ```
 
+### Adding new hooks
+
+1. Create a script in `hooks/` (make it executable with `chmod +x`)
+2. Reference it in `settings.json` under the appropriate hook event
+3. Hook scripts receive JSON on stdin and use exit codes: 0 = allow, 2 = block
+
 ## Troubleshooting
 
 ### Notifications not working
 
 1. Ensure `terminal-notifier` is installed: `brew install terminal-notifier`
-2. Check macOS permissions: **System Settings → Notifications → terminal-notifier**
+2. Check macOS permissions: **System Settings > Notifications > terminal-notifier**
 3. Test manually: `terminal-notifier -title "Test" -message "Hello"`
 4. Restart Claude Code after changing hooks
 
@@ -213,6 +227,14 @@ Agent instructions here...
 1. Run `pnpm install` to ensure Prettier is installed
 2. Check `.prettierignore` isn't excluding your files
 3. Test manually: `pnpm format path/to/file.md`
+
+### Push to main blocked unexpectedly
+
+The `check-push-main.sh` hook blocks direct pushes to `main` and `master`. To push:
+
+1. Create a feature branch: `git checkout -b my-feature`
+2. Push the feature branch: `git push -u origin my-feature`
+3. Create a PR via GitHub
 
 ## Contributing
 
