@@ -2,6 +2,12 @@
 
 These instructions apply to all projects.
 
+## Code Snippets
+
+When providing code snippets, commands, or any text the user will copy-paste (curl commands, shell
+scripts, code examples, etc.), **always use fenced code blocks** with the appropriate language tag.
+This ensures the text can be copied without terminal formatting artifacts.
+
 ## GitHub URLs
 
 When the user shares a GitHub URL, **always use the `gh` CLI** instead of WebFetch. This ensures access to private repositories.
