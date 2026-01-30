@@ -53,27 +53,27 @@ Before using this configuration, ensure you have the following installed:
 Skills provide contextual knowledge that Claude uses automatically based on your task, or can be
 invoked directly with `/skill-name`.
 
-| Skill            | Purpose                                                   |
-| ---------------- | --------------------------------------------------------- |
-| `agent-browser`  | Browser automation using Vercel's agent-browser CLI       |
-| `analyze-data`   | Data analysis with parallel EDA agents                    |
-| `api-design`     | REST/GraphQL API design conventions                       |
-| `commit-push-pr` | Stage, commit, push, and create PR in one workflow        |
-| `data-science`   | Data science methodology and workflows                    |
-| `debugging`      | Systematic debugging and error analysis                   |
-| `deepen-plan`    | Enhance plans with parallel research agents               |
-| `deslop`         | Remove AI-generated code slop from changes                |
-| `documentation`  | Code comments, docstrings, READMEs                        |
-| `explain`        | Explain code execution and dependencies                   |
-| `git-workflow`   | Conventional commits, branching, PR best practices        |
-| `git-worktree`   | Manage git worktrees for parallel development             |
-| `init-repo`      | Initialize new JS/TS or Python repositories               |
-| `performance`    | Performance optimization and profiling                    |
-| `ralph-loop`     | Autonomous development loop with fresh context            |
-| `review`         | Code review with parallel specialist agents               |
-| `security`       | OWASP top 10, input validation, secrets management        |
-| `sync`           | Sync current branch with main/master                      |
-| `testing`        | TDD, testing pyramid, language-specific test patterns     |
+| Skill            | Purpose                                               |
+| ---------------- | ----------------------------------------------------- |
+| `agent-browser`  | Browser automation using Vercel's agent-browser CLI   |
+| `analyze-data`   | Data analysis with parallel EDA agents                |
+| `api-design`     | REST/GraphQL API design conventions                   |
+| `commit-push-pr` | Stage, commit, push, and create PR in one workflow    |
+| `data-science`   | Data science methodology and workflows                |
+| `debugging`      | Systematic debugging and error analysis               |
+| `deepen-plan`    | Enhance plans with parallel research agents           |
+| `deslop`         | Remove AI-generated code slop from changes            |
+| `documentation`  | Code comments, docstrings, READMEs                    |
+| `explain`        | Explain code execution and dependencies               |
+| `git-workflow`   | Conventional commits, branching, PR best practices    |
+| `git-worktree`   | Manage git worktrees for parallel development         |
+| `init-repo`      | Initialize new JS/TS or Python repositories           |
+| `performance`    | Performance optimization and profiling                |
+| `ralph-loop`     | Autonomous development loop with fresh context        |
+| `review`         | Code review with parallel specialist agents           |
+| `security`       | OWASP top 10, input validation, secrets management    |
+| `sync`           | Sync current branch with main/master                  |
+| `testing`        | TDD, testing pyramid, language-specific test patterns |
 
 ### Agents (`agents/`)
 
@@ -87,34 +87,34 @@ Agents are specialized AI personas that Claude can spawn for specific tasks.
 
 Shell scripts that run automatically at specific points in Claude's workflow.
 
-| Hook                 | Purpose                                        |
-| -------------------- | ---------------------------------------------- |
-| `check-push-main.sh` | Blocks direct pushes to main/master branches   |
+| Hook                 | Purpose                                         |
+| -------------------- | ----------------------------------------------- |
+| `check-push-main.sh` | Blocks direct pushes to main/master branches    |
 | `notify.sh`          | Sends macOS notifications via terminal-notifier |
 
 ### Plugins (enabled in `settings.json`)
 
 Pre-built plugins from the official marketplace:
 
-| Plugin                | What it provides                                     |
-| --------------------- | ---------------------------------------------------- |
-| `code-review`         | Code review with confidence scoring                  |
-| `code-simplifier`     | Code simplification and cleanup                      |
-| `commit-commands`     | `/commit`, `/commit-push-pr`, `/clean_gone` commands |
-| `feature-dev`         | 7-phase structured feature development workflow      |
-| `frontend-design`     | Distinctive, production-grade UI design guidance     |
-| `gopls-lsp`           | Go language server integration                       |
-| `pr-review-toolkit`   | 6 specialized PR review agents                       |
-| `rust-analyzer-lsp`   | Rust language server integration                     |
+| Plugin              | What it provides                                     |
+| ------------------- | ---------------------------------------------------- |
+| `code-review`       | Code review with confidence scoring                  |
+| `code-simplifier`   | Code simplification and cleanup                      |
+| `commit-commands`   | `/commit`, `/commit-push-pr`, `/clean_gone` commands |
+| `feature-dev`       | 7-phase structured feature development workflow      |
+| `frontend-design`   | Distinctive, production-grade UI design guidance     |
+| `gopls-lsp`         | Go language server integration                       |
+| `pr-review-toolkit` | 6 specialized PR review agents                       |
+| `rust-analyzer-lsp` | Rust language server integration                     |
 
 ### Hook Configuration (in `settings.json`)
 
-| Hook Event     | What it does                                                        |
-| -------------- | ------------------------------------------------------------------- |
-| `PreToolUse`   | Blocks edits to sensitive files (`.env`, lockfiles, `.git/`)        |
-| `PreToolUse`   | Blocks direct pushes to main/master via `check-push-main.sh`        |
-| `Notification` | Sends macOS notification when Claude awaits input                   |
-| `Stop`         | Sends macOS notification when task completes                        |
+| Hook Event     | What it does                                                 |
+| -------------- | ------------------------------------------------------------ |
+| `PreToolUse`   | Blocks edits to sensitive files (`.env`, lockfiles, `.git/`) |
+| `PreToolUse`   | Blocks direct pushes to main/master via `check-push-main.sh` |
+| `Notification` | Sends macOS notification when Claude awaits input            |
+| `Stop`         | Sends macOS notification when task completes                 |
 
 ### Permissions (in `settings.json`)
 

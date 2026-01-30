@@ -202,7 +202,7 @@ From learnings:
 
 For each section, add research insights:
 
-```markdown
+````markdown
 ## [Original Section Title]
 
 [Original content preserved]
@@ -219,9 +219,8 @@ For each section, add research insights:
 - [Optimization opportunity]
 - [Benchmark or metric to target]
 
-**Implementation Details:** ```[language]
-// Concrete code example
-```
+**Implementation Details:** ```[language] // Concrete code example
+````
 
 **Edge Cases:**
 
@@ -232,7 +231,8 @@ For each section, add research insights:
 
 - [Documentation URL 1]
 - [Documentation URL 2]
-```
+
+````
 
 ### 8. Add Enhancement Summary
 
@@ -255,7 +255,7 @@ At the top of the enhanced plan:
 
 - [Important finding 1]
 - [Important finding 2]
-```
+````
 
 ### 9. Write Enhanced Plan
 

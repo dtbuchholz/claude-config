@@ -10,7 +10,8 @@ This ensures the text can be copied without terminal formatting artifacts.
 
 ## GitHub URLs
 
-When the user shares a GitHub URL, **always use the `gh` CLI** instead of WebFetch. This ensures access to private repositories.
+When the user shares a GitHub URL, **always use the `gh` CLI** instead of WebFetch. This ensures
+access to private repositories.
 
 ### Key Insight: `gh` Accepts URLs Directly
 
@@ -28,19 +29,20 @@ gh pr view https://github.com/owner/repo/pull/123
 
 ### URL Patterns and Commands
 
-| URL Pattern | Command |
-|-------------|---------|
-| `.../issues/{number}` | `gh issue view <url>` |
-| `.../issues` | `gh issue list --repo owner/repo` |
-| `.../pull/{number}` | `gh pr view <url>` |
-| `.../pull/{number}/files` | `gh pr diff <url>` |
-| `.../pulls` | `gh pr list --repo owner/repo` |
-| `github.com/owner/repo` | `gh repo view owner/repo` |
-| `.../blob/{ref}/{path}` | `gh api repos/owner/repo/contents/path?ref=ref --jq '.content' \| base64 -d` |
+| URL Pattern               | Command                                                                      |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| `.../issues/{number}`     | `gh issue view <url>`                                                        |
+| `.../issues`              | `gh issue list --repo owner/repo`                                            |
+| `.../pull/{number}`       | `gh pr view <url>`                                                           |
+| `.../pull/{number}/files` | `gh pr diff <url>`                                                           |
+| `.../pulls`               | `gh pr list --repo owner/repo`                                               |
+| `github.com/owner/repo`   | `gh repo view owner/repo`                                                    |
+| `.../blob/{ref}/{path}`   | `gh api repos/owner/repo/contents/path?ref=ref --jq '.content' \| base64 -d` |
 
 ### Useful Flags
 
 **For issues:**
+
 ```bash
 gh issue view <url>                    # Basic view
 gh issue view <url> --comments         # Include comments
@@ -48,6 +50,7 @@ gh issue view <url> --json title,body,comments  # Structured JSON
 ```
 
 **For PRs:**
+
 ```bash
 gh pr view <url>                       # Basic view
 gh pr view <url> --comments            # Include comments
@@ -58,6 +61,7 @@ gh pr view <url> --json files --jq '.files[].path'  # List changed files
 ```
 
 **For repos:**
+
 ```bash
 gh repo view owner/repo                # Repo info + README
 gh repo view owner/repo --json description,defaultBranchRef

@@ -1,7 +1,6 @@
 ---
 name: sync
-description:
-  Sync current branch with main/master (fetch, checkout, pull, rebase).
+description: Sync current branch with main/master (fetch, checkout, pull, rebase).
 ---
 
 # Sync Branch

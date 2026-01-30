@@ -1,7 +1,6 @@
 ---
 name: explain
-description:
-  Explain how a piece of code works, tracing through its execution and dependencies.
+description: Explain how a piece of code works, tracing through its execution and dependencies.
 ---
 
 # Explain Code

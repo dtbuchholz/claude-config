@@ -16,51 +16,42 @@ opening a pull request.
 - User wants to create a PR for current work
 - User says "commit, push, and PR" or similar
 
-## Workflow
+## Context
 
-### 1. Gather Context
+- Current git status: !`git status`
+- Current git diff (staged and unstaged changes): !`git diff HEAD`
+- Current branch: !`git branch --show-current`
+- Recent commits: !`git log --oneline -10`
+- Remote tracking: !`git remote -v`
 
-First, understand the current state:
+## Your Task
 
-```bash
-# Current git status
-git status
+Based on the above changes:
 
-# Current branch
-git branch --show-current
+1. **Create a new branch if on main/master** - Don't commit directly to main
+2. **Stage and commit** with conventional commit format
+3. **Push the branch** to origin
+4. **Create a pull request** using `gh pr create`
 
-# Staged and unstaged changes
-git diff HEAD
+### Conventional Commit Format
 
-# Recent commits for style reference
-git log --oneline -10
+Use conventional commit prefixes:
 
-# Remote tracking
-git remote -v
-```
+- `feat:` new feature
+- `fix:` bug fix
+- `refactor:` code refactoring
+- `docs:` documentation changes
+- `test:` test additions/changes
+- `chore:` maintenance tasks
 
-### 2. Stage and Commit
+### Push Handling
 
-Stage all relevant changes (or follow user instructions for specific files) and create a single,
-well-formatted commit message following conventional commits:
+- If branch doesn't exist on remote: `git push -u origin <branch-name>`
+- Otherwise: `git push`
 
-- `feat:` for new features
-- `fix:` for bug fixes
-- `refactor:` for code refactoring
-- `docs:` for documentation changes
-- `test:` for test additions/changes
-- `chore:` for maintenance tasks
+### Pull Request
 
-### 3. Push to Remote
-
-Push the current branch to origin:
-
-- If the branch doesn't exist on remote, use `git push -u origin <branch-name>`
-- Otherwise, use `git push`
-
-### 4. Create Pull Request
-
-Use GitHub CLI to create a PR:
+Use GitHub CLI:
 
 ```bash
 gh pr create --title "the pr title" --body "PR body here"
@@ -71,6 +62,12 @@ gh pr create --title "the pr title" --body "PR body here"
 - Do NOT include any "Generated with Claude Code" footer or similar attribution
 - If a PR already exists for this branch, show its status with `gh pr view`
 
+### Execution
+
+You have the capability to call multiple tools in a single response. You MUST do all of the above in
+a single message where possible. Do not use any other tools or do anything else. Do not send any
+other text or messages besides these tool calls.
+
 ## Output
 
 Provide a summary of:
@@ -78,8 +75,3 @@ Provide a summary of:
 1. What was committed
 2. The commit hash
 3. The PR URL (or existing PR status)
-
-## Efficiency
-
-Execute the workflow efficiently by calling multiple tools in parallel where possible. If any step
-fails, report the error and stop.

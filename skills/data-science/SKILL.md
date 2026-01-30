@@ -1,10 +1,12 @@
 # Data Science Skill
 
-Expert methodology for statistical analysis, machine learning, and business insights. Use this skill when working with data analysis, modeling, or generating insights from datasets.
+Expert methodology for statistical analysis, machine learning, and business insights. Use this skill
+when working with data analysis, modeling, or generating insights from datasets.
 
 ## Environment Setup
 
 **Python stack (prefer these):**
+
 ```python
 # Core
 import pandas as pd
@@ -29,6 +31,7 @@ from sklearn.metrics import (
 ```
 
 **For large datasets:**
+
 ```python
 import polars as pl  # Faster than pandas for large data
 import duckdb        # SQL on local files
@@ -37,6 +40,7 @@ import duckdb        # SQL on local files
 ## Exploratory Data Analysis (EDA)
 
 ### Quick Data Profile
+
 ```python
 def quick_profile(df):
     """Generate quick data profile."""
@@ -50,6 +54,7 @@ def quick_profile(df):
 ```
 
 ### Distribution Analysis
+
 ```python
 def analyze_distributions(df, numeric_cols):
     """Check distributions and normality."""
@@ -61,6 +66,7 @@ def analyze_distributions(df, numeric_cols):
 ```
 
 ### Correlation Analysis
+
 ```python
 def correlation_analysis(df, target=None):
     """Analyze correlations, optionally with target."""
@@ -84,6 +90,7 @@ def correlation_analysis(df, target=None):
 ```
 
 ### Outlier Detection
+
 ```python
 def detect_outliers(df, cols, method='iqr'):
     """Detect outliers using IQR or z-score."""
@@ -103,6 +110,7 @@ def detect_outliers(df, cols, method='iqr'):
 ## Statistical Testing
 
 ### Hypothesis Testing Checklist
+
 1. State null and alternative hypotheses
 2. Choose significance level (typically α=0.05)
 3. Check assumptions (normality, variance homogeneity)
@@ -111,6 +119,7 @@ def detect_outliers(df, cols, method='iqr'):
 6. Make decision and interpret
 
 ### Common Tests
+
 ```python
 # t-test (compare two means)
 stat, p = stats.ttest_ind(group1, group2)
@@ -133,6 +142,7 @@ rho, p = stats.spearmanr(x, y)  # monotonic
 ```
 
 ### Effect Size
+
 ```python
 def cohens_d(group1, group2):
     """Calculate Cohen's d effect size."""
@@ -147,6 +157,7 @@ def cohens_d(group1, group2):
 ## Feature Engineering
 
 ### Numeric Transformations
+
 ```python
 # Log transform (right-skewed data)
 df['log_col'] = np.log1p(df['col'])  # log(1+x) handles zeros
@@ -163,6 +174,7 @@ df['quantile_binned'] = pd.qcut(df['col'], q=4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
 ```
 
 ### Categorical Encoding
+
 ```python
 # One-hot encoding
 df_encoded = pd.get_dummies(df, columns=['cat_col'], drop_first=True)
@@ -178,6 +190,7 @@ df['target_encoded'] = df['cat_col'].map(target_means)
 ```
 
 ### Time Features
+
 ```python
 df['date'] = pd.to_datetime(df['date'])
 df['year'] = df['date'].dt.year
@@ -189,6 +202,7 @@ df['days_since_start'] = (df['date'] - df['date'].min()).dt.days
 ```
 
 ### Interaction Features
+
 ```python
 # Polynomial features
 from sklearn.preprocessing import PolynomialFeatures
@@ -203,6 +217,7 @@ df['feat1_ratio_feat2'] = df['feat1'] / (df['feat2'] + 1e-8)
 ## Model Development
 
 ### Train/Test Split
+
 ```python
 from sklearn.model_selection import train_test_split
 
@@ -216,6 +231,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 ```
 
 ### Cross-Validation
+
 ```python
 from sklearn.model_selection import cross_val_score, StratifiedKFold
 
@@ -226,16 +242,17 @@ print(f"CV Score: {scores.mean():.3f} (+/- {scores.std()*2:.3f})")
 
 ### Model Selection Guide
 
-| Problem Type | Start With | Then Try |
-|--------------|------------|----------|
-| Classification (binary) | LogisticRegression | RandomForest, XGBoost |
-| Classification (multi) | RandomForest | XGBoost, Neural Net |
-| Regression | LinearRegression, Ridge | RandomForest, XGBoost |
-| Time Series | ARIMA, Prophet | LSTM if enough data |
-| Clustering | KMeans | DBSCAN, Hierarchical |
-| Anomaly Detection | IsolationForest | One-Class SVM |
+| Problem Type            | Start With              | Then Try              |
+| ----------------------- | ----------------------- | --------------------- |
+| Classification (binary) | LogisticRegression      | RandomForest, XGBoost |
+| Classification (multi)  | RandomForest            | XGBoost, Neural Net   |
+| Regression              | LinearRegression, Ridge | RandomForest, XGBoost |
+| Time Series             | ARIMA, Prophet          | LSTM if enough data   |
+| Clustering              | KMeans                  | DBSCAN, Hierarchical  |
+| Anomaly Detection       | IsolationForest         | One-Class SVM         |
 
 ### Baseline Models
+
 ```python
 # Classification baseline
 from sklearn.dummy import DummyClassifier
@@ -251,6 +268,7 @@ print(f"Baseline RMSE: {np.sqrt(mean_squared_error(y_test, baseline.predict(X_te
 ```
 
 ### Hyperparameter Tuning
+
 ```python
 from sklearn.model_selection import RandomizedSearchCV
 
@@ -278,6 +296,7 @@ print(f"Best score: {search.best_score_:.3f}")
 ## Model Evaluation
 
 ### Classification Metrics
+
 ```python
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
 
@@ -293,6 +312,7 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
 ```
 
 ### Regression Metrics
+
 ```python
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
@@ -311,6 +331,7 @@ plt.ylabel('Residuals')
 ```
 
 ### Feature Importance
+
 ```python
 # Tree-based models
 importances = pd.DataFrame({
@@ -326,6 +347,7 @@ perm_imp = permutation_importance(model, X_test, y_test, n_repeats=10, random_st
 ## Visualization Best Practices
 
 ### Distribution Plots
+
 ```python
 fig, axes = plt.subplots(2, 2, figsize=(12, 10))
 
@@ -345,6 +367,7 @@ plt.tight_layout()
 ```
 
 ### Relationship Plots
+
 ```python
 # Scatter with regression line
 sns.regplot(data=df, x='x_col', y='y_col')
@@ -358,6 +381,7 @@ sns.heatmap(df.corr(), annot=True, cmap='coolwarm', center=0)
 ```
 
 ### Model Performance Plots
+
 ```python
 # ROC curve
 from sklearn.metrics import roc_curve, auc
@@ -378,13 +402,16 @@ train_sizes, train_scores, val_scores = learning_curve(
 ## Reporting Template
 
 ### Analysis Summary Structure
+
 ```markdown
 ## Executive Summary
+
 - Key finding 1 (with supporting metric)
 - Key finding 2 (with supporting metric)
 - Recommendation
 
 ## Methodology
+
 - Data source and time period
 - Sample size and any exclusions
 - Statistical methods used
@@ -392,20 +419,24 @@ train_sizes, train_scores, val_scores = learning_curve(
 ## Key Findings
 
 ### Finding 1: [Title]
+
 - Metric: X increased by Y% (p < 0.05)
 - Visualization
 - Business implication
 
 ## Limitations
+
 - Data quality issues
 - Assumptions made
 - Generalizability concerns
 
 ## Recommendations
+
 1. Action item with expected impact
 2. Action item with expected impact
 
 ## Appendix
+
 - Detailed methodology
 - Additional analyses
 - Code repository link

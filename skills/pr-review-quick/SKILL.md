@@ -1,19 +1,20 @@
 ---
-name: review
+name: pr-review-quick
 description:
   Quick code review of recent changes using parallel specialist agents for security, bugs,
   performance, and code quality.
 ---
 
-# Code Review
+# Quick Code Review
 
-Review recent code changes using parallel specialist agents for thorough coverage.
+Fast, cheap review using 4 parallel haiku agents. For comprehensive PR review with 6 specialized
+agents, use `/pr-review` instead.
 
 ## When This Skill Applies
 
-- User asks to review code or recent changes
-- User says "review my changes" or "/review"
-- Before creating a PR
+- User asks for a quick review
+- User says "/pr-review-quick"
+- Fast feedback before committing
 
 ## Workflow
 
@@ -31,29 +32,39 @@ git diff main...HEAD 2>/dev/null || git diff HEAD~3
 
 **CRITICAL: Launch ALL of these agents in a SINGLE message with multiple Task tool calls.**
 
-Use `model: haiku` for each agent to keep costs low:
+Use `model: haiku` for each agent to keep costs low.
+
+**Every agent MUST receive this instruction:**
+
+```
+IMPORTANT: Only report issues on lines that were ADDED or MODIFIED in this diff (+ lines).
+Do NOT report pre-existing issues in unchanged code.
+```
 
 ```
 Task (model: haiku): "SECURITY REVIEW
+
+CRITICAL: Only flag issues on ADDED/MODIFIED lines (+ lines in diff). Ignore pre-existing code.
 
 Check this diff for security issues:
 - SQL injection
 - XSS vulnerabilities
 - Hardcoded secrets/credentials
 - Missing input validation
-- Insecure dependencies
 
 Diff:
 [paste diff]
 
-Output format:
+Output format (only for issues with confidence ≥ 75%):
 [HIGH/MEDIUM/LOW] file:line - description
 
-If no issues: 'No security issues found'"
+If no high-confidence issues: 'No security issues found'"
 ```
 
 ```
 Task (model: haiku): "BUG REVIEW
+
+CRITICAL: Only flag issues on ADDED/MODIFIED lines (+ lines in diff). Ignore pre-existing code.
 
 Check this diff for bugs and logic errors:
 - Off-by-one errors
@@ -65,14 +76,16 @@ Check this diff for bugs and logic errors:
 Diff:
 [paste diff]
 
-Output format:
+Output format (only for issues with confidence ≥ 75%):
 [HIGH/MEDIUM/LOW] file:line - description
 
-If no issues: 'No bugs found'"
+If no high-confidence issues: 'No bugs found'"
 ```
 
 ```
 Task (model: haiku): "PERFORMANCE REVIEW
+
+CRITICAL: Only flag issues on ADDED/MODIFIED lines (+ lines in diff). Ignore pre-existing code.
 
 Check this diff for performance issues:
 - N+1 queries
@@ -84,14 +97,16 @@ Check this diff for performance issues:
 Diff:
 [paste diff]
 
-Output format:
+Output format (only for issues with confidence ≥ 75%):
 [HIGH/MEDIUM/LOW] file:line - description
 
-If no issues: 'No performance issues found'"
+If no high-confidence issues: 'No performance issues found'"
 ```
 
 ```
 Task (model: haiku): "CODE QUALITY REVIEW
+
+CRITICAL: Only flag issues on ADDED/MODIFIED lines (+ lines in diff). Ignore pre-existing code.
 
 Check this diff for code quality:
 - Unclear naming
@@ -103,30 +118,36 @@ Check this diff for code quality:
 Diff:
 [paste diff]
 
-Output format:
+Output format (only for issues with confidence ≥ 75%):
 [HIGH/MEDIUM/LOW] file:line - description
 
-If no issues: 'No quality issues found'"
+If no high-confidence issues: 'No quality issues found'"
 ```
 
 ### Step 3: Synthesize Results
 
-Collect all agent responses and combine into a single report:
+Collect all agent responses and combine into a single report.
+
+**Filter out:**
+
+- Issues on lines not in the diff
+- Low-confidence findings (nitpicks, maybes)
+- Things a linter would catch
 
 ```
 ## Review Summary
 
 ### Security
-[agent 1 findings]
+[agent 1 findings, or "No issues"]
 
 ### Bugs
-[agent 2 findings]
+[agent 2 findings, or "No issues"]
 
 ### Performance
-[agent 3 findings]
+[agent 3 findings, or "No issues"]
 
 ### Code Quality
-[agent 4 findings]
+[agent 4 findings, or "No issues"]
 
 ---
 Files reviewed: [count]
@@ -140,7 +161,6 @@ If issues found:
 ```
 [HIGH] path/to/file.ts:42 - SQL injection vulnerability in user query
 [MEDIUM] path/to/other.ts:15 - Missing null check on optional param
-[LOW] path/to/util.ts:8 - Variable name 'x' is unclear
 ```
 
 If no issues: "No issues found" with a brief note on what was reviewed.

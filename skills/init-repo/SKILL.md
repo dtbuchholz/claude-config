@@ -1,7 +1,6 @@
 ---
 name: init-repo
-description:
-  Initialize a new repository with standard tooling (JS/TS or Python).
+description: Initialize a new repository with standard tooling (JS/TS or Python).
 ---
 
 # Initialize Repository

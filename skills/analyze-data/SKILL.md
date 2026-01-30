@@ -176,9 +176,7 @@ Collect all agent outputs and create unified report:
 ```markdown
 # Data Analysis Report: [Dataset Name]
 
-**Generated:** [Date]
-**Dataset:** [Path]
-**Shape:** [Rows] x [Columns]
+**Generated:** [Date] **Dataset:** [Path] **Shape:** [Rows] x [Columns]
 
 ## Executive Summary
 
