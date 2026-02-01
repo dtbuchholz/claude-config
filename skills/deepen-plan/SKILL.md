@@ -21,8 +21,16 @@ real-world examples.
 
 The user should provide a path to the plan file. If not provided:
 
-1. Check for recent plans: `ls -la plans/ 2>/dev/null || ls -la *.md`
-2. Ask the user: "Which plan would you like to deepen? Please provide the path."
+1. Check Claude Code's plan mode location first (most recent plans):
+   ```bash
+   ls -lt ~/.claude/plans/*.md 2>/dev/null | head -5
+   ```
+2. Check for local plans:
+   ```bash
+   ls -la plans/ 2>/dev/null || ls -la *.md
+   ```
+3. If multiple plans found, show the user and ask which one to deepen
+4. If no plans found, ask the user: "Which plan would you like to deepen? Please provide the path."
 
 Do not proceed until you have a valid plan file path.
 
