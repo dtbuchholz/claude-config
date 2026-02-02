@@ -1,3 +1,9 @@
+---
+name: data-science
+description:
+  Data science methodology for EDA, statistical analysis, modeling, and insights generation.
+---
+
 # Data Science Skill
 
 Expert methodology for statistical analysis, machine learning, and business insights. Use this skill
