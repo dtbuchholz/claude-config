@@ -11,6 +11,7 @@ todos/
 telemetry/
 cache/
 plugins/
+image-cache/
 
 # User-specific history
 history.jsonl
