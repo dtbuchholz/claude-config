@@ -5,9 +5,15 @@
   "private": true,
   "scripts": {
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "husky": "^9.1.0",
+    "lint-staged": "^15.2.0",
     "prettier": "^3.4.2"
+  },
+  "lint-staged": {
+    "*.{md,json,yaml,yml,sh}": "prettier --write"
   }
 }
