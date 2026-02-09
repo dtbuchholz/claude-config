@@ -73,6 +73,7 @@ invoked directly with `/skill-name`.
 | `napkin`              | Per-repo mistake/correction tracking across sessions  |
 | `performance`         | Performance optimization and profiling                |
 | `pr-review`           | Comprehensive PR review with 6 specialized agents     |
+| `recall-commit`       | Commit with learning capture for Recall Labs projects |
 | `pr-review-quick`     | Quick PR review with 4 parallel agents                |
 | `quant-strategy-eval` | Evaluate trading strategies (Sharpe, drawdown, etc.)  |
 | `ralph-loop`          | Autonomous development loop with fresh context        |
