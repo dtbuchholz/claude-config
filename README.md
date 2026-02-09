@@ -70,6 +70,7 @@ invoked directly with `/skill-name`.
 | `git-workflow`        | Conventional commits, branching, PR best practices    |
 | `git-worktree`        | Manage git worktrees for parallel development         |
 | `init-repo`           | Initialize new JS/TS or Python repositories           |
+| `napkin`              | Per-repo mistake/correction tracking across sessions  |
 | `performance`         | Performance optimization and profiling                |
 | `pr-review`           | Comprehensive PR review with 6 specialized agents     |
 | `pr-review-quick`     | Quick PR review with 4 parallel agents                |
