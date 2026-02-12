@@ -104,14 +104,10 @@ Shell scripts that run automatically at specific points in Claude's workflow.
 
 Pre-built plugins from the official marketplace:
 
-| Plugin              | What it provides                                |
-| ------------------- | ----------------------------------------------- |
-| `code-review`       | Posts code review comments to GitHub PRs        |
-| `code-simplifier`   | Code simplification and cleanup                 |
-| `feature-dev`       | 7-phase structured feature development workflow |
-| `frontend-design`   | Distinctive, production-grade UI design         |
-| `gopls-lsp`         | Go language server integration                  |
-| `rust-analyzer-lsp` | Rust language server integration                |
+| Plugin            | What it provides                                |
+| ----------------- | ----------------------------------------------- |
+| `feature-dev`     | 7-phase structured feature development workflow |
+| `frontend-design` | Distinctive, production-grade UI design         |
 
 ### Hook Configuration (in `settings.json`)
 
