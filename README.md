@@ -53,34 +53,35 @@ Before using this configuration, ensure you have the following installed:
 Skills provide contextual knowledge that Claude uses automatically based on your task, or can be
 invoked directly with `/skill-name`.
 
-| Skill                 | Purpose                                               |
-| --------------------- | ----------------------------------------------------- |
-| `agent-browser`       | Browser automation using Vercel's agent-browser CLI   |
-| `analyze-data`        | Data analysis with parallel EDA agents                |
-| `api-design`          | REST/GraphQL API design conventions                   |
-| `clean-gone`          | Clean up git branches deleted on remote               |
-| `commit`              | Create git commit with conventional format            |
-| `commit-push-pr`      | Stage, commit, push, and create PR in one workflow    |
-| `data-science`        | Data science methodology and workflows                |
-| `debugging`           | Systematic debugging and error analysis               |
-| `deepen-plan`         | Enhance plans with parallel research agents           |
-| `deslop`              | Remove AI-generated code slop from changes            |
-| `documentation`       | Code comments, docstrings, READMEs                    |
-| `explain`             | Explain code execution and dependencies               |
-| `git-workflow`        | Conventional commits, branching, PR best practices    |
-| `git-worktree`        | Manage git worktrees for parallel development         |
-| `init-repo`           | Initialize new JS/TS or Python repositories           |
-| `napkin`              | Per-repo mistake/correction tracking across sessions  |
-| `performance`         | Performance optimization and profiling                |
-| `pr-review`           | Comprehensive PR review with 6 specialized agents     |
-| `recall-commit`       | Commit with learning capture for Recall Labs projects |
-| `pr-review-quick`     | Quick PR review with 4 parallel agents                |
-| `quant-strategy-eval` | Evaluate trading strategies (Sharpe, drawdown, etc.)  |
-| `ralph-loop`          | Autonomous development loop with fresh context        |
-| `review-and-fix`      | Fresh-context review then apply fixes                 |
-| `security`            | OWASP top 10, input validation, secrets management    |
-| `sync`                | Sync current branch with main/master                  |
-| `testing`             | TDD, testing pyramid, language-specific test patterns |
+| Skill                      | Purpose                                                 |
+| -------------------------- | ------------------------------------------------------- |
+| `agent-browser`            | Browser automation using Vercel's agent-browser CLI     |
+| `analyze-data`             | Data analysis with parallel EDA agents                  |
+| `api-design`               | REST/GraphQL API design conventions                     |
+| `clean-gone`               | Clean up git branches deleted on remote                 |
+| `commit`                   | Create git commit with conventional format              |
+| `commit-push-pr`           | Stage, commit, push, and create PR in one workflow      |
+| `data-science`             | Data science methodology and workflows                  |
+| `debugging`                | Systematic debugging and error analysis                 |
+| `deepen-plan`              | Enhance plans with parallel research agents             |
+| `deslop`                   | Remove AI-generated code slop from changes              |
+| `documentation`            | Code comments, docstrings, READMEs                      |
+| `explain`                  | Explain code execution and dependencies                 |
+| `git-workflow`             | Conventional commits, branching, PR best practices      |
+| `git-worktree`             | Manage git worktrees for parallel development           |
+| `init-repo`                | Initialize new JS/TS or Python repositories             |
+| `napkin`                   | Per-repo mistake/correction tracking across sessions    |
+| `performance`              | Performance optimization and profiling                  |
+| `pr-review`                | Comprehensive PR review with 6 specialized agents       |
+| `recall-commit`            | Commit with learning capture for Recall Labs projects   |
+| `repo-quality-rails-setup` | Full quality rails setup for TS monorepos / any project |
+| `pr-review-quick`          | Quick PR review with 4 parallel agents                  |
+| `quant-strategy-eval`      | Evaluate trading strategies (Sharpe, drawdown, etc.)    |
+| `ralph-loop`               | Autonomous development loop with fresh context          |
+| `review-and-fix`           | Fresh-context review then apply fixes                   |
+| `security`                 | OWASP top 10, input validation, secrets management      |
+| `sync`                     | Sync current branch with main/master                    |
+| `testing`                  | TDD, testing pyramid, language-specific test patterns   |
 
 ### Agents (`agents/`)
 
