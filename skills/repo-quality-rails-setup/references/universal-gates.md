@@ -1,5 +1,9 @@
 # Universal Quality Gates for Any Language
 
+> **Python projects:** Use the dedicated Python setup path (`references/py-setup/guide.md`) instead
+> of this guide. It provides prescriptive, copy-paste-able configurations with the same depth as the
+> TypeScript path.
+
 This reference maps every quality gate from the TypeScript monorepo setup to its language-agnostic
 equivalent. The three-layer structure (pre-commit, pre-push, CI) is identical regardless of
 language. What changes is the tooling.

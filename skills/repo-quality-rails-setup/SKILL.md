@@ -1,11 +1,11 @@
 ---
 name: repo-quality-rails-setup
 description: >
-  Full repo-quality rails setup/overhaul for TypeScript monorepos and any software project. Use ONLY
-  when the user explicitly asks for a complete quality rails setup, a greenfield repo baseline with
-  all gates, or a full overhaul of quality infrastructure. Do NOT use this for incremental
-  improvements (e.g., "add linting", "add hooks", "set up CI") unless the user confirms they want
-  the entire rails system.
+  Full repo-quality rails setup/overhaul for TypeScript monorepos, Python projects, and any software
+  project. Use ONLY when the user explicitly asks for a complete quality rails setup, a greenfield
+  repo baseline with all gates, or a full overhaul of quality infrastructure. Do NOT use this for
+  incremental improvements (e.g., "add linting", "add hooks", "set up CI") unless the user confirms
+  they want the entire rails system.
 ---
 
 # Repo Quality Rails Setup
@@ -26,6 +26,8 @@ setup and burning context on a repo that is already configured.
 
 - **TypeScript/Husky mode**: `.husky/pre-push` or `.husky/pre-commit` contains
   `# repo-quality-rails`
+- **Python/pre-commit mode**: `.pre-commit-config.yaml` contains `# repo-quality-rails` AND
+  `pyproject.toml` exists
 - **Universal/pre-commit mode**: `.pre-commit-config.yaml` contains `# repo-quality-rails`
 
 **If a marker exists:**
@@ -37,13 +39,17 @@ setup and burning context on a repo that is already configured.
 
 - Proceed with setup and add the marker line during hook/config creation.
 
-There are two modes based on what the repo needs:
+There are three modes based on what the repo needs:
 
 1. **TypeScript monorepo** (prescriptive): Exact tools, exact configs, exact rules. Use the
    step-by-step guide at `references/ts-setup/guide.md` and load one step file at a time. The
    consolidated single-file reference is `references/typescript-monorepo.md` (only if requested).
 
-2. **Any language** (architectural): Same gate structure and hook infrastructure, but with guidance
+2. **Python** (prescriptive): Exact tools (uv, Ruff, MyPy, pytest, pre-commit), exact configs, exact
+   rules. Use the step-by-step guide at `references/py-setup/guide.md` and load one step file at a
+   time.
+
+3. **Any language** (architectural): Same gate structure and hook infrastructure, but with guidance
    on choosing equivalent tools. Read `references/universal-gates.md`.
 
 Both modes share the same three-layer enforcement model:
@@ -57,13 +63,15 @@ Layer 3: CI             -> Authoritative verification on clean infrastructure (m
 The rule: **if CI would reject it, a local gate should have caught it first.** Developers should
 never be surprised by CI failures. The pre-push hook mirrors CI exactly.
 
-## Decision: TypeScript or Universal?
+## Decision: TypeScript, Python, or Universal?
 
 Before doing anything, determine the repo's primary language and structure:
 
 - If the repo has `tsconfig.json` or `package.json` with TypeScript dependencies -> **TypeScript
   mode**
 - If setting up a new project and the user wants TypeScript -> **TypeScript mode**
+- If the repo has `pyproject.toml` with Python source code -> **Python mode**
+- If setting up a new project and the user wants Python -> **Python mode**
 - Otherwise -> **Universal mode**
 
 For TypeScript mode, also determine:
@@ -214,10 +222,34 @@ Start with `references/ts-setup/guide.md` and load **one step file at a time**.
 | `references/changeset-workflow.md`  | Version management for publishable packages          |
 | `references/code-duplication.md`    | Copy-paste detection and enforcement                 |
 
+## Python: Step-by-step
+
+Start with `references/py-setup/guide.md` and load **one step file at a time**.
+
+| Step file                                              | What It Covers                                          |
+| ------------------------------------------------------ | ------------------------------------------------------- |
+| `references/py-setup/01-project-structure.md`          | Project layout, pyproject.toml, uv workspaces, Makefile |
+| `references/py-setup/02-ruff-config.md`                | Complete Ruff rule set (formatting + linting)           |
+| `references/py-setup/03-mypy-strict.md`                | MyPy strict mode, per-module overrides, stubs           |
+| `references/py-setup/04-pytest-config.md`              | pytest config, conftest architecture, fixtures          |
+| `references/py-setup/05-pre-commit-hooks.md`           | pre-commit framework with all quality gates             |
+| `references/py-setup/06-pre-push-script.md`            | Full pre-push verification script                       |
+| `references/py-setup/07-ci-pipeline.md`                | GitHub Actions: lint, build, test matrix, coverage      |
+| `references/py-setup/08-dependencies-and-checklist.md` | Dependency list + setup verification checklist          |
+
+### Deep Dives (optional)
+
+| Reference                                   | What It Covers                                     |
+| ------------------------------------------- | -------------------------------------------------- |
+| `references/py-test-infrastructure.md`      | pytest deep dive, Hypothesis, coverage anti-gaming |
+| `references/py-design-metrics.md`           | radon, xenon, wily, pylint design rules as gates   |
+| `references/py-architecture-enforcement.md` | import-linter boundary contracts                   |
+| `references/py-mutation-testing.md`         | mutmut setup and CI integration                    |
+
 ## Universal Mode: Any Language
 
-For non-TypeScript repos, read `references/universal-gates.md` which maps every quality gate to its
-language-agnostic equivalent and provides guidance on tool selection.
+For repos that are not TypeScript or Python, read `references/universal-gates.md` which maps every
+quality gate to its language-agnostic equivalent and provides guidance on tool selection.
 
 ## Agent Configuration
 
