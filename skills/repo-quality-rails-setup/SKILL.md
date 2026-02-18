@@ -261,8 +261,7 @@ optionally Atlas MCP for team context.
 **When to set up:** After the three-layer gate infrastructure is in place. Agent instructions
 reference the hooks ("never `--no-verify`"), so hooks should exist first.
 
-**How:** Run `recall-skills/setup.sh` from the repo root. This is the same setup script that manages
-the recall-commit skill — it now handles the full agent configuration baseline.
+**How:** Configure agent standards as part of the quality rails setup.
 
 Read `references/agent-configuration.md` for the complete setup procedure, file structure, and
 instructions for existing repos.

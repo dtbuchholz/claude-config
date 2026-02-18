@@ -736,7 +736,7 @@ if [ -n "$STAGED_MIGRATIONS" ]; then
   echo "Database migrations staged -- running migration linter..."
 
   # Run custom migration linter
-  pnpm --filter @recallnet/database run lint:migrations $STAGED_MIGRATIONS
+  pnpm --filter @my-org/database run lint:migrations $STAGED_MIGRATIONS
 
   if [ $? -ne 0 ]; then
     echo ""
@@ -779,7 +779,7 @@ if [ "$DB_CHANGED" -gt 0 ]; then
   # 2. Schema drift detection (only if database is available)
   if [ -n "$DATABASE_URL" ]; then
     echo "Running schema drift detection..."
-    pnpm --filter @recallnet/database run check:drift
+    pnpm --filter @my-org/database run check:drift
 
     if [ $? -ne 0 ]; then
       echo ""
@@ -789,7 +789,7 @@ if [ "$DB_CHANGED" -gt 0 ]; then
       echo "To fix:"
       echo "  1. Drop and recreate your local database"
       echo "  2. Run all migrations: pnpm db:migrate:sql"
-      echo "  3. Verify: pnpm --filter @recallnet/database run check:drift"
+      echo "  3. Verify: pnpm --filter @my-org/database run check:drift"
       exit 1
     fi
   else
