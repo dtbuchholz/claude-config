@@ -67,6 +67,7 @@ invoked directly with `/skill-name`.
 | `deslop`                   | Remove AI-generated code slop from changes              |
 | `documentation`            | Code comments, docstrings, READMEs                      |
 | `explain`                  | Explain code execution and dependencies                 |
+| `fresh-eyes`               | Walk a repo as a new dev: verify docs, setup, commands  |
 | `git-workflow`             | Conventional commits, branching, PR best practices      |
 | `git-worktree`             | Manage git worktrees for parallel development           |
 | `init-repo`                | Initialize new JS/TS or Python repositories             |
