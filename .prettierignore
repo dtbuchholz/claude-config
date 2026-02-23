@@ -16,6 +16,9 @@ plugins/marketplaces/
 plugins/install-counts-cache.json
 plugins/installed_plugins.json
 
+# Shell scripts (no Prettier parser)
+*.sh
+
 # Lock files
 pnpm-lock.yaml
 package-lock.json

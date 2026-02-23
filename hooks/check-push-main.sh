@@ -17,7 +17,9 @@ COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
 [ -z "$COMMAND" ] && exit 0
 
 # Only check git push commands
-echo "$COMMAND" | grep -qE "git\s+push" || exit 0
+# Match "git push" or "git <flags> push" (e.g. git -C /path push)
+# but not "push" inside quoted strings (e.g. git commit -m "fix push")
+echo "$COMMAND" | grep -qE "git\s+(-[A-Za-z]\s+\S+\s+)*push(\s|$)" || exit 0
 
 # If pushing all branches, block (could include protected)
 echo "$COMMAND" | grep -qE -- "\s--all(\s|$)" && {
