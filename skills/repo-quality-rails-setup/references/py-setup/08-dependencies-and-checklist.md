@@ -119,6 +119,8 @@ test = [
 
 install:
 	uv sync --all-extras
+	uv run pre-commit install
+	uv run pre-commit install --hook-type pre-push
 
 fmt:
 	uv run ruff format .
