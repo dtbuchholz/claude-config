@@ -83,6 +83,7 @@ invoked directly with `/skill-name`.
 | `security`                 | OWASP top 10, input validation, secrets management      |
 | `sync`                     | Sync current branch with main/master                    |
 | `testing`                  | TDD, testing pyramid, language-specific test patterns   |
+| `watch-video`              | Extract frames from a video file to view and analyze    |
 
 ### Agents (`agents/`)
 
