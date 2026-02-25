@@ -12,6 +12,7 @@ telemetry/
 cache/
 plugins/
 image-cache/
+teams/
 
 # User-specific history
 history.jsonl

@@ -73,6 +73,7 @@ invoked directly with `/skill-name`.
 | `init-repo`                | Initialize new JS/TS or Python repositories             |
 | `napkin`                   | Per-repo mistake/correction tracking across sessions    |
 | `performance`              | Performance optimization and profiling                  |
+| `plan-review`              | Challenge and review a plan before implementation       |
 | `pr-review`                | Comprehensive PR review with 6 specialized agents       |
 | `recall-commit`            | Commit with learning capture for Recall Labs projects   |
 | `repo-quality-rails-setup` | Full quality rails setup for TS monorepos / any project |
