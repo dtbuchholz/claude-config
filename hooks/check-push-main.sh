@@ -44,7 +44,12 @@ done
 
 # If we're currently on a protected branch, block plain git push
 # (plain push would push current branch to its upstream)
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)
+# Respect -C <dir> so we check the correct repo (e.g. worktrees)
+GIT_C_ARGS=""
+if [[ "$COMMAND" =~ git[[:space:]]+-C[[:space:]]+([^[:space:]]+) ]]; then
+    GIT_C_ARGS="-C ${BASH_REMATCH[1]}"
+fi
+CURRENT_BRANCH=$(git $GIT_C_ARGS rev-parse --abbrev-ref HEAD 2>/dev/null || true)
 for branch in $PROTECTED_BRANCHES; do
     if [ "$CURRENT_BRANCH" = "$branch" ]; then
         echo "BLOCKED: You're on '$branch'. Create a feature branch + PR." >&2
