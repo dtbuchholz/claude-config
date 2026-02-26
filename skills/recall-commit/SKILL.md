@@ -86,6 +86,9 @@ Ask yourself:
    or design rationale would send them toward the right solution space from the start?
 2. **What non-obvious constraint or relationship shaped your decisions?** What's not in the code or
    docs but was critical to getting this right?
+3. **Should anything change in the machine?** Did this session reveal a gap in standards,
+   guardrails, skills, or documentation? If a learning keeps coming up, it should become a guardrail
+   — not just a note.
 
 If the user called out specific learnings during the session (e.g., "log this learning: ..."),
 include those alongside your own reflections.
@@ -111,19 +114,31 @@ git diff --cached --name-only AGENT-LEARNINGS.md 2>/dev/null
 If the file has uncommitted changes, **skip writing** — the learnings from the previous attempt are
 already there. Just ensure the file is staged.
 
-Otherwise, insert each new entry immediately after the `<!-- Entries below, newest first -->`
-comment line in `AGENT-LEARNINGS.md`, before any existing entries:
+Otherwise, use the **Edit tool** (not the Write tool) to insert each new entry immediately after the
+`<!-- Entries below, newest first -->` comment line in `AGENT-LEARNINGS.md`, before any existing
+entries. Find the marker line and replace it with the marker plus the new entries — this avoids
+rewriting the entire file each time.
+
+Get the author name once at the start of Phase 2:
+
+```bash
+git config user.name
+```
+
+Entry format:
 
 ```markdown
 ### YYYY-MM-DD — Summary sentence (confirmed|hypothesis)
 
-Insight: One sentence stating the key implication — why this matters and what it changes about how
-you'd approach the problem.
+Author: [git config user.name] Insight: One sentence stating the key implication — why this matters
+and what it changes about how you'd approach the problem.
 
 Detail: The specific context, evidence, or mechanism behind the insight. What happened, what you
 tried, what the constraints were.
 
-Directive: Do X, not Y. Context: branch, what was being done
+Directive: Do X, not Y. Action: What should change in the machine? (e.g., "Add pre-commit check for
+X", "Update team standard to require Y", "No machine change needed — directive is sufficient").
+Every learning must close the loop. Context: branch, what was being done
 ```
 
 Lead with the insight — a reader scanning the file should understand the implication from that line
@@ -170,7 +185,7 @@ git add AGENT-LEARNINGS.md
 - Restating what the code does (the code is readable)
 - Vague advice without specifics ("be careful with X")
 - Learnings without the Insight line — detail without implication is noise
-- Learnings without directives
+- Learnings without directives or actions — every learning must close the feedback loop
 - Fabricated learnings to seem productive
 
 ### Phase 3: Commit
