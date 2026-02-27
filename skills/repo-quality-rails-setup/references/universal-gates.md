@@ -1,8 +1,8 @@
 # Universal Quality Gates for Any Language
 
-> **Python projects:** Use the dedicated Python setup path (`references/py-setup/guide.md`) instead
-> of this guide. It provides prescriptive, copy-paste-able configurations with the same depth as the
-> TypeScript path.
+> **Rust project?** Use the prescriptive Rust path instead: `references/rs-setup/guide.md`. It
+> provides exact configs, exact scripts, and copy-paste-ready setup — no need to adapt the universal
+> guidance below.
 
 This reference maps every quality gate from the TypeScript monorepo setup to its language-agnostic
 equivalent. The three-layer structure (pre-commit, pre-push, CI) is identical regardless of

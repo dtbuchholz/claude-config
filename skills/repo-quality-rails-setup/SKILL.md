@@ -1,11 +1,11 @@
 ---
 name: repo-quality-rails-setup
 description: >
-  Full repo-quality rails setup/overhaul for TypeScript monorepos, Python projects, and any software
-  project. Use ONLY when the user explicitly asks for a complete quality rails setup, a greenfield
-  repo baseline with all gates, or a full overhaul of quality infrastructure. Do NOT use this for
-  incremental improvements (e.g., "add linting", "add hooks", "set up CI") unless the user confirms
-  they want the entire rails system.
+  Full repo-quality rails setup/overhaul for TypeScript monorepos, Python projects, Rust projects,
+  and any software project. Use ONLY when the user explicitly asks for a complete quality rails
+  setup, a greenfield repo baseline with all gates, or a full overhaul of quality infrastructure. Do
+  NOT use this for incremental improvements (e.g., "add linting", "add hooks", "set up CI") unless
+  the user confirms they want the entire rails system.
 ---
 
 # Repo Quality Rails Setup
@@ -26,6 +26,8 @@ setup and burning context on a repo that is already configured.
 
 - **TypeScript/Husky mode**: `.husky/pre-push` or `.husky/pre-commit` contains
   `# repo-quality-rails`
+- **Rust/Makefile mode**: `scripts/pre-commit.sh` or `scripts/pre-push.sh` contains
+  `# repo-quality-rails` AND `Cargo.toml` exists
 - **Python/pre-commit mode**: `.pre-commit-config.yaml` contains `# repo-quality-rails` AND
   `pyproject.toml` exists
 - **Universal/pre-commit mode**: `.pre-commit-config.yaml` contains `# repo-quality-rails`
@@ -39,20 +41,24 @@ setup and burning context on a repo that is already configured.
 
 - Proceed with setup and add the marker line during hook/config creation.
 
-There are three modes based on what the repo needs:
+There are four modes based on what the repo needs:
 
 1. **TypeScript monorepo** (prescriptive): Exact tools, exact configs, exact rules. Use the
    step-by-step guide at `references/ts-setup/guide.md` and load one step file at a time. The
    consolidated single-file reference is `references/typescript-monorepo.md` (only if requested).
 
-2. **Python** (prescriptive): Exact tools (uv, Ruff, MyPy, pytest, pre-commit), exact configs, exact
-   rules. Use the step-by-step guide at `references/py-setup/guide.md` and load one step file at a
-   time.
+2. **Python project** (prescriptive): Exact tools, exact configs, exact rules for single-package or
+   monorepo Python projects. Use the step-by-step guide at `references/py-setup/guide.md` and load
+   one step file at a time.
 
-3. **Any language** (architectural): Same gate structure and hook infrastructure, but with guidance
+3. **Rust project** (prescriptive): Exact tools, exact configs, exact rules for single-crate or
+   workspace Rust projects. Use the step-by-step guide at `references/rs-setup/guide.md` and load
+   one step file at a time.
+
+4. **Any language** (architectural): Same gate structure and hook infrastructure, but with guidance
    on choosing equivalent tools. Read `references/universal-gates.md`.
 
-Both modes share the same three-layer enforcement model:
+All three modes share the same three-layer enforcement model:
 
 ```
 Layer 1: Pre-commit     -> Fast feedback on staged files (seconds)
@@ -63,15 +69,15 @@ Layer 3: CI             -> Authoritative verification on clean infrastructure (m
 The rule: **if CI would reject it, a local gate should have caught it first.** Developers should
 never be surprised by CI failures. The pre-push hook mirrors CI exactly.
 
-## Decision: TypeScript, Python, or Universal?
+## Decision: TypeScript, Python, Rust, or Universal?
 
 Before doing anything, determine the repo's primary language and structure:
 
 - If the repo has `tsconfig.json` or `package.json` with TypeScript dependencies -> **TypeScript
   mode**
 - If setting up a new project and the user wants TypeScript -> **TypeScript mode**
-- If the repo has `pyproject.toml` with Python source code -> **Python mode**
-- If setting up a new project and the user wants Python -> **Python mode**
+- If the repo has `pyproject.toml` or `setup.py` or the user wants Python -> **Python mode**
+- If the repo has `Cargo.toml` or the user wants Rust -> **Rust mode**
 - Otherwise -> **Universal mode**
 
 For TypeScript mode, also determine:
@@ -226,49 +232,70 @@ Start with `references/ts-setup/guide.md` and load **one step file at a time**.
 
 Start with `references/py-setup/guide.md` and load **one step file at a time**.
 
-| Step file                                              | What It Covers                                          |
-| ------------------------------------------------------ | ------------------------------------------------------- |
-| `references/py-setup/01-project-structure.md`          | Project layout, pyproject.toml, uv workspaces, Makefile |
-| `references/py-setup/02-ruff-config.md`                | Complete Ruff rule set (formatting + linting)           |
-| `references/py-setup/03-mypy-strict.md`                | MyPy strict mode, per-module overrides, stubs           |
-| `references/py-setup/04-pytest-config.md`              | pytest config, conftest architecture, fixtures          |
-| `references/py-setup/05-pre-commit-hooks.md`           | pre-commit framework with all quality gates             |
-| `references/py-setup/06-pre-push-script.md`            | Full pre-push verification script                       |
-| `references/py-setup/07-ci-pipeline.md`                | GitHub Actions: lint, build, test matrix, coverage      |
-| `references/py-setup/08-dependencies-and-checklist.md` | Dependency list + setup verification checklist          |
+| Step file                                              | What It Covers                                       |
+| ------------------------------------------------------ | ---------------------------------------------------- |
+| `references/py-setup/01-project-structure.md`          | src layout, pyproject.toml, uv, Makefile, .gitignore |
+| `references/py-setup/02-ruff-config.md`                | Complete Ruff rule set (25+ categories)              |
+| `references/py-setup/03-mypy-strict.md`                | MyPy strict mode, stubs, per-module overrides        |
+| `references/py-setup/04-pytest-config.md`              | pytest config, conftest architecture, fixtures       |
+| `references/py-setup/05-pre-commit-hooks.md`           | Full .pre-commit-config.yaml with all gates          |
+| `references/py-setup/06-pre-push-script.md`            | 11-gate pre-push bash script                         |
+| `references/py-setup/07-ci-pipeline.md`                | GitHub Actions: lint, build, test matrix, coverage   |
+| `references/py-setup/08-dependencies-and-checklist.md` | Dependency list + verification checklist             |
 
 ### Deep Dives (optional)
 
 | Reference                                   | What It Covers                                     |
 | ------------------------------------------- | -------------------------------------------------- |
 | `references/py-test-infrastructure.md`      | pytest deep dive, Hypothesis, coverage anti-gaming |
-| `references/py-design-metrics.md`           | radon, xenon, wily, pylint design rules as gates   |
-| `references/py-architecture-enforcement.md` | import-linter boundary contracts                   |
-| `references/py-mutation-testing.md`         | mutmut setup and CI integration                    |
+| `references/py-design-metrics.md`           | radon, xenon, wily, pylint design rules            |
+| `references/py-architecture-enforcement.md` | import-linter contracts, pydeps, circular imports  |
+| `references/py-mutation-testing.md`         | mutmut setup, CI integration, ratcheting           |
+
+## Rust: Step-by-step
+
+Start with `references/rs-setup/guide.md` and load **one step file at a time**.
+
+| Step file                                              | What It Covers                                                             |
+| ------------------------------------------------------ | -------------------------------------------------------------------------- |
+| `references/rs-setup/01-workspace-structure.md`        | Cargo.toml (single + workspace), rust-toolchain.toml, Makefile, .gitignore |
+| `references/rs-setup/02-rustfmt-config.md`             | rustfmt.toml, nightly options, editor integration                          |
+| `references/rs-setup/03-clippy-config.md`              | Crate-level attrs, clippy.toml thresholds, why no type-check step          |
+| `references/rs-setup/04-testing-config.md`             | Unit tests, integration tests, coverage (tarpaulin/llvm-cov)               |
+| `references/rs-setup/05-git-hooks.md`                  | Pre-commit: auto-format + re-stage, lock sync, secrets                     |
+| `references/rs-setup/06-pre-push-script.md`            | Pre-push: 10 gates (clippy, tests, build, coverage, deny)                  |
+| `references/rs-setup/07-ci-pipeline.md`                | GitHub Actions 3-tier parallel pipeline, MSRV matrix                       |
+| `references/rs-setup/08-dependencies-and-checklist.md` | Toolchain + cargo-install tools, verification checklist                    |
+
+### Deep Dives (optional)
+
+| Reference                                   | What It Covers                                              |
+| ------------------------------------------- | ----------------------------------------------------------- |
+| `references/rs-test-infrastructure.md`      | proptest, nextest, coverage deep dive, criterion benchmarks |
+| `references/rs-design-metrics.md`           | Clippy pedantic as design metrics, complexity tracking      |
+| `references/rs-architecture-enforcement.md` | cargo-deny config, visibility system, feature flags         |
+| `references/rs-mutation-testing.md`         | cargo-mutants setup, --in-diff for PRs, ratcheting          |
 
 ## Universal Mode: Any Language
 
-For repos that are not TypeScript or Python, read `references/universal-gates.md` which maps every
-quality gate to its language-agnostic equivalent and provides guidance on tool selection.
+For non-TypeScript, non-Python, non-Rust repos, read `references/universal-gates.md` which maps
+every quality gate to its language-agnostic equivalent and provides guidance on tool selection.
 
 ## Agent Configuration
 
 Quality gates enforce code standards mechanically. Agent configuration ensures AI agents working in
 the repo follow team standards from their first interaction. This step sets up AGENTS.md (cross-tool
-agent instructions), CLAUDE.md (Claude Code import), skill symlinks, knowledge capture, and
-optionally Atlas MCP for team context.
+agent instructions), CLAUDE.md (Claude Code import), and knowledge capture.
 
 **When to set up:** After the three-layer gate infrastructure is in place. Agent instructions
 reference the hooks ("never `--no-verify`"), so hooks should exist first.
 
-**How:** Configure agent standards as part of the quality rails setup.
-
 Read `references/agent-configuration.md` for the complete setup procedure, file structure, and
 instructions for existing repos.
 
-| Reference                           | When to read                                           |
-| ----------------------------------- | ------------------------------------------------------ |
-| `references/agent-configuration.md` | Setting up AGENTS.md, CLAUDE.md, skills, and Atlas MCP |
+| Reference                           | When to read                                      |
+| ----------------------------------- | ------------------------------------------------- |
+| `references/agent-configuration.md` | Setting up AGENTS.md, CLAUDE.md, and agent config |
 
 ## Anti-Gaming Philosophy
 
