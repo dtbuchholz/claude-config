@@ -100,12 +100,21 @@ Agents are specialized AI personas that Claude can spawn for specific tasks.
 
 Shell scripts that run automatically at specific points in Claude's workflow.
 
-| Hook                        | Purpose                                           |
-| --------------------------- | ------------------------------------------------- |
-| `check-push-main.sh`        | Blocks direct pushes to main/master branches      |
-| `check-secrets-gitleaks.sh` | Scans for secrets before commit/push via gitleaks |
-| `check-sensitive-files.sh`  | Blocks edits to .env, lockfiles, .git/            |
-| `notify.sh`                 | Sends macOS notifications via terminal-notifier   |
+| Hook                       | Purpose                                         |
+| -------------------------- | ----------------------------------------------- |
+| `check-push-main.sh`       | Blocks direct pushes to main/master branches    |
+| `check-sensitive-files.sh` | Blocks edits to .env, lockfiles, .git/          |
+| `notify.sh`                | Sends macOS notifications via terminal-notifier |
+
+### Git Hooks (`.husky/`)
+
+Native git hooks managed by [Husky](https://typicode.github.io/husky/), installed via
+`make install`.
+
+| Hook         | What it runs                                            |
+| ------------ | ------------------------------------------------------- |
+| `pre-commit` | `lint-staged` (Prettier) + `gitleaks` on staged changes |
+| `pre-push`   | `gitleaks` on outgoing commits                          |
 
 ### Plugins (enabled in `settings.json`)
 
@@ -118,13 +127,12 @@ Pre-built plugins from the official marketplace:
 
 ### Hook Configuration (in `settings.json`)
 
-| Hook Event     | What it does                                                         |
-| -------------- | -------------------------------------------------------------------- |
-| `PreToolUse`   | Blocks edits to sensitive files via `check-sensitive-files.sh`       |
-| `PreToolUse`   | Blocks direct pushes to main/master via `check-push-main.sh`         |
-| `PreToolUse`   | Scans for secrets before commit/push via `check-secrets-gitleaks.sh` |
-| `Notification` | Sends macOS notification when Claude awaits input                    |
-| `Stop`         | Sends macOS notification when task completes                         |
+| Hook Event     | What it does                                                   |
+| -------------- | -------------------------------------------------------------- |
+| `PreToolUse`   | Blocks edits to sensitive files via `check-sensitive-files.sh` |
+| `PreToolUse`   | Blocks direct pushes to main/master via `check-push-main.sh`   |
+| `Notification` | Sends macOS notification when Claude awaits input              |
+| `Stop`         | Sends macOS notification when task completes                   |
 
 ### Permissions (in `settings.json`)
 

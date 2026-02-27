@@ -8,6 +8,8 @@
 #   0 = allow the operation
 #   2 = block the operation (secrets found)
 
+set -euo pipefail
+
 INPUT=$(cat)
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
 
@@ -23,8 +25,13 @@ fi
 
 [ -z "$MODE" ] && exit 0
 
-# Allow bypass
+# Allow bypass via environment variable
 if [ "${SKIP_GITLEAKS:-0}" = "1" ]; then
+  exit 0
+fi
+
+# Allow bypass when explicitly prefixed in command (PreToolUse may not inherit env assignment)
+if echo "$COMMAND" | grep -qE '(^|[[:space:]])SKIP_GITLEAKS=1([[:space:]]|$)'; then
   exit 0
 fi
 
@@ -46,7 +53,7 @@ if [ "$MODE" = "commit" ]; then
     exit 0  # nothing staged
   fi
 
-  if gitleaks git -C "$GIT_DIR" --staged --redact --no-banner 2>&1; then
+  if gitleaks git --staged --redact --no-banner "$GIT_DIR" >/dev/null 2>&1; then
     exit 0
   fi
 
@@ -63,12 +70,12 @@ if [ "$MODE" = "push" ]; then
     COUNT=$(git -C "$GIT_DIR" rev-list --count "$UPSTREAM..HEAD" 2>/dev/null || echo "0")
     [ "$COUNT" = "0" ] && exit 0  # nothing to push
 
-    if gitleaks git -C "$GIT_DIR" --redact --no-banner --log-opts="$UPSTREAM..HEAD" 2>&1; then
+    if gitleaks git --redact --no-banner --log-opts="$UPSTREAM..HEAD" "$GIT_DIR" >/dev/null 2>&1; then
       exit 0
     fi
   else
     # No upstream — scan last 50 commits
-    if gitleaks git -C "$GIT_DIR" --redact --no-banner --log-opts="--max-count=50 HEAD" 2>&1; then
+    if gitleaks git --redact --no-banner --log-opts="--max-count=50 HEAD" "$GIT_DIR" >/dev/null 2>&1; then
       exit 0
     fi
   fi

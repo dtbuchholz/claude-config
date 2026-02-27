@@ -1,0 +1,9 @@
+UPSTREAM=$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null || true)
+
+if [ -n "$UPSTREAM" ]; then
+  COUNT=$(git rev-list --count "$UPSTREAM..HEAD" 2>/dev/null || echo "0")
+  [ "$COUNT" = "0" ] && exit 0
+  gitleaks git --redact --no-banner --log-opts="$UPSTREAM..HEAD"
+else
+  gitleaks git --redact --no-banner --log-opts="--max-count=50 HEAD"
+fi
