@@ -16,6 +16,7 @@ Before using this configuration, ensure you have the following installed:
 | [pnpm](https://pnpm.io/)                                  | Package manager            | `brew install pnpm`                    |
 | [Prettier](https://prettier.io/)                          | Code formatter             | Installed via `pnpm install`           |
 | [GitHub CLI](https://cli.github.com/)                     | PR creation, git workflows | `brew install gh` then `gh auth login` |
+| [gitleaks](https://github.com/gitleaks/gitleaks)          | Secret scanning            | `brew install gitleaks`                |
 
 ### Optional (for notifications)
 
@@ -31,11 +32,11 @@ Before using this configuration, ensure you have the following installed:
    git clone <repo-url> ~/.claude
    ```
 
-2. **Install dependencies**:
+2. **Run the install target** (installs Node deps, CLI tools, and sets hook permissions):
 
    ```bash
    cd ~/.claude
-   pnpm install
+   make install
    ```
 
 3. **Authenticate GitHub CLI** (if not already done):
@@ -99,11 +100,12 @@ Agents are specialized AI personas that Claude can spawn for specific tasks.
 
 Shell scripts that run automatically at specific points in Claude's workflow.
 
-| Hook                       | Purpose                                         |
-| -------------------------- | ----------------------------------------------- |
-| `check-push-main.sh`       | Blocks direct pushes to main/master branches    |
-| `check-sensitive-files.sh` | Blocks edits to .env, lockfiles, .git/          |
-| `notify.sh`                | Sends macOS notifications via terminal-notifier |
+| Hook                        | Purpose                                           |
+| --------------------------- | ------------------------------------------------- |
+| `check-push-main.sh`        | Blocks direct pushes to main/master branches      |
+| `check-secrets-gitleaks.sh` | Scans for secrets before commit/push via gitleaks |
+| `check-sensitive-files.sh`  | Blocks edits to .env, lockfiles, .git/            |
+| `notify.sh`                 | Sends macOS notifications via terminal-notifier   |
 
 ### Plugins (enabled in `settings.json`)
 
@@ -116,12 +118,13 @@ Pre-built plugins from the official marketplace:
 
 ### Hook Configuration (in `settings.json`)
 
-| Hook Event     | What it does                                                   |
-| -------------- | -------------------------------------------------------------- |
-| `PreToolUse`   | Blocks edits to sensitive files via `check-sensitive-files.sh` |
-| `PreToolUse`   | Blocks direct pushes to main/master via `check-push-main.sh`   |
-| `Notification` | Sends macOS notification when Claude awaits input              |
-| `Stop`         | Sends macOS notification when task completes                   |
+| Hook Event     | What it does                                                         |
+| -------------- | -------------------------------------------------------------------- |
+| `PreToolUse`   | Blocks edits to sensitive files via `check-sensitive-files.sh`       |
+| `PreToolUse`   | Blocks direct pushes to main/master via `check-push-main.sh`         |
+| `PreToolUse`   | Scans for secrets before commit/push via `check-secrets-gitleaks.sh` |
+| `Notification` | Sends macOS notification when Claude awaits input                    |
+| `Stop`         | Sends macOS notification when task completes                         |
 
 ### Permissions (in `settings.json`)
 
@@ -150,16 +153,15 @@ Pre-approved commands that Claude can run without asking:
 
 ## Usage
 
-### Format all files
+### Available make targets
 
 ```bash
-pnpm format
-```
-
-### Check formatting (CI)
-
-```bash
-pnpm format:check
+make help           # Show all targets
+make install        # Full setup (deps + hooks)
+make deps           # Install Node dependencies and CLI tools
+make hooks          # Make all hook scripts executable
+make format         # Format all files with Prettier
+make format-check   # Check formatting (CI)
 ```
 
 ### Using CLAUDE.md in your projects

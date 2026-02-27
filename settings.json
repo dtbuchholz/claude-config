@@ -73,6 +73,15 @@
             "command": "~/.claude/hooks/check-push-main.sh"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/check-secrets-gitleaks.sh"
+          }
+        ]
       }
     ],
     "Notification": [
