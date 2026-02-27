@@ -14,7 +14,8 @@ plugins/
 image-cache/
 teams/
 
-# User-specific history
+# User-specific data
+memory/
 history.jsonl
 stats-cache.json
 plans/

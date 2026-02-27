@@ -71,6 +71,7 @@ invoked directly with `/skill-name`.
 | `git-workflow`             | Conventional commits, branching, PR best practices      |
 | `git-worktree`             | Manage git worktrees for parallel development           |
 | `init-repo`                | Initialize new JS/TS or Python repositories             |
+| `memory-rollup`            | Review, prune, and consolidate memory files             |
 | `napkin`                   | Per-repo mistake/correction tracking across sessions    |
 | `performance`              | Performance optimization and profiling                  |
 | `plan-review`              | Challenge and review a plan before implementation       |
