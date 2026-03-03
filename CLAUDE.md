@@ -89,10 +89,18 @@ gh pr list --repo owner/repo --state all --search "feat"
 When you need to find past decisions, context, or skill documentation, use QMD instead of grep/glob.
 QMD indexes all memory files, skills, and config docs with semantic search.
 
+**Important:** Node switching can break global `qmd` resolution. Use the stable wrapper:
+
 ```bash
-qmd search "exact term"           # keyword search (fastest)
-qmd vsearch "conceptual query"    # vector similarity
-qmd query "open-ended question"   # hybrid with reranking (best quality)
+~/.claude/scripts/qmd.sh query "your question" -n 10 --md
+```
+
+Search modes:
+
+```bash
+~/.claude/scripts/qmd.sh search "exact term"           # keyword search (fastest)
+~/.claude/scripts/qmd.sh vsearch "conceptual query"    # vector similarity
+~/.claude/scripts/qmd.sh query "open-ended question"   # hybrid with reranking (best quality)
 ```
 
 Default to `qmd query` when unsure. Only fall back to grep for code-level searches in project source
