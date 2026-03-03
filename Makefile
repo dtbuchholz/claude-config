@@ -10,6 +10,7 @@ deps: ## Install Node dependencies and CLI tools
 	@command -v gitleaks >/dev/null 2>&1 || { echo "Installing gitleaks..."; brew install gitleaks; }
 	@command -v terminal-notifier >/dev/null 2>&1 || { echo "Installing terminal-notifier..."; brew install terminal-notifier; }
 	@command -v gh >/dev/null 2>&1 || { echo "Installing gh..."; brew install gh; }
+	@command -v qmd >/dev/null 2>&1 || { echo "Installing qmd..."; npm install -g @tobilu/qmd; }
 
 hooks: ## Make all hook scripts executable
 	chmod +x hooks/*.sh

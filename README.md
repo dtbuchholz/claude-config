@@ -17,6 +17,7 @@ Before using this configuration, ensure you have the following installed:
 | [Prettier](https://prettier.io/)                          | Code formatter             | Installed via `pnpm install`           |
 | [GitHub CLI](https://cli.github.com/)                     | PR creation, git workflows | `brew install gh` then `gh auth login` |
 | [gitleaks](https://github.com/gitleaks/gitleaks)          | Secret scanning            | `brew install gitleaks`                |
+| [QMD](https://github.com/tobilu/qmd)                      | Semantic search over docs  | `npm install -g @tobilu/qmd`           |
 
 ### Optional (for notifications)
 
@@ -78,6 +79,7 @@ invoked directly with `/skill-name`.
 | `plan-review`              | Challenge and review a plan before implementation       |
 | `pr-review`                | Comprehensive PR review with 6 specialized agents       |
 | `recall-commit`            | Commit with learning capture for Recall Labs projects   |
+| `remember`                 | Semantic search across memory, skills, and docs via QMD |
 | `repo-quality-rails-setup` | Full quality rails setup for TS monorepos / any project |
 | `pr-review-quick`          | Quick PR review with 4 parallel agents                  |
 | `quant-strategy-eval`      | Evaluate trading strategies (Sharpe, drawdown, etc.)    |
@@ -155,6 +157,7 @@ Pre-approved commands that Claude can run without asking:
 | `package.json`       | Node.js dependencies (Prettier)                       |
 | `.prettierrc`        | Prettier formatting configuration                     |
 | `.prettierignore`    | Files excluded from formatting                        |
+| `.mcp.json`          | MCP server configuration (QMD semantic search)        |
 | `.gitignore`         | Files excluded from version control                   |
 | `CLAUDE.md`          | Global instructions for Claude Code                   |
 | `CLAUDE.md.template` | Template for project-specific CLAUDE.md files         |
