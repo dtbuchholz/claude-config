@@ -22,8 +22,8 @@ from project memory files, skill definitions, and documentation.
 QMD must be installed and the HTTP daemon running:
 
 ```bash
-qmd status        # Check index health
-qmd mcp --http    # Start daemon if not running
+~/.claude/scripts/qmd.sh status        # Check index health
+~/.claude/scripts/qmd.sh mcp --http    # Start daemon if not running
 ```
 
 ## Search Modes
@@ -33,7 +33,7 @@ qmd mcp --http    # Start daemon if not running
 For exact terms, function names, error messages, or known phrases:
 
 ```bash
-qmd search "pre-commit hook gitleaks" -n 5
+~/.claude/scripts/qmd.sh search "pre-commit hook gitleaks" -n 5
 ```
 
 ### 2. Semantic Search (vector similarity)
@@ -41,7 +41,7 @@ qmd search "pre-commit hook gitleaks" -n 5
 For conceptual queries where exact words may differ:
 
 ```bash
-qmd vsearch "how to handle database migrations safely" -n 5
+~/.claude/scripts/qmd.sh vsearch "how to handle database migrations safely" -n 5
 ```
 
 ### 3. Deep Search (hybrid + reranking, best quality)
@@ -49,7 +49,7 @@ qmd vsearch "how to handle database migrations safely" -n 5
 For open-ended questions combining keyword and semantic understanding:
 
 ```bash
-qmd query "authentication patterns across projects" -n 5
+~/.claude/scripts/qmd.sh query "authentication patterns across projects" -n 5
 ```
 
 ## Execution
@@ -72,13 +72,13 @@ Run the appropriate command. Use `--json` for structured output when you need to
 programmatically, or `--md` for readable output:
 
 ```bash
-qmd query "the user's question" -n 6 --md
+~/.claude/scripts/qmd.sh query "the user's question" -n 6 --md
 ```
 
 To restrict to a specific collection:
 
 ```bash
-qmd query "deployment setup" -n 6 --md -c claude-memory
+~/.claude/scripts/qmd.sh query "deployment setup" -n 6 --md -c claude-memory
 ```
 
 Available collections:
@@ -94,7 +94,7 @@ Available collections:
 If search results point to a file that needs more context, read it:
 
 ```bash
-qmd get "claude-memory/path/to/MEMORY.md"
+~/.claude/scripts/qmd.sh get "claude-memory/path/to/MEMORY.md"
 ```
 
 Or use the file path directly with the Read tool for full content.
@@ -110,7 +110,7 @@ Present findings to the user:
 ## Rules
 
 - Always cite the source file when presenting information from search results
-- If QMD daemon is not running, start it or fall back to `qmd search` (stdio mode, slower)
+- If QMD daemon is not running, start it or fall back to `~/.claude/scripts/qmd.sh search` (slower)
 - Do not modify any files during this skill — it is read-only
 - If no results found, say so clearly rather than guessing
 - For broad queries, search multiple collections or omit the `-c` flag

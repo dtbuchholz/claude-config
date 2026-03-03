@@ -49,3 +49,4 @@ scripts/*.conf
 # Logs
 *.log
 logs/
+scripts/__pycache__/
