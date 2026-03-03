@@ -85,6 +85,6 @@
   "skipDangerousModePermissionPrompt": true,
   "statusLine": {
     "type": "command",
-    "command": "~/.claude/statusline-p10k.sh"
+    "command": "~/.claude/scripts/statusline-p10k.sh"
   }
 }
