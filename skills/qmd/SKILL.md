@@ -3,7 +3,7 @@ name: qmd
 description: >
   Search across project memory, skills, and docs using QMD semantic search. Use when the user asks
   to recall past decisions, find relevant context, or search their knowledge base. Requires QMD
-  daemon running.
+  installed; gracefully falls back if unavailable.
 ---
 
 # QMD
@@ -19,12 +19,16 @@ from project memory files, skill definitions, and documentation.
 
 ## Prerequisites
 
-QMD must be installed and the HTTP daemon running:
+QMD must be installed. Check availability before running any search:
 
 ```bash
 ~/.claude/scripts/qmd.sh status        # Check index health
 ~/.claude/scripts/qmd.sh mcp --http    # Start daemon if not running
 ```
+
+If the wrapper exits with code 127 ("No working qmd binary found"), QMD is not installed on this
+machine. **Do not attempt to search** — tell the user QMD is not available and fall back to standard
+tools (Grep, Glob, Read) instead.
 
 ## Search Modes
 
