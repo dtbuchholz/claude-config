@@ -1,19 +1,19 @@
 ---
-name: remember
+name: qmd
 description: >
   Search across project memory, skills, and docs using QMD semantic search. Use when the user asks
   to recall past decisions, find relevant context, or search their knowledge base. Requires QMD
   daemon running.
 ---
 
-# Remember
+# QMD
 
 Search your indexed knowledge base using QMD (semantic + keyword search). Surfaces relevant context
 from project memory files, skill definitions, and documentation.
 
 ## When This Skill Applies
 
-- User explicitly says "/remember"
+- User explicitly says "/qmd"
 - User asks "what do I know about X?" or "have I dealt with X before?"
 - User wants to find past decisions, patterns, or context across projects
 

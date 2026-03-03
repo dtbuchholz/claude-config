@@ -79,7 +79,7 @@ invoked directly with `/skill-name`.
 | `plan-review`              | Challenge and review a plan before implementation       |
 | `pr-review`                | Comprehensive PR review with 6 specialized agents       |
 | `recall-commit`            | Commit with learning capture for Recall Labs projects   |
-| `remember`                 | Semantic search across memory, skills, and docs via QMD |
+| `qmd`                      | Semantic search across memory, skills, and docs via QMD |
 | `repo-quality-rails-setup` | Full quality rails setup for TS monorepos / any project |
 | `pr-review-quick`          | Quick PR review with 4 parallel agents                  |
 | `quant-strategy-eval`      | Evaluate trading strategies (Sharpe, drawdown, etc.)    |
