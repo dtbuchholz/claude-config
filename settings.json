@@ -75,51 +75,16 @@
         ]
       }
     ],
-    "Notification": [
-      {
-        "matcher": "permission_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 -c \"import json,sys,os,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Awaiting your input');subprocess.run([os.path.expanduser('~/.claude/hooks/notify.sh'),f'Claude Code · {proj}',msg])\""
-          }
-        ]
-      },
-      {
-        "matcher": "plugin",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 -c \"import json,sys,os,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Plugin prompt');subprocess.run([os.path.expanduser('~/.claude/hooks/notify.sh'),f'Claude Code · {proj}',msg])\""
-          }
-        ]
-      },
-      {
-        "matcher": "input",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 -c \"import json,sys,os,subprocess;d=json.load(sys.stdin);proj=d.get('cwd','').split('/')[-1] or 'Claude';msg=d.get('message','Input required');subprocess.run([os.path.expanduser('~/.claude/hooks/notify.sh'),f'Claude Code · {proj}',msg])\""
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/notify.sh 'Claude Code' 'Task completed'"
-          }
-        ]
-      }
-    ]
+    "Notification": []
   },
   "enabledPlugins": {
     "feature-dev@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true
   },
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline-p10k.sh"
+  }
 }
