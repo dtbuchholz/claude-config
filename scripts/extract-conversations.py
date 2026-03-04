@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 """Extract compact, high-signal digests from Claude and Codex conversation JSONL files.
 
 Reads raw session transcripts and writes concise markdown digests optimized for retrieval:
