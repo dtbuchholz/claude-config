@@ -1,7 +1,6 @@
 ---
 name: recall-commit
-description:
-  Commit with inline learning capture for Recall Labs projects. Requires explicit invocation.
+description: Commit with inline learning capture for Recall Labs projects.
 ---
 
 # Recall Commit
@@ -10,8 +9,9 @@ Conventional commit with built-in learning capture. One commit, one atomic unit 
 
 ## When This Skill Applies
 
-- User explicitly says "/recall-commit"
-- Do NOT activate on generic "commit this" or "/commit" — this skill requires explicit invocation
+- User says "/recall-commit", "/commit", "commit this", or any variant requesting a commit
+- This is the default commit flow for all Recall Labs projects — if the guard check passes, use this
+  skill for every commit
 
 ## Guard
 
@@ -70,7 +70,7 @@ Rationale if non-obvious. Omit if summary is sufficient.
 ## Testing
 How verified. Omit for docs-only changes.
 
-Co-Authored-By: Claude <model> <noreply@anthropic.com>
+
 ```
 
 ### Phase 2: Reflect & Capture
@@ -117,15 +117,7 @@ already there. Just ensure the file is staged.
 Otherwise, use the **Edit tool** (not the Write tool) to insert each new entry immediately after the
 `<!-- Entries below, newest first -->` comment line in `AGENT-LEARNINGS.md`, before any existing
 entries. Find the marker line and replace it with the marker plus the new entries — this avoids
-rewriting the entire file each time.
-
-Get the author name once at the start of Phase 2:
-
-```bash
-git config user.name
-```
-
-Entry format:
+rewriting the entire file each time:
 
 ```markdown
 ### YYYY-MM-DD — Summary sentence (confirmed|hypothesis)
@@ -139,6 +131,12 @@ tried, what the constraints were.
 Directive: Do X, not Y. Action: What should change in the machine? (e.g., "Add pre-commit check for
 X", "Update team standard to require Y", "No machine change needed — directive is sufficient").
 Every learning must close the loop. Context: branch, what was being done
+```
+
+Get the author name once at the start of Phase 2:
+
+```bash
+git config user.name
 ```
 
 Lead with the insight — a reader scanning the file should understand the implication from that line
@@ -193,13 +191,12 @@ git add AGENT-LEARNINGS.md
 Execute via HEREDOC:
 
 ```bash
-git commit -m "$(cat <<'EOF'
+git commit --quiet -m "$(cat <<'EOF'
 type(scope): subject line
 
 ## Summary
 ...
 
-Co-Authored-By: Claude <model> <noreply@anthropic.com>
 EOF
 )"
 ```
@@ -211,11 +208,9 @@ Run `git status` to confirm success.
 
 ## Rules
 
-- Requires explicit `/recall-commit` invocation. Never activate implicitly.
 - Never fabricate learnings. Zero is valid.
 - Never amend after hook failure.
 - Never `git add -A` without user confirmation.
 - Never commit secrets.
 - Always use HEREDOC for commit messages.
-- Always include `Co-Authored-By` trailer.
 - Learnings are the agent's own reflection. Do not ask the user to reflect.

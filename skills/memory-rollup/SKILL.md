@@ -57,7 +57,7 @@ For each project that has memory files, evaluate:
 1. **Staleness** — Does the entry reference files, APIs, versions, or patterns that may no longer
    exist? Check against the project's current state if the project directory is accessible:
    ```bash
-   # Derive project path from the hash (e.g., -Users-dtb-prima → /Users/dtb/prima)
+   # Derive project path from the hash (e.g., -Users-jane-myapp → /Users/jane/myapp)
    # Check if the project directory still exists
    ls -la <derived-path> 2>/dev/null
    ```

@@ -9,8 +9,12 @@ Reads raw session transcripts and writes concise markdown digests optimized for 
 - minimal noise/instructions
 
 Output structure (one digest per session-day):
-  ~/.claude/conversations/claude/<project-hash>/<session-id>__YYYY-MM-DD.md
-  ~/.claude/conversations/codex/<YYYY>/<MM>/<DD>/<session-name>__YYYY-MM-DD.md
+  Full transcripts (primary, indexed):
+    ~/.claude/conversations/claude/<project-hash>/<session-id>__YYYY-MM-DD.md
+    ~/.claude/conversations/codex/<YYYY>/<MM>/<DD>/<session-name>__YYYY-MM-DD.md
+  Summaries (sidecar, optional):
+    ~/.claude/conversations/summaries/claude/...
+    ~/.claude/conversations/summaries/codex/...
 """
 
 import json
@@ -23,11 +27,13 @@ from zoneinfo import ZoneInfo
 CLAUDE_PROJECTS = Path.home() / ".claude" / "projects"
 CODEX_SESSIONS = Path.home() / ".codex" / "sessions"
 OUTPUT_DIR = Path.home() / ".claude" / "conversations"
+SUMMARY_DIR = OUTPUT_DIR / "summaries"
 LOCAL_TZ = ZoneInfo("America/New_York")
 MAX_USER_ITEMS = 6
 MAX_ASSISTANT_ITEMS = 6
 MAX_SECTION_ITEMS = 8
 MAX_TEXT_CHARS = 420
+MAX_FULL_TEXT_CHARS = 2400
 
 NOISE_PATTERNS = [
     re.compile(r"^<environment_context>", re.IGNORECASE),
@@ -45,6 +51,15 @@ NOISE_PATTERNS = [
     re.compile(r"^Process exited with code\s", re.IGNORECASE),
     re.compile(r"^Original token count:\s", re.IGNORECASE),
     re.compile(r"^Output:\s*$", re.IGNORECASE),
+    re.compile(r"^Tool result:\s*", re.IGNORECASE),
+    re.compile(r"^Process running with session ID", re.IGNORECASE),
+    re.compile(r"^<analysis>", re.IGNORECASE),
+    re.compile(r"^</analysis>", re.IGNORECASE),
+    re.compile(r"^Your task is to create a detailed summary of the conversation so far", re.IGNORECASE),
+    re.compile(r"^HEARTBEAT_OK$", re.IGNORECASE),
+    re.compile(r"^NO_REPLY$", re.IGNORECASE),
+    re.compile(r"^ANNOUNCE_SKIP$", re.IGNORECASE),
+    re.compile(r"compaction flush", re.IGNORECASE),
 ]
 
 SIGNAL_HINTS = [
@@ -200,6 +215,23 @@ def normalize(text: str) -> str:
     return t
 
 
+def normalize_full(text: str) -> str:
+    t = ANSI_RE.sub("", text).replace("\r\n", "\n").replace("\r", "\n")
+    clean_lines: list[str] = []
+    for raw in t.splitlines():
+        line = raw.rstrip()
+        if not line:
+            clean_lines.append("")
+            continue
+        if any(p.search(line.strip()) for p in NOISE_PATTERNS):
+            continue
+        clean_lines.append(line)
+    t = "\n".join(clean_lines).strip()
+    if len(t) > MAX_FULL_TEXT_CHARS:
+        t = t[:MAX_FULL_TEXT_CHARS].rstrip() + "..."
+    return t
+
+
 def sanitize_tool_output(text: str) -> str:
     lines = []
     for raw in ANSI_RE.sub("", text).splitlines():
@@ -251,7 +283,7 @@ def date_key_from_ts(ts: str) -> str:
 
 
 def init_bucket() -> dict:
-    return {"user_items": [], "assistant_items": [], "first_ts": "", "last_ts": ""}
+    return {"user_items": [], "assistant_items": [], "events": [], "first_ts": "", "last_ts": ""}
 
 
 def bucket_for(buckets: dict[str, dict], ts: str) -> dict:
@@ -264,6 +296,17 @@ def bucket_for(buckets: dict[str, dict], ts: str) -> dict:
             bucket["first_ts"] = ts
         bucket["last_ts"] = ts
     return bucket
+
+
+def append_event(bucket: dict, role: str, text: str, ts: str) -> None:
+    cleaned = normalize_full(text)
+    if not cleaned:
+        return
+    bucket["events"].append({"ts": ts, "role": role, "text": cleaned})
+    if role == "user":
+        bucket["user_items"].append(cleaned)
+    elif role == "assistant":
+        bucket["assistant_items"].append(cleaned)
 
 
 def dedupe(items: list[str]) -> list[str]:
@@ -462,8 +505,49 @@ def build_digest(
     return "\n".join(lines)
 
 
-def extract_claude(jsonl_path: Path) -> dict[str, str]:
-    """Extract per-day compact request/outcome digests from a Claude conversation JSONL."""
+def format_local_time(ts: str) -> str:
+    dt = parse_timestamp(ts)
+    if not dt:
+        return "??:??"
+    return dt.astimezone(LOCAL_TZ).strftime("%H:%M")
+
+
+def build_full_transcript(
+    session_label: str,
+    events: list[dict],
+    first_ts: str,
+    last_ts: str,
+) -> str:
+    lines = [f"# {session_label}", ""]
+    lines.append("## Session Metadata")
+    lines.append(f"- first_event: {first_ts or '(unknown)'}")
+    lines.append(f"- last_event: {last_ts or '(unknown)'}")
+    lines.append(f"- event_count: {len(events)}")
+    lines.append("")
+    lines.append("## Conversation")
+
+    prev_key = None
+    for ev in events:
+        role = ev.get("role", "unknown")
+        text = ev.get("text", "").strip()
+        ts = ev.get("ts", "")
+        if not text:
+            continue
+        key = (role, text)
+        if key == prev_key:
+            continue
+        prev_key = key
+        lines.append(f"### [{format_local_time(ts)}] {role}")
+        lines.append(text)
+        lines.append("")
+
+    if len(lines) <= 8:
+        lines.append("(no content extracted)")
+    return "\n".join(lines).strip() + "\n"
+
+
+def extract_claude(jsonl_path: Path) -> dict[str, dict[str, str]]:
+    """Extract per-day full transcripts + compact digests from a Claude conversation JSONL."""
     buckets: dict[str, dict] = {}
     for raw in jsonl_path.open():
         try:
@@ -480,9 +564,9 @@ def extract_claude(jsonl_path: Path) -> dict[str, str]:
 
         if isinstance(content, str) and content.strip():
             if role == "user":
-                bucket["user_items"].append(content.strip())
+                append_event(bucket, "user", content.strip(), ts)
             elif role == "assistant":
-                bucket["assistant_items"].append(content.strip())
+                append_event(bucket, "assistant", content.strip(), ts)
         elif isinstance(content, list):
             for block in content:
                 if not isinstance(block, dict):
@@ -492,33 +576,32 @@ def extract_claude(jsonl_path: Path) -> dict[str, str]:
                     text = block.get("text", "").strip()
                     if text:
                         if role == "user":
-                            bucket["user_items"].append(text)
+                            append_event(bucket, "user", text, ts)
                         elif role == "assistant":
-                            bucket["assistant_items"].append(text)
-                elif role == "assistant" and btype == "tool_use":
-                    name = block.get("name", "unknown-tool")
-                    bucket["assistant_items"].append(f"Tool call: {name}")
-                elif role == "assistant" and btype == "tool_result":
-                    content_text = sanitize_tool_output(str(block.get("content", "")))
-                    if should_keep_tool_result(content_text):
-                        bucket["assistant_items"].append(f"Tool result: {content_text}")
+                            append_event(bucket, "assistant", text, ts)
 
-    digests: dict[str, str] = {}
+    digests: dict[str, dict[str, str]] = {}
     for day_key, data in buckets.items():
-        text = build_digest(
+        summary_text = build_digest(
             f"{jsonl_path.stem} [{day_key}]",
             data["user_items"],
             data["assistant_items"],
             data["first_ts"],
             data["last_ts"],
         )
-        if text:
-            digests[day_key] = text
+        full_text = build_full_transcript(
+            f"{jsonl_path.stem} [{day_key}]",
+            data["events"],
+            data["first_ts"],
+            data["last_ts"],
+        )
+        if summary_text or full_text:
+            digests[day_key] = {"summary": summary_text, "full": full_text}
     return digests
 
 
-def extract_codex(jsonl_path: Path) -> dict[str, str]:
-    """Extract per-day compact request/outcome digests from a Codex conversation JSONL."""
+def extract_codex(jsonl_path: Path) -> dict[str, dict[str, str]]:
+    """Extract per-day full transcripts + compact digests from a Codex conversation JSONL."""
     buckets: dict[str, dict] = {}
     for raw in jsonl_path.open():
         try:
@@ -534,7 +617,7 @@ def extract_codex(jsonl_path: Path) -> dict[str, str]:
         if etype == "event_msg" and payload.get("type") == "user_message":
             text = payload.get("message", "").strip()
             if text:
-                bucket["user_items"].append(text)
+                append_event(bucket, "user", text, ts)
             continue
 
         # Assistant/user/developer messages come as response_item
@@ -542,42 +625,42 @@ def extract_codex(jsonl_path: Path) -> dict[str, str]:
             ptype = payload.get("type", "")
             role = payload.get("role", "")
 
-            if ptype == "message" and role in ("user", "developer", "assistant"):
+            if ptype == "message" and role in ("user", "assistant"):
                 for block in payload.get("content", []):
-                    if isinstance(block, dict) and block.get("type") == "text":
+                    if isinstance(block, dict) and block.get("type") in ("text", "input_text", "output_text"):
                         text = block.get("text", "").strip()
                         if text:
                             if role == "user":
-                                bucket["user_items"].append(text)
+                                append_event(bucket, "user", text, ts)
                             elif role == "assistant":
-                                bucket["assistant_items"].append(text)
-            elif ptype == "function_call":
-                name = payload.get("name", "unknown-tool")
-                bucket["assistant_items"].append(f"Tool call: {name}")
-            elif ptype == "function_call_output":
-                output = sanitize_tool_output(str(payload.get("output", "")))
-                if should_keep_tool_result(output):
-                    bucket["assistant_items"].append(f"Tool result: {output}")
+                                append_event(bucket, "assistant", text, ts)
 
-    digests: dict[str, str] = {}
+    digests: dict[str, dict[str, str]] = {}
     for day_key, data in buckets.items():
-        text = build_digest(
+        summary_text = build_digest(
             f"{jsonl_path.stem} [{day_key}]",
             data["user_items"],
             data["assistant_items"],
             data["first_ts"],
             data["last_ts"],
         )
-        if text:
-            digests[day_key] = text
+        full_text = build_full_transcript(
+            f"{jsonl_path.stem} [{day_key}]",
+            data["events"],
+            data["first_ts"],
+            data["last_ts"],
+        )
+        if summary_text or full_text:
+            digests[day_key] = {"summary": summary_text, "full": full_text}
     return digests
 
 
 def clear_output():
-    if not OUTPUT_DIR.exists():
-        return
-    for md in OUTPUT_DIR.rglob("*.md"):
-        md.unlink()
+    for base in (OUTPUT_DIR, SUMMARY_DIR):
+        if not base.exists():
+            continue
+        for md in base.rglob("*.md"):
+            md.unlink()
 
 
 def process_claude():
@@ -585,6 +668,7 @@ def process_claude():
     if not CLAUDE_PROJECTS.exists():
         return 0, 0
     out_dir = OUTPUT_DIR / "claude"
+    summary_dir = SUMMARY_DIR / "claude"
     total, written = 0, 0
     for jsonl in CLAUDE_PROJECTS.rglob("*.jsonl"):
         total += 1
@@ -594,11 +678,14 @@ def process_claude():
         # Preserve project-hash/session-id structure
         rel = jsonl.relative_to(CLAUDE_PROJECTS)
         rel_no_ext = rel.with_suffix("")
-        for day_key, text in by_day.items():
+        for day_key, payload in by_day.items():
             dest = rel_no_ext.parent / f"{rel_no_ext.name}__{day_key}.md"
             out_path = out_dir / dest
+            summary_path = summary_dir / dest
             out_path.parent.mkdir(parents=True, exist_ok=True)
-            out_path.write_text(text)
+            summary_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(payload["full"])
+            summary_path.write_text(payload["summary"])
             written += 1
     return total, written
 
@@ -608,6 +695,7 @@ def process_codex():
     if not CODEX_SESSIONS.exists():
         return 0, 0
     out_dir = OUTPUT_DIR / "codex"
+    summary_dir = SUMMARY_DIR / "codex"
     total, written = 0, 0
     for jsonl in CODEX_SESSIONS.rglob("*.jsonl"):
         total += 1
@@ -616,11 +704,14 @@ def process_codex():
             continue
         rel = jsonl.relative_to(CODEX_SESSIONS)
         rel_no_ext = rel.with_suffix("")
-        for day_key, text in by_day.items():
+        for day_key, payload in by_day.items():
             dest = rel_no_ext.parent / f"{rel_no_ext.name}__{day_key}.md"
             out_path = out_dir / dest
+            summary_path = summary_dir / dest
             out_path.parent.mkdir(parents=True, exist_ok=True)
-            out_path.write_text(text)
+            summary_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(payload["full"])
+            summary_path.write_text(payload["summary"])
             written += 1
     return total, written
 

@@ -55,40 +55,42 @@ Before using this configuration, ensure you have the following installed:
 Skills provide contextual knowledge that Claude uses automatically based on your task, or can be
 invoked directly with `/skill-name`.
 
-| Skill                      | Purpose                                                 |
-| -------------------------- | ------------------------------------------------------- |
-| `agent-browser`            | Browser automation using Vercel's agent-browser CLI     |
-| `analyze-data`             | Data analysis with parallel EDA agents                  |
-| `api-design`               | REST/GraphQL API design conventions                     |
-| `clean-gone`               | Clean up git branches deleted on remote                 |
-| `commit`                   | Create git commit with conventional format              |
-| `commit-push-pr`           | Stage, commit, push, and create PR in one workflow      |
-| `data-science`             | Data science methodology and workflows                  |
-| `debugging`                | Systematic debugging and error analysis                 |
-| `deepen-plan`              | Enhance plans with parallel research agents             |
-| `deslop`                   | Remove AI-generated code slop from changes              |
-| `documentation`            | Code comments, docstrings, READMEs                      |
-| `explain`                  | Explain code execution and dependencies                 |
-| `fresh-eyes`               | Walk a repo as a new dev: verify docs, setup, commands  |
-| `git-workflow`             | Conventional commits, branching, PR best practices      |
-| `git-worktree`             | Manage git worktrees for parallel development           |
-| `init-repo`                | Initialize new JS/TS or Python repositories             |
-| `memory-rollup`            | Review, prune, and consolidate memory files             |
-| `napkin`                   | Per-repo mistake/correction tracking across sessions    |
-| `performance`              | Performance optimization and profiling                  |
-| `plan-review`              | Challenge and review a plan before implementation       |
-| `pr-review`                | Comprehensive PR review with 6 specialized agents       |
-| `recall-commit`            | Commit with learning capture for Recall Labs projects   |
-| `qmd`                      | Semantic search across memory, skills, and docs via QMD |
-| `repo-quality-rails-setup` | Full quality rails setup for TS monorepos / any project |
-| `pr-review-quick`          | Quick PR review with 4 parallel agents                  |
-| `quant-strategy-eval`      | Evaluate trading strategies (Sharpe, drawdown, etc.)    |
-| `ralph-loop`               | Autonomous development loop with fresh context          |
-| `review-and-fix`           | Fresh-context review then apply fixes                   |
-| `security`                 | OWASP top 10, input validation, secrets management      |
-| `sync`                     | Sync current branch with main/master                    |
-| `testing`                  | TDD, testing pyramid, language-specific test patterns   |
-| `watch-video`              | Extract frames from a video file to view and analyze    |
+| Skill                      | Purpose                                                           |
+| -------------------------- | ----------------------------------------------------------------- |
+| `adversarial-verifier`     | Deep verification agent that finds hidden errors in code/analysis |
+| `agent-browser`            | Browser automation using Vercel's agent-browser CLI               |
+| `analyze-data`             | Data analysis with parallel EDA agents                            |
+| `api-design`               | REST/GraphQL API design conventions                               |
+| `clean-gone`               | Clean up git branches deleted on remote                           |
+| `code-reviewer`            | Product + code quality review with structured verdict             |
+| `commit`                   | Create git commit with conventional format                        |
+| `commit-push-pr`           | Stage, commit, push, and create PR in one workflow                |
+| `create-briefing`          | Create shareable briefing docs from sessions or research          |
+| `data-science`             | Data science methodology and workflows                            |
+| `debugging`                | Systematic debugging and error analysis                           |
+| `deepen-plan`              | Enhance plans with parallel research agents                       |
+| `deslop`                   | Remove AI-generated code slop from changes                        |
+| `documentation`            | Code comments, docstrings, READMEs                                |
+| `explain`                  | Explain code execution and dependencies                           |
+| `fresh-eyes`               | Walk a repo as a new dev: verify docs, setup, commands            |
+| `git-workflow`             | Conventional commits, branching, PR best practices                |
+| `git-worktree`             | Manage git worktrees for parallel development                     |
+| `handoff`                  | Session wrap-up, verification, and handoff to next agent          |
+| `init-repo`                | Initialize new JS/TS or Python repositories                       |
+| `memory-rollup`            | Review, prune, and consolidate memory files                       |
+| `performance`              | Performance optimization and profiling                            |
+| `plan-review`              | Challenge and review a plan before implementation                 |
+| `pr-review-quick`          | Quick PR review with 4 parallel agents                            |
+| `qmd`                      | Semantic search across memory, skills, conversations via QMD      |
+| `quant-strategy-eval`      | Evaluate trading strategies (Sharpe, drawdown, etc.)              |
+| `ralph-loop`               | Autonomous development loop with fresh context                    |
+| `recall-commit`            | Commit with learning capture for Recall Labs projects             |
+| `repo-quality-rails-setup` | Full quality rails setup for TS/Python/Rust / any project         |
+| `review-and-fix`           | Fresh-context review then apply fixes                             |
+| `security`                 | OWASP top 10, input validation, secrets management                |
+| `sync`                     | Sync current branch with main/master                              |
+| `testing`                  | TDD, testing pyramid, language-specific test patterns             |
+| `watch-video`              | Extract frames from a video file to view and analyze              |
 
 ### Agents (`agents/`)
 

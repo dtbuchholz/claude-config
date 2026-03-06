@@ -129,9 +129,7 @@ git add -A
 git commit -m "fix: address review findings
 
 - [list what was fixed]
-- [note any clarifying comments added]
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+- [note any clarifying comments added]"
 ```
 
 ## Output

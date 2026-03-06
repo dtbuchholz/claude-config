@@ -9,7 +9,7 @@ description: >
 # QMD
 
 Search your indexed knowledge base using QMD (semantic + keyword search). Surfaces relevant context
-from project memory files, skill definitions, and documentation.
+from project memory files, skill definitions, documentation, and past conversation transcripts.
 
 ## When This Skill Applies
 
@@ -56,19 +56,32 @@ For open-ended questions combining keyword and semantic understanding:
 ~/.claude/scripts/qmd.sh query "authentication patterns across projects" -n 5
 ```
 
+### 4. Temporal Recall (date-scoped conversations)
+
+For questions about what happened on a specific day. Resolves natural language dates and searches
+conversation transcripts:
+
+```bash
+~/.claude/scripts/qmd-temporal-recall.py "last Tuesday" "what did I do?" --source both --top 5
+```
+
+Accepts: `YYYY-MM-DD`, `today`, `yesterday`, `last Monday`, etc. Use `--source claude`,
+`--source codex`, or `--source both`.
+
 ## Execution
 
 ### Step 1: Understand the Query
 
 Determine which search mode fits:
 
-| Query type       | Mode      | Example                              |
-| ---------------- | --------- | ------------------------------------ |
-| Exact term/error | `search`  | "ANTHROPIC_API_KEY", "exit code 126" |
-| Conceptual       | `vsearch` | "how do I handle retries"            |
-| Open-ended       | `query`   | "what testing patterns do I use"     |
+| Query type       | Mode              | Example                              |
+| ---------------- | ----------------- | ------------------------------------ |
+| Exact term/error | `search`          | "ANTHROPIC_API_KEY", "exit code 126" |
+| Conceptual       | `vsearch`         | "how do I handle retries"            |
+| Open-ended       | `query`           | "what testing patterns do I use"     |
+| Date-scoped      | `temporal-recall` | "what did I do last Tuesday"         |
 
-If unsure, default to `query` (deep search).
+If unsure, default to `query` (deep search). For questions about specific days, use temporal recall.
 
 ### Step 2: Search
 
@@ -87,11 +100,13 @@ To restrict to a specific collection:
 
 Available collections:
 
-| Collection      | Contains                                                      |
-| --------------- | ------------------------------------------------------------- |
-| `claude-memory` | Project-specific memory files (learnings, bugs, architecture) |
-| `claude-skills` | Skill definitions and reference docs                          |
-| `claude-config` | CLAUDE.md and README                                          |
+| Collection             | Contains                                                      |
+| ---------------------- | ------------------------------------------------------------- |
+| `claude-memory`        | Project-specific memory files (learnings, bugs, architecture) |
+| `claude-skills`        | Skill definitions and reference docs                          |
+| `claude-config`        | CLAUDE.md and README                                          |
+| `claude-conversations` | Cleaned conversation transcripts (day-scoped, timestamped)    |
+| `codex-conversations`  | Cleaned Codex conversation transcripts                        |
 
 ### Step 3: Read Relevant Files
 
