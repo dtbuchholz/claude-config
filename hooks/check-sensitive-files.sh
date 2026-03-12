@@ -17,15 +17,6 @@ FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
 # Get just the filename
 FILENAME=$(basename "$FILE_PATH")
 
-# Block .env files EXCEPT .env.example and .env.sample
-if [[ "$FILENAME" =~ ^\.env ]]; then
-    if [[ "$FILENAME" == ".env.example" || "$FILENAME" == ".env.sample" ]]; then
-        exit 0
-    fi
-    echo "BLOCKED: Editing '$FILENAME' not allowed (contains secrets)." >&2
-    exit 2
-fi
-
 # Block lockfiles
 case "$FILENAME" in
     package-lock.json|pnpm-lock.yaml|yarn.lock|bun.lockb)

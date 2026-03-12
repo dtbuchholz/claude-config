@@ -50,3 +50,4 @@ scripts/*.conf
 *.log
 logs/
 scripts/__pycache__/
+backups/
