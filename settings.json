@@ -50,7 +50,10 @@
       "Bash(git cherry-pick)",
       "Bash(git restore)",
       "Bash(git checkout)",
-      "Bash(git branch)"
+      "Bash(git branch)",
+      "Bash(./autoresearch.sh)",
+      "Bash(git checkout -- .)",
+      "Bash(git clean -fd)"
     ]
   },
   "model": "opus",
@@ -75,7 +78,17 @@
         ]
       }
     ],
-    "Notification": []
+    "Notification": [],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/autoresearch-context.sh"
+          }
+        ]
+      }
+    ]
   },
   "enabledPlugins": {
     "feature-dev@claude-plugins-official": true,
