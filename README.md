@@ -80,7 +80,7 @@ invoked directly with `/skill-name`.
 | `memory-rollup`            | Review, prune, and consolidate memory files                       |
 | `performance`              | Performance optimization and profiling                            |
 | `plan-review`              | Challenge and review a plan before implementation                 |
-| `pr-review-quick`          | Quick PR review with 4 parallel agents                            |
+| `pr-review`                | Comprehensive PR review with 6 specialized agents                 |
 | `qmd`                      | Semantic search across memory, skills, conversations via QMD      |
 | `quant-strategy-eval`      | Evaluate trading strategies (Sharpe, drawdown, etc.)              |
 | `ralph-loop`               | Autonomous development loop with fresh context                    |
@@ -107,7 +107,7 @@ Shell scripts that run automatically at specific points in Claude's workflow.
 | Hook                       | Purpose                                         |
 | -------------------------- | ----------------------------------------------- |
 | `check-push-main.sh`       | Blocks direct pushes to main/master branches    |
-| `check-sensitive-files.sh` | Blocks edits to .env, lockfiles, .git/          |
+| `check-sensitive-files.sh` | Blocks edits to lockfiles and .git/             |
 | `notify.sh`                | Sends macOS notifications via terminal-notifier |
 
 ### Git Hooks (`.husky/`)
