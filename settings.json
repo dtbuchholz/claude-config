@@ -75,7 +75,30 @@
         ]
       }
     ],
-    "Notification": []
+    "Notification": [],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/context-guard.sh",
+            "statusMessage": "Checking context health..."
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/pre-compact-advisor.sh",
+            "statusMessage": "Analyzing context composition..."
+          }
+        ]
+      }
+    ]
   },
   "enabledPlugins": {
     "feature-dev@claude-plugins-official": true,
