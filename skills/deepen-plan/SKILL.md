@@ -99,19 +99,19 @@ For each learning file:
 
 ### 4. Launch Parallel Research Agents
 
-**CRITICAL: Launch ALL research in a SINGLE message with multiple Task tool calls.**
+**Launch all independent research agents in parallel using `Task (subagent_type: Explore)`.**
 
 Based on the plan's technologies and sections, spawn these agents IN PARALLEL:
 
 ```
-Task (model: haiku, subagent_type: Explore): "Research best practices for: [technology 1]
+Task (subagent_type: Explore): "Research best practices for: [technology 1]
 Find: industry standards, performance tips, common pitfalls, documentation.
 Return concrete, actionable recommendations."
 
-Task (model: haiku, subagent_type: Explore): "Research best practices for: [technology 2]
+Task (subagent_type: Explore): "Research best practices for: [technology 2]
 ..."
 
-Task (model: haiku, subagent_type: Explore): "Research implementation patterns for: [section topic]
+Task (subagent_type: Explore): "Research implementation patterns for: [section topic]
 ..."
 ```
 
@@ -133,33 +133,31 @@ find ~/.claude -path "*/agents/*.md" 2>/dev/null
 find .claude/agents -name "*.md" 2>/dev/null
 ```
 
-**Launch ALL review agents in a SINGLE message with multiple Task tool calls.**
-
-Use `model: haiku` for each reviewer to keep costs low:
+**Launch all review agents in parallel using `Task (subagent_type: Explore)`** — they are read-only.
 
 ```
-Task (model: haiku, subagent_type: general-purpose): "ARCHITECTURE REVIEW
+Task (subagent_type: Explore): "ARCHITECTURE REVIEW
 Review this plan for architectural concerns:
 - Scalability issues
 - Coupling problems
 - Missing components
 Plan: [content]"
 
-Task (model: haiku, subagent_type: general-purpose): "SECURITY REVIEW
+Task (subagent_type: Explore): "SECURITY REVIEW
 Review this plan for security concerns:
 - Auth/authz gaps
 - Data exposure risks
 - Input validation
 Plan: [content]"
 
-Task (model: haiku, subagent_type: general-purpose): "SIMPLICITY REVIEW
+Task (subagent_type: Explore): "SIMPLICITY REVIEW
 Review this plan for over-engineering:
 - Unnecessary complexity
 - Simpler alternatives
 - YAGNI violations
 Plan: [content]"
 
-Task (model: haiku, subagent_type: general-purpose): "TESTABILITY REVIEW
+Task (subagent_type: Explore): "TESTABILITY REVIEW
 Review this plan for testing concerns:
 - Hard-to-test patterns
 - Missing test strategies
@@ -169,9 +167,10 @@ Plan: [content]"
 
 **Rules:**
 
-- Launch ALL agents in a SINGLE message
+- Launch independent agents in one parallel wave, then wait once
 - Each agent catches different issues
 - Don't filter by "relevance" - run them all
+- Parent agent owns synthesis and final plan updates
 
 ### 6. Synthesize Findings
 

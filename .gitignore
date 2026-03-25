@@ -4,6 +4,7 @@ downloads/
 ide/
 projects/
 session-env/
+sessions/
 shell-snapshots/
 statsig/
 tasks/
@@ -13,6 +14,7 @@ cache/
 plugins/
 image-cache/
 teams/
+mcp-needs-auth-cache.json
 
 # User-specific data
 memory/

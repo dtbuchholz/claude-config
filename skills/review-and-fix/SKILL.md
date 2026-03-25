@@ -47,11 +47,13 @@ cat CLAUDE.md 2>/dev/null || true
 
 ### Step 3: Launch Fresh-Context Review Agent
 
-**CRITICAL: Use the Task tool to spawn a sub-agent. This agent has NO context from the current
-session - it only sees what you pass it.**
+**CRITICAL: Use `Task (subagent_type: Explore)` to create a fresh-context reviewer.** This agent is
+read-only and has NO implementation context beyond what you pass it.
+
+If the diff is very large, split by file/chunk and launch multiple Explore agents in parallel.
 
 ```
-Task (subagent_type: general-purpose, model: sonnet): "
+Task (subagent_type: Explore): "
 You are reviewing code changes with NO prior context. You don't know why decisions were made -
 you only see the diff. This is intentional.
 
@@ -91,6 +93,11 @@ End with a 1-2 sentence summary.
 "
 ```
 
+Execution discipline:
+
+- Keep review agent read-only (Explore).
+- Parent agent evaluates findings and decides fixes.
+
 ### Step 4: Evaluate Review Findings
 
 When the review agent returns, YOU (the parent agent with full context) must evaluate each finding:
@@ -113,6 +120,9 @@ For issues you're fixing:
 
 1. Make the code change
 2. If the reviewer was confused by intentional code, consider adding a clarifying comment
+
+If delegating code changes, use `Task (subagent_type: general-purpose)` and assign explicit file
+ownership per agent to avoid conflicts.
 
 Do NOT fix:
 

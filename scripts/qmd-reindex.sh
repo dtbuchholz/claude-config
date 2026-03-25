@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-QMD="$HOME/.claude/scripts/qmd.sh"
+QMD="qmd"
 
 LOG_DIR="$HOME/.claude/logs"
 mkdir -p "$LOG_DIR"

@@ -39,8 +39,28 @@ Use conventional commit prefixes:
 ### Commit Message Guidelines
 
 - First line: `<type>: <short description>` (50 chars max)
-- If needed, add blank line then longer description
+- Commit body is REQUIRED for all non-trivial commits
+- Body must follow this structure:
+  - `What:` concrete summary of changes
+  - `Why:` motivation / problem solved
+- Trivial exception: allow subject-only commit only when change is extremely small (e.g., typo,
+  comments-only, or formatting-only) and no behavior change
 - Reference issues with `Fixes #123` or `Closes #123`
+
+Preferred format:
+
+```text
+<type>: <short description>
+
+What:
+- ...
+
+Why:
+- ...
+```
+
+When creating the commit, provide subject and body explicitly (for example with a HEREDOC or
+multiple `-m` flags) so body is not omitted.
 
 ### Execution
 

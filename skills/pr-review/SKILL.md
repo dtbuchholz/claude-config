@@ -9,7 +9,7 @@ argument-hint: "[review-aspects]"
 # Comprehensive PR Review
 
 Run a thorough pull request review using multiple specialized agents, each focusing on a different
-aspect of code quality. For a faster, cheaper review, use `/pr-review-quick` instead.
+aspect of code quality.
 
 ## When This Skill Applies
 
@@ -87,10 +87,15 @@ The diff shows + for added lines and - for removed lines. Only flag issues on + 
 
 **Parallel** (with `parallel` arg): Launch all at once for speed
 
-For each agent, use the Task tool with this template:
+Use `Task (subagent_type: Explore)` for all review agents — they are read-only.
+
+If the diff is too large to pass in one prompt, split by changed file and send per-file diff chunks
+to separate agents, then merge results.
+
+For each agent, use this template:
 
 ```
-Task (subagent_type: general-purpose): "[AGENT_NAME] REVIEW
+Task (subagent_type: Explore): "[AGENT_NAME] REVIEW
 
 CRITICAL: Only report issues on lines ADDED or MODIFIED in this diff (+ lines).
 Do NOT report pre-existing issues or problems in unchanged code.
@@ -116,6 +121,12 @@ For each issue found, provide:
 Output format:
 [CONFIDENCE: XX] file:line - description"
 ```
+
+Execution discipline:
+
+- Launch all independent review agents in parallel.
+- Wait only after all review prompts are dispatched.
+- Do not delegate synthesis; parent agent owns final filtering and summary.
 
 ### 4. Filter Results
 

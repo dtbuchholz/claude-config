@@ -12,7 +12,7 @@ from datetime import date, datetime, timedelta
 from typing import Iterable
 
 
-QMD_BIN = str(Path.home() / ".claude/scripts/qmd.sh")
+QMD_BIN = "qmd"
 WEEKDAYS = {
     "monday": 0,
     "tuesday": 1,

@@ -47,8 +47,8 @@ Then ask the user to pick a review mode:
 2. **FULL REVIEW** — Work through interactively, one section at a time (Architecture → Code Quality
    → Tests → Performance) with at most 4 top issues per section.
 3. **QUICK REVIEW** — Compressed single pass. Pick the single most important issue per section.
-   Present as one numbered list, mandatory test diagram, completion summary. One AskUserQuestion
-   round at the end.
+   Present as one numbered list, mandatory test diagram, completion summary. One confirmation round
+   at the end.
 
 **If the user does not pick SCOPE REDUCTION, respect that fully.** Your job becomes making their
 chosen plan succeed. Raise scope concerns once in Step 0 — after that, commit to their scope and
@@ -56,8 +56,8 @@ optimize within it.
 
 ## Review Sections
 
-Work through each section in order. After each section, you MUST call AskUserQuestion with your
-findings. Do NOT proceed to the next section until the user responds.
+Work through each section in order. After each section, you MUST present your findings and ask for
+user confirmation. Do NOT proceed to the next section until the user responds.
 
 ### 1. Architecture Review
 
@@ -72,7 +72,7 @@ Evaluate:
 
 Use ASCII diagrams for any non-trivial data flow, state machine, or processing pipeline.
 
-**STOP.** Call AskUserQuestion with findings before proceeding.
+**STOP.** Present findings and ask for user confirmation before proceeding.
 
 ### 2. Code Quality Review
 
@@ -84,14 +84,14 @@ Evaluate:
 - Over-engineering vs under-engineering
 - Whether existing ASCII diagrams in touched files are still accurate after this change
 
-**STOP.** Call AskUserQuestion with findings before proceeding.
+**STOP.** Present findings and ask for user confirmation before proceeding.
 
 ### 3. Test Review
 
 Build a diagram of all new codepaths, data flows, and branching outcomes. For each item in the
 diagram, verify a test exists. Flag gaps.
 
-**STOP.** Call AskUserQuestion with findings before proceeding.
+**STOP.** Present findings and ask for user confirmation before proceeding.
 
 ### 4. Performance Review
 
@@ -102,7 +102,7 @@ Evaluate:
 - Caching opportunities
 - Slow or high-complexity code paths
 
-**STOP.** Call AskUserQuestion with findings before proceeding.
+**STOP.** Present findings and ask for user confirmation before proceeding.
 
 ## How to Present Issues
 
@@ -114,7 +114,7 @@ For every issue (bug, smell, design concern, risk):
 - **Lead with your recommendation.** "Do B. Here's why:" — not "Option B might be worth
   considering." Be opinionated.
 - Number issues (1, 2, 3...) and letter options (A, B, C...)
-- In AskUserQuestion, start with "Recommend [LETTER]: [one-line reason]" then list all options
+- When presenting options, start with "Recommend [LETTER]: [one-line reason]" then list all options
 - Keep each option to one sentence max
 
 ## Required Outputs
@@ -164,13 +164,13 @@ NOT in scope: written
 What already exists: written
 Deferred work: ___ items proposed
 Failure modes: ___ critical gaps flagged
-Unresolved decisions: ___ (list any skipped AskUserQuestion rounds)
+Unresolved decisions: ___ (list any skipped confirmation rounds)
 ```
 
 ## Rules
 
 - Never write code during this skill. Only review and challenge the plan.
-- If the user skips an AskUserQuestion or interrupts to move on, note which decisions were left
+- If the user skips a confirmation round or interrupts to move on, note which decisions were left
   unresolved. List these at the end as "Unresolved decisions that may bite you later."
 - Check git log for this branch. If prior commits suggest a previous review cycle, be more
   aggressive reviewing areas that were previously problematic.

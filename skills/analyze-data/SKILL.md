@@ -46,7 +46,7 @@ print(f"Sample:\n{df.head()}")
 
 ### Step 2: Ask Analysis Questions
 
-Use AskUserQuestion to clarify:
+Ask the user to clarify:
 
 1. **Analysis goal**: "What question are you trying to answer with this data?"
    - Exploratory analysis (understand the data)
@@ -61,10 +61,10 @@ Use AskUserQuestion to clarify:
 
 ### Step 3: Launch Parallel Analysis Agents
 
-**CRITICAL: Launch ALL agents in a SINGLE message.**
+**Launch all independent analysis agents in parallel using `Task (subagent_type: Explore)`.**
 
 ```
-Task (model: haiku, subagent_type: general-purpose): "DISTRIBUTION ANALYSIS
+Task (subagent_type: Explore): "DISTRIBUTION ANALYSIS
 
 Analyze distributions for this dataset:
 - Load: [data_path]
@@ -78,7 +78,7 @@ Output:
 - List of columns needing transformation
 - Anomalies found"
 
-Task (model: haiku, subagent_type: general-purpose): "MISSING DATA ANALYSIS
+Task (subagent_type: Explore): "MISSING DATA ANALYSIS
 
 Analyze missing data patterns:
 - Load: [data_path]
@@ -92,7 +92,7 @@ Output:
 - Pattern analysis
 - Imputation recommendations"
 
-Task (model: haiku, subagent_type: general-purpose): "CORRELATION ANALYSIS
+Task (subagent_type: Explore): "CORRELATION ANALYSIS
 
 Analyze relationships:
 - Load: [data_path]
@@ -106,7 +106,7 @@ Output:
 - Multicollinearity warnings
 - Feature importance ranking (if target)"
 
-Task (model: haiku, subagent_type: general-purpose): "OUTLIER ANALYSIS
+Task (subagent_type: Explore): "OUTLIER ANALYSIS
 
 Detect outliers:
 - Load: [data_path]
@@ -120,7 +120,7 @@ Output:
 - Most extreme values
 - Recommended handling"
 
-Task (model: sonnet, subagent_type: general-purpose): "VISUALIZATION GENERATION
+Task (subagent_type: general-purpose): "VISUALIZATION GENERATION
 
 Create key visualizations:
 - Load: [data_path]
@@ -135,12 +135,20 @@ Use: matplotlib, seaborn
 Output: List of generated plot files"
 ```
 
+Execution discipline:
+
+- Dispatch all analysis agents first, then wait once for results.
+- For large datasets, prefer sampling or partitioned analysis prompts to keep runtime bounded.
+- Use `Explore` for read-only analysis; use `general-purpose` for agents that write files (viz,
+  modeling).
+- Parent agent owns synthesis and final report writing.
+
 ### Step 4: If Predictive Modeling Requested
 
 Launch additional modeling agents:
 
 ```
-Task (model: sonnet, subagent_type: general-purpose): "BASELINE MODELING
+Task (subagent_type: general-purpose): "BASELINE MODELING
 
 Build baseline models:
 - Load: [data_path]
@@ -156,7 +164,7 @@ Report:
 - Feature importances from tree model
 - Recommended next steps"
 
-Task (model: haiku, subagent_type: general-purpose): "FEATURE ENGINEERING SUGGESTIONS
+Task (subagent_type: Explore): "FEATURE ENGINEERING SUGGESTIONS
 
 Based on data profile, suggest features:
 - Log transforms for skewed numerics

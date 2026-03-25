@@ -53,7 +53,6 @@
       "Bash(git branch)"
     ]
   },
-  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -77,14 +76,15 @@
     ],
     "Notification": []
   },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/scripts/statusline-p10k.sh"
+  },
   "enabledPlugins": {
     "feature-dev@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true
   },
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true,
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/scripts/statusline-p10k.sh"
-  }
+  "voiceEnabled": false,
+  "skipDangerousModePermissionPrompt": true
 }
