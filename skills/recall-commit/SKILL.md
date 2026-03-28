@@ -120,18 +120,26 @@ entries. Find the marker line and replace it with the marker plus the new entrie
 rewriting the entire file each time:
 
 ```markdown
-### YYYY-MM-DD — Summary sentence (confirmed|hypothesis)
+### YYYY-MM-DD — Summary sentence (confirmed, gotcha)
 
-Author: [git config user.name] Insight: One sentence stating the key implication — why this matters
-and what it changes about how you'd approach the problem.
-
-Detail: The specific context, evidence, or mechanism behind the insight. What happened, what you
-tried, what the constraints were.
-
-Directive: Do X, not Y. Action: What should change in the machine? (e.g., "Add pre-commit check for
-X", "Update team standard to require Y", "No machine change needed — directive is sufficient").
-Every learning must close the loop. Context: branch, what was being done
+**Author:** [git config user.name] **Insight:** One sentence — why this matters and what it changes
+about how you'd approach the problem. **Detail:** The specific context, evidence, or mechanism. What
+happened, what you tried, what the constraints were. **Directive:** Do X, not Y. **Applies To:**
+[paths, systems, or workflows this affects] **Action:** What should change in the machine? (e.g.,
+"Add pre-commit check for X", "Update team standard to require Y", "No machine change needed —
+directive is sufficient"). Every learning must close the loop. **Context:** branch, what was being
+done
 ```
+
+Types: `gotcha` | `dead-end` | `fragile-area` | `codebase-state` | `tool-quirk`
+
+Heading tag format: `(confidence, type)` or `(confidence, type, meta)`. Type may be omitted for
+meta-only entries: `(confidence, meta)`.
+
+Examples: `(confirmed, gotcha)`, `(hypothesis, meta)`, `(confirmed, tool-quirk, meta)`.
+
+Meta entries may add optional fields: `**Scope:**` (repo | team | domain | general),
+`**Decision Point:**` (what decision this learning would change).
 
 Get the author name once at the start of Phase 2:
 
