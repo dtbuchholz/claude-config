@@ -97,7 +97,7 @@ Required fields:
 ```yaml
 ---
 doc_type: index|decision|observation|how-to|reference|explanation|runbook
-owner: ""
+owner: docs-stewards
 review_policy: periodic-7|codebound|generated|historical
 reviewed: YYYY-MM-DD
 status: draft|active|deprecated|superseded|historical
@@ -118,11 +118,49 @@ related_docs: []
 
 Field notes:
 
-- `review_policy` controls freshness behavior
+- `owner` identifies who is responsible for keeping the doc current. Use a team name
+  (`docs-stewards`, `platform-team`), a repo name (`knowledge-hub`), or a GitHub handle (`@dtb`).
+  Pick one convention per repo and stay consistent. The preset default is `docs-stewards`.
+- `review_policy` controls freshness enforcement. Choose by doc type:
+
+  | Doc type      | Recommended `review_policy` | Rationale                                            |
+  | ------------- | --------------------------- | ---------------------------------------------------- |
+  | `index`       | `generated`                 | System-managed root doc                              |
+  | `decision`    | `historical`                | Decisions are point-in-time records                  |
+  | `observation` | `historical`                | Investigations are point-in-time records             |
+  | `how-to`      | `codebound`                 | Should update when the procedure's code changes      |
+  | `reference`   | `codebound`                 | Should update when the referenced config/API changes |
+  | `explanation` | `codebound`                 | Should update when the architecture changes          |
+  | `runbook`     | `periodic-7`                | Operational docs must be actively verified           |
+
+  Use `periodic-7` as the catchall default. If a repo cannot sustain 7-day review, it usually has
+  too many active docs — consider converting stable docs to `codebound` or `historical` rather than
+  extending the review window.
+
 - `status` is lifecycle metadata only; it does not bypass freshness checks
-- `code_paths` enables code-to-doc drift checks in audit mode
+- `code_paths` enables code-to-doc drift checks in audit mode. Pair with `codebound` review policy
+  so the freshness rule skips the doc until the listed paths actually change.
 - `tags` remain the main grep handle (`rg "tags:.*auth" docs/`)
 - Do not require frontmatter in `AGENTS.md`
+
+## Migrating Existing Docs
+
+When a repo already has markdown docs that predate the canonical profile, init mode should bring
+them into the canonical structure as part of Step 8 (existing-docs migration).
+
+Common migration tasks:
+
+- Add missing canonical frontmatter fields (`doc_type`, `owner`, `review_policy`, `reviewed`,
+  `status`, `summary`, `tags`, `written`)
+- Move files into the correct taxonomy directory for their `doc_type`
+- Rename files to match taxonomy filename conventions (e.g., ADRs to `NNN-title-kebab-case.md`,
+  observations to `YYYY-MM-DD-title-kebab-case.md`)
+- Drop non-canonical frontmatter fields that have no equivalent in the schema
+- Link migrated docs from `docs/INDEX.md` so they pass reachability checks
+
+For repos with more than 10 docs to migrate, prefer scripting the frontmatter additions rather than
+editing each file by hand. After migration, run `docs:lint` to catch any remaining schema or
+taxonomy violations.
 
 ---
 
