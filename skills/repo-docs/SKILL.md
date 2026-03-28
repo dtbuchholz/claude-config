@@ -10,6 +10,35 @@ description: >
 argument-hint: "[init|audit]"
 ---
 
+## Quick Reference
+
+Two tracks — pick one and go. See full procedure below for details.
+
+**Greenfield repo (no existing docs):**
+
+| Governance-enhanced (Node available)                                       | Standalone scaffold (no Node)                                 |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Install: `<install-command> @recallnet/docs-governance-preset`             | —                                                             |
+| `<cli-command-prefix> recall-docs-governance init --profile repo-docs`     | Create `docs/` structure, `docs/INDEX.md`, templates manually |
+| `<cli-command-prefix> recall-docs-governance populate --profile repo-docs` | Write first-pass docs by hand                                 |
+| Generate `AGENTS.md` and `AGENT-LEARNINGS.md`                              | Generate `AGENTS.md` and `AGENT-LEARNINGS.md`                 |
+| Run `docs:lint` and fix violations                                         | Validate structure, filenames, and frontmatter manually       |
+
+**Existing repo with docs:**
+
+| Governance-enhanced (Node available)                                                    | Standalone scaffold (no Node)                           |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Install: `<install-command> @recallnet/docs-governance-preset`                          | —                                                       |
+| `<cli-command-prefix> recall-docs-governance init --profile repo-docs`                  | Create `docs/` structure manually                       |
+| Migrate existing docs into canonical taxonomy (Step 8)                                  | Migrate existing docs into canonical taxonomy (Step 8)  |
+| `<cli-command-prefix> recall-docs-governance populate --profile repo-docs` to fill gaps | Write gap-filling docs by hand                          |
+| Generate or update `AGENTS.md` and `AGENT-LEARNINGS.md`                                 | Generate or update `AGENTS.md` and `AGENT-LEARNINGS.md` |
+| Run `docs:lint` and fix violations                                                      | Validate manually                                       |
+
+Migration-heavy repos should expect validator cleanup after init — see Step 9.
+
+---
+
 # Repo Docs
 
 Bootstrap or audit agent-focused documentation for any repository using the canonical `repo-docs`
@@ -168,7 +197,10 @@ taxonomy violations.
 
 ### Step 1: Scan
 
-Launch 2 parallel read-only explorer sub-agents and synthesize the results in the parent agent.
+Launch 2 parallel read-only explorer sub-agents to collect the information below, then synthesize
+results in the parent agent. Parallel sub-agents are recommended for speed. If sub-agents are
+unavailable or restricted by delegation policy, perform both scans sequentially in the parent
+context.
 
 **Agent 1 — Structure & Stack:**
 
@@ -250,8 +282,6 @@ After governance-enhanced init, expect these canonical files:
 - `docs/templates/*.md`
 - `package.json` scripts `docs:lint` and `docs:lint:changed`
 - `AGENTS.md` docs-governance guidance section
-
-After populate, expect first-pass curated docs when the repo has enough structured source material.
 
 Do not replace these with a second hand-rolled schema or markdown parser.
 
@@ -387,20 +417,32 @@ Entry shape remains:
 - `Action`
 - `Context`
 
-### Step 8: Plan Existing-Docs Migration
+### Step 8: Migrate Existing Docs
 
 If existing documentation files were found during the scan:
 
-1. Present a proposed move table: | Current Location | Proposed Location | Reason |
-   |-----------------|-------------------|--------|
-2. Propose renames for:
+1. Determine all required moves, renames, and frontmatter fixes:
+   - docs living in the wrong taxonomy directory for their intended `doc_type`
    - observations not using `YYYY-MM-DD-title-kebab-case.md`
    - decisions not using `NNN-title-kebab-case.md`
-   - docs living in the wrong taxonomy directory for their intended `doc_type`
-3. Show any camelCase frontmatter fields that will need conversion to snake_case
-4. Execute the moves or renames directly when the target mapping is clear and canonical
-5. Prefer `git mv` so history is preserved
-6. If any move fails, stop immediately and report partial state
+   - missing or non-canonical frontmatter fields
+2. Execute all changes autonomously using `git mv` for path changes
+3. If any move fails, stop immediately and report partial state
+4. Emit a summary table of actions performed:
+
+   | Original Path | New Path | Action |
+   | ------------- | -------- | ------ |
+
+Common migration patterns:
+
+| Legacy pattern                        | Canonical target                                   |
+| ------------------------------------- | -------------------------------------------------- |
+| `docs/README.md` as index             | `docs/INDEX.md`                                    |
+| `docs/adr/` or `docs/adrs/`           | `docs/decisions/NNN-title-kebab-case.md`           |
+| `docs/_templates/`                    | `docs/templates/`                                  |
+| Undated investigation docs            | `docs/observations/YYYY-MM-DD-title-kebab-case.md` |
+| Flat `docs/` with mixed doc types     | Split into taxonomy directories by `doc_type`      |
+| Non-canonical frontmatter field names | Rename to canonical snake_case fields              |
 
 If no existing docs were found, skip this step.
 
@@ -416,6 +458,12 @@ If `docs:lint` fails:
 
 - fix deterministic docs issues when they are within the scope of the current init
 - otherwise report the failures clearly and stop
+
+If the repo has existing markdown validators (`.markdownlint.json`, `.markdownlint-cli2.jsonc`, a
+pre-existing `.remarkrc` separate from the generated one, `eslint-plugin-markdown` in dependencies,
+or similar), these may conflict with `docs:lint`. Either retire them or configure them to skip
+`docs/` paths, since `docs:lint` is now the authoritative enforcer for curated docs. Report any
+validator conflicts found and the resolution applied.
 
 The repo is not successfully initialized until the canonical docs lint passes or the remaining
 blocking failures are explicitly reported.
