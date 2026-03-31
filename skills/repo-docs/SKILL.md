@@ -18,7 +18,7 @@ Two tracks:
 - **Standalone scaffold**: use the same canonical shape, but without the preset or deterministic
   lint
 
-**Greenfield repo**
+### Greenfield repo
 
 | Governance-enhanced                                                        | Standalone scaffold                                         |
 | -------------------------------------------------------------------------- | ----------------------------------------------------------- |
@@ -28,7 +28,7 @@ Two tracks:
 | Generate/update `AGENTS.md`, `AGENT-LEARNINGS.md`, `CLAUDE.md`, `CODEX.md` | Validate structure, naming, links, and frontmatter manually |
 | Run `docs:lint` and fix violations                                         | Report that deterministic lint is not installed             |
 
-**Existing repo with docs**
+### Existing repo with docs
 
 | Governance-enhanced                                                                     | Standalone scaffold                             |
 | --------------------------------------------------------------------------------------- | ----------------------------------------------- |
@@ -132,7 +132,7 @@ Derive concrete command forms:
 
 | Package Manager | Install Command  | CLI Command Prefix | Script Command |
 | --------------- | ---------------- | ------------------ | -------------- |
-| `pnpm`          | `pnpm add -D`    | `pnpm exec`        | `pnpm`         |
+| `pnpm`          | `pnpm add -Dw`   | `pnpm exec`        | `pnpm`         |
 | `npm`           | `npm install -D` | `npx`              | `npm run`      |
 | `yarn`          | `yarn add -D`    | `yarn`             | `yarn`         |
 | `bun`           | `bun add -d`     | `bunx`             | `bun run`      |
@@ -182,7 +182,10 @@ Then create or update:
 - `CODEX.md` -> symlink to `AGENTS.md`
 
 If `CLAUDE.md` or `CODEX.md` already exist as real files, replace them with symlinks when safe and
-report the change. If symlink creation fails, write stub files that point to `AGENTS.md`.
+report the change. Treat it as safe when the file is empty, already a symlink to `AGENTS.md`, or a
+trivial stub that only points readers back to `AGENTS.md`. If the file contains real repo-specific
+content, merge that content into `AGENTS.md` first or leave the file in place and report why it was
+not replaced. If symlink creation fails, write stub files that point to `AGENTS.md`.
 
 ### Step 5: Populate First-Pass Docs
 
@@ -201,7 +204,8 @@ Minimum expected outputs when signals exist:
 
 - one explanation doc covering architecture or package relationships
 - one reference doc covering commands / quality gates / release flow
-- one reference doc covering modules, packages, or services when the repo has multiple major units
+- one reference doc covering implementation roots, modules, packages, or services when the repo has
+  multiple major units
 - one how-to doc when the repo exposes a repeatable setup or operational workflow
 
 Requirements:
@@ -210,6 +214,9 @@ Requirements:
 - include `code_paths` where there is a clear code or config surface
 - prefer `codebound` when the doc should track code/config changes
 - avoid copying large README blocks verbatim
+- verify that generated structural docs match the repo's actual implementation shape (for example:
+  workspace units, `src/`, `app/`, `internal/`, `services/`, or `executors/`) before treating init
+  as complete
 
 ### Step 6: Migrate Existing Docs
 
@@ -248,6 +255,9 @@ Rules:
 - use snake_case field names in examples
 - use `[unknown]` instead of guessing
 - preserve accurate existing repo-specific guidance when updating an existing `AGENTS.md`
+- if the preset has already appended a `Docs Governance` section, treat that as tool-owned seed
+  content and preserve it while rewriting the rest of `AGENTS.md` to match the post-migration repo
+  state
 
 If `AGENT-LEARNINGS.md` is missing, create:
 
