@@ -2,47 +2,47 @@
 name: repo-docs
 description: >
   Bootstrap or audit agent-focused repository docs using Recall's canonical repo-docs governance
-  profile. Init mode always scaffolds the canonical docs structure, AGENTS.md, and
-  AGENT-LEARNINGS.md, populates first-pass canonical docs from existing repo sources, and aligns
-  repo docs to the canonical structure. When a Node-compatible package-manager path exists, init
-  also installs and runs the docs governance preset for deterministic lint enforcement. Audit mode
-  performs higher-order advisory checks that sit above deterministic docs lint.
+  profile. Init mode scaffolds the canonical docs structure, AGENTS.md, and AGENT-LEARNINGS.md,
+  populates first-pass canonical docs from existing repo sources, and aligns repo docs to the
+  canonical structure. When a Node-compatible package-manager path exists, init also installs and
+  runs the docs governance preset for deterministic lint enforcement. Audit mode performs
+  higher-order advisory checks above deterministic docs lint.
 argument-hint: "[init|audit]"
 ---
 
 ## Quick Reference
 
-Two tracks — pick one and go. See full procedure below for details.
+Two tracks:
 
-**Greenfield repo (no existing docs):**
+- **Governance-enhanced**: Node/package-manager path exists; use the preset and `docs:lint`
+- **Standalone scaffold**: use the same canonical shape, but without the preset or deterministic
+  lint
 
-| Governance-enhanced (Node available)                                       | Standalone scaffold (no Node)                                 |
-| -------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Install: `<install-command> @recallnet/docs-governance-preset`             | —                                                             |
-| `<cli-command-prefix> recall-docs-governance init --profile repo-docs`     | Create `docs/` structure, `docs/INDEX.md`, templates manually |
-| `<cli-command-prefix> recall-docs-governance populate --profile repo-docs` | Write first-pass docs by hand                                 |
-| Generate `AGENTS.md` and `AGENT-LEARNINGS.md`                              | Generate `AGENTS.md` and `AGENT-LEARNINGS.md`                 |
-| Run `docs:lint` and fix violations                                         | Validate structure, filenames, and frontmatter manually       |
+**Greenfield repo**
 
-**Existing repo with docs:**
+| Governance-enhanced                                                        | Standalone scaffold                                         |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Install if needed: `<install-command> @recallnet/docs-governance-preset`   | Create canonical `docs/` tree manually                      |
+| `<cli-command-prefix> recall-docs-governance init --profile repo-docs`     | Create `AGENTS.md` and `AGENT-LEARNINGS.md`                 |
+| `<cli-command-prefix> recall-docs-governance populate --profile repo-docs` | Write first-pass docs by hand using the canonical shape     |
+| Generate/update `AGENTS.md`, `AGENT-LEARNINGS.md`, `CLAUDE.md`, `CODEX.md` | Validate structure, naming, links, and frontmatter manually |
+| Run `docs:lint` and fix violations                                         | Report that deterministic lint is not installed             |
 
-| Governance-enhanced (Node available)                                                    | Standalone scaffold (no Node)                           |
-| --------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Install: `<install-command> @recallnet/docs-governance-preset`                          | —                                                       |
-| `<cli-command-prefix> recall-docs-governance init --profile repo-docs`                  | Create `docs/` structure manually                       |
-| Migrate existing docs into canonical taxonomy (Step 8)                                  | Migrate existing docs into canonical taxonomy (Step 8)  |
-| `<cli-command-prefix> recall-docs-governance populate --profile repo-docs` to fill gaps | Write gap-filling docs by hand                          |
-| Generate or update `AGENTS.md` and `AGENT-LEARNINGS.md`                                 | Generate or update `AGENTS.md` and `AGENT-LEARNINGS.md` |
-| Run `docs:lint` and fix violations                                                      | Validate manually                                       |
+**Existing repo with docs**
 
-Migration-heavy repos should expect validator cleanup after init — see Step 9.
+| Governance-enhanced                                                                     | Standalone scaffold                             |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Install if needed: `<install-command> @recallnet/docs-governance-preset`                | Create missing canonical structure manually     |
+| `<cli-command-prefix> recall-docs-governance init --profile repo-docs`                  | Migrate existing docs into canonical layout     |
+| Migrate existing docs into canonical layout                                             | Fill gaps by hand using the canonical shape     |
+| `<cli-command-prefix> recall-docs-governance populate --profile repo-docs` to fill gaps | Generate/update agent docs after migration      |
+| Generate/update agent docs after migration                                              | Validate manually                               |
+| Run `docs:lint` and fix or report violations                                            | Report that deterministic lint is not installed |
 
----
+Migration-heavy repos should expect validator cleanup and possible policy migration after init. See
+`references/migration.md`.
 
-# Repo Docs
-
-Bootstrap or audit agent-focused documentation for any repository using the canonical `repo-docs`
-profile from `@recallnet/docs-governance-preset`.
+## Purpose
 
 `repo-docs` is the orchestrator.
 
@@ -54,201 +54,81 @@ profile from `@recallnet/docs-governance-preset`.
 - reachability/orphan rules
 - path and filename enforcement
 
-This skill must not define a competing docs schema, template path, or root-doc convention. When the
-preset cannot be installed, this skill may still scaffold the same canonical shape without claiming
-deterministic enforcement.
+This skill must not define a competing schema, template path, or root-doc convention. When the
+preset cannot be installed, scaffold the same canonical shape without claiming deterministic
+enforcement.
+
+## References
+
+Load these only as needed:
+
+- `references/canonical-shape.md`
+- `references/migration.md`
+- `references/audit.md`
 
 ## When This Skill Applies
 
-- `/repo-docs` or `/repo-docs init` — bootstrap or reorganize docs (default)
+- `/repo-docs` or `/repo-docs init` — bootstrap or reorganize docs
 - `/repo-docs audit` — advisory docs audit above deterministic lint
-- User asks to "set up repo docs", "create AGENTS.md", "bootstrap docs governance", or "audit repo
-  docs"
+- User asks to set up repo docs, create `AGENTS.md`, bootstrap docs governance, or audit repo docs
 
 ## Guard
 
-You must be inside a git repository. Verify with:
+You must be inside a git repository:
 
 ```bash
 git rev-parse --is-inside-work-tree
 ```
 
-If not in a git repo, tell the user and stop.
-
-## Init Paths
-
-Init mode supports two paths:
-
-- **Governance-enhanced mode**: install and run `@recallnet/docs-governance-preset`, then use
-  deterministic docs lint
-- **Standalone scaffold mode**: create the same canonical `repo-docs` structure and first-pass docs
-  without installing the preset
-
-Before changing anything, detect whether the repo has a viable Node-compatible package-manager path.
-If yes, prefer governance-enhanced mode. If not, continue in standalone scaffold mode and state
-clearly that deterministic docs lint was not installed.
+If not in a git repo, stop.
 
 ## Mode Detection
 
-- If the argument is `audit`, run **Audit Mode**
-- Otherwise (no argument, `init`, or anything else), run **Init Mode**
-
----
-
-## Canonical Doc Taxonomy
-
-Use the canonical `repo-docs` profile shape.
-
-| Location             | Purpose                                            | Notes                                                                                  |
-| -------------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `AGENTS.md`          | Compact repo map, golden paths, operating guidance | Plain markdown; no frontmatter                                                         |
-| `AGENT-LEARNINGS.md` | Durable directives learned from agent sessions     | Entries dated; newest first                                                            |
-| `docs/INDEX.md`      | Canonical rooted entry doc for the docs graph      | The single root doc                                                                    |
-| `docs/decisions/`    | Important architectural and design decisions       | Filenames `NNN-title-kebab-case.md`                                                    |
-| `docs/observations/` | Dated investigations, incident notes, deep dives   | Filenames `YYYY-MM-DD-title-kebab-case.md`; living allowlist such as `research-log.md` |
-| `docs/how-to/`       | Task-oriented procedures                           |                                                                                        |
-| `docs/reference/`    | Factual config, commands, schemas, API specs       |                                                                                        |
-| `docs/explanation/`  | Rationale, architecture, trade-offs                |                                                                                        |
-| `docs/runbooks/`     | Deploy, recovery, migration, ops procedures        |                                                                                        |
-| `docs/templates/`    | Canonical doc templates generated by the preset    | Excluded from runtime docs lint                                                        |
-
-Conditional directories created only when scan signals justify them:
-
-- `docs/services/` — explanation docs for multi-service/monorepo layouts
-- `docs/contracts/` — reference docs for OpenAPI, protobuf, GraphQL, or similar contracts
-
-## Canonical Frontmatter
-
-All curated docs under `docs/` use snake_case frontmatter owned by the profile.
-
-Required fields:
-
-```yaml
----
-doc_type: index|decision|observation|how-to|reference|explanation|runbook
-owner: docs-stewards
-review_policy: periodic-7|codebound|generated|historical
-reviewed: YYYY-MM-DD
-status: draft|active|deprecated|superseded|historical
-summary: ""
-tags: []
-written: YYYY-MM-DD
----
-```
-
-Optional fields used when helpful:
-
-```yaml
-id: ""
-title: ""
-code_paths: []
-related_docs: []
-```
-
-Field notes:
-
-- `owner` identifies who is responsible for keeping the doc current. Use a team name
-  (`docs-stewards`, `platform-team`), a repo name (`knowledge-hub`), or a GitHub handle (`@dtb`).
-  Pick one convention per repo and stay consistent. The preset default is `docs-stewards`.
-- `review_policy` controls freshness enforcement. Choose by doc type:
-
-  | Doc type      | Recommended `review_policy` | Rationale                                            |
-  | ------------- | --------------------------- | ---------------------------------------------------- |
-  | `index`       | `generated`                 | System-managed root doc                              |
-  | `decision`    | `historical`                | Decisions are point-in-time records                  |
-  | `observation` | `historical`                | Investigations are point-in-time records             |
-  | `how-to`      | `codebound`                 | Should update when the procedure's code changes      |
-  | `reference`   | `codebound`                 | Should update when the referenced config/API changes |
-  | `explanation` | `codebound`                 | Should update when the architecture changes          |
-  | `runbook`     | `periodic-7`                | Operational docs must be actively verified           |
-
-  Use `periodic-7` as the catchall default. If a repo cannot sustain 7-day review, it usually has
-  too many active docs — consider converting stable docs to `codebound` or `historical` rather than
-  extending the review window.
-
-- `status` is lifecycle metadata only; it does not bypass freshness checks
-- `code_paths` enables code-to-doc drift checks in audit mode. Pair with `codebound` review policy
-  so the freshness rule skips the doc until the listed paths actually change.
-- `tags` remain the main grep handle (`rg "tags:.*auth" docs/`)
-- Do not require frontmatter in `AGENTS.md`
-
-## Migrating Existing Docs
-
-When a repo already has markdown docs that predate the canonical profile, init mode should bring
-them into the canonical structure as part of Step 8 (existing-docs migration).
-
-Common migration tasks:
-
-- Add missing canonical frontmatter fields (`doc_type`, `owner`, `review_policy`, `reviewed`,
-  `status`, `summary`, `tags`, `written`)
-- Move files into the correct taxonomy directory for their `doc_type`
-- Rename files to match taxonomy filename conventions (e.g., ADRs to `NNN-title-kebab-case.md`,
-  observations to `YYYY-MM-DD-title-kebab-case.md`)
-- Drop non-canonical frontmatter fields that have no equivalent in the schema
-- Link migrated docs from `docs/INDEX.md` so they pass reachability checks
-
-For repos with more than 10 docs to migrate, prefer scripting the frontmatter additions rather than
-editing each file by hand. After migration, run `docs:lint` to catch any remaining schema or
-taxonomy violations.
-
----
+- Argument `audit` -> **Audit Mode**
+- Otherwise -> **Init Mode**
 
 ## Init Mode
 
 ### Step 1: Scan
 
-Launch 2 parallel read-only explorer sub-agents to collect the information below, then synthesize
-results in the parent agent. Parallel sub-agents are recommended for speed. If sub-agents are
-unavailable or restricted by delegation policy, perform both scans sequentially in the parent
-context.
+Gather:
 
-**Agent 1 — Structure & Stack:**
+- stack and package manager
+- 2-level tree
+- entrypoints and major modules/packages
+- existing docs and agent files
+- scripts, hooks, CI, validator config
+- structured env/config sources
+- monorepo/service/contract signals
 
-- Total source file count (exclude node_modules, .git, vendor, **pycache**, dist, build)
-- Tech stack (languages, frameworks, package manager)
-- Directory tree (2 levels deep)
-- Entry points (main files, index files, CLI entry points)
-- Existing documentation files (README, CONTRIBUTING, ARCHITECTURE, any `.md` files in `docs/`)
-- Existing `AGENTS.md`, `CLAUDE.md`, `CODEX.md`
-- Monorepo signals: multiple apps/services, workspace configs, multiple lockfiles
-- API schema files: OpenAPI, protobuf, GraphQL, AsyncAPI, etc.
+Recommended: use 2 parallel read-only explorer sub-agents, one for structure/stack and one for
+commands/conventions. If sub-agents are unavailable, do both scans sequentially.
 
-**Agent 2 — Commands & Conventions:**
+Scan constraints:
 
-- Package manager scripts (`package.json`, Makefile, `pyproject.toml`, etc.)
-- Linter/formatter configs
-- Git hooks (husky, pre-commit, lefthook)
-- Environment variables from `.env.example`, `.env.sample`, typed config schemas, or targeted
-  config-loading paths
-- Test framework and test patterns
-- CI/CD config
-- Branch strategy or documented contribution flow
+- no raw file dumps
+- no more than roughly 2000 tokens per sub-agent
+- use tables for file/script/env-var summaries
+- exclude standard junk dirs (`node_modules`, `.git`, `vendor`, `__pycache__`, `dist`, `build`,
+  `.next`, `.turbo`, `coverage`, `.venv`, `venv`)
+- never include secret values
+- do not blind-grep the whole repo for env vars; use structured sources only
 
-Environment-variable rule:
+### Step 2: Choose Mode And Commands
 
-- Never include secret values
-- Collect only variable names and inferred purpose
-- Do not do a blind whole-repo env scan unless structured sources are missing
+Use **governance-enhanced mode** when the repo already has a viable Node/package-manager path, or
+when the user explicitly wants one for docs governance.
 
-### Step 2: Choose Init Path And Package Manager Command
-
-Decide whether the repo can run governance-enhanced mode.
-
-Use governance-enhanced mode when the repo already has a viable Node/package-manager path, or the
-user has explicitly agreed to adopt one for docs governance.
-
-Use standalone scaffold mode when no viable Node/package-manager path exists or when the repo should
+Use **standalone scaffold mode** when no viable Node/package-manager path exists or the repo should
 not gain one just for docs governance.
 
-If governance-enhanced mode is selected, determine the repo's package manager with this precedence:
+In governance-enhanced mode, detect package manager with this precedence:
 
-1. Existing workspace lockfile / `packageManager` field
-2. Existing scripts in `package.json`
-3. If the repo has Node config but no package manager signal, default to `pnpm`
+1. lockfile or `packageManager` field
+2. existing `package.json` scripts
+3. default to `pnpm` if the repo is Node-based but ambiguous
 
-Use the detected package manager consistently for install and script execution.
-
-In governance-enhanced mode, derive three concrete command forms and use them consistently:
+Derive concrete command forms:
 
 | Package Manager | Install Command  | CLI Command Prefix | Script Command |
 | --------------- | ---------------- | ------------------ | -------------- |
@@ -257,97 +137,65 @@ In governance-enhanced mode, derive three concrete command forms and use them co
 | `yarn`          | `yarn add -D`    | `yarn`             | `yarn`         |
 | `bun`           | `bun add -d`     | `bunx`             | `bun run`      |
 
-Examples:
-
-- `pnpm add -D @recallnet/docs-governance-preset`
-- `npm install -D @recallnet/docs-governance-preset`
-- `yarn add -D @recallnet/docs-governance-preset`
-
 ### Step 3: Initialize Canonical Structure
 
-If governance-enhanced mode is selected, install the preset, then run the canonical profile init
-flow:
+In governance-enhanced mode:
 
-```bash
-<install-command> @recallnet/docs-governance-preset
-<cli-command-prefix> recall-docs-governance init --profile repo-docs
-```
+1. If `@recallnet/docs-governance-preset` is not already in package metadata, install it:
 
-After governance-enhanced init, expect these canonical files:
+   ```bash
+   <install-command> @recallnet/docs-governance-preset
+   ```
 
-- `docs/docs-policy.json`
-- `docs/docs-frontmatter.schema.json`
-- `.remarkrc.mjs`
-- `docs/INDEX.md`
-- `docs/templates/*.md`
-- `package.json` scripts `docs:lint` and `docs:lint:changed`
-- `AGENTS.md` docs-governance guidance section
+2. Run init in all governance-enhanced cases:
 
-Do not replace these with a second hand-rolled schema or markdown parser.
+   ```bash
+   <cli-command-prefix> recall-docs-governance init --profile repo-docs
+   ```
 
-If standalone scaffold mode is selected, create the canonical repo-docs structure directly instead
-of stopping:
+Important upgrade rule for already-governed repos:
 
-- `docs/INDEX.md`
-- `docs/decisions/`
-- `docs/observations/`
-- `docs/how-to/`
-- `docs/reference/`
-- `docs/explanation/`
-- `docs/runbooks/`
-- `docs/templates/*.md`
+- bumping `@recallnet/docs-governance-preset` alone does **not** rewrite committed governance files
+- rerun `init` or explicitly migrate `docs/docs-policy.json`, `docs/docs-frontmatter.schema.json`,
+  and `.remarkrc.mjs` when the canonical profile gains new policy sections or rules
+- do not assume a dependency bump alone refreshes taxonomy or other checked-in policy content
 
 In standalone scaffold mode:
 
-- use the same canonical taxonomy and snake_case frontmatter shape described above
-- do not create `.remarkrc.mjs`
-- do not create `docs/docs-policy.json` or `docs/docs-frontmatter.schema.json`
-- do not add `docs:lint` scripts unless the preset is actually installed
+- create the canonical structure directly using `references/canonical-shape.md`
+- at minimum create `docs/INDEX.md`, the canonical taxonomy directories, and `docs/templates/`
+- do **not** create `.remarkrc.mjs`, `docs/docs-policy.json`, `docs/docs-frontmatter.schema.json`,
+  or `docs:lint` scripts unless the preset is actually installed
 
 ### Step 4: Add Optional Directories And Root Files
 
-Based on scan signals, create only the missing optional directories:
+Create optional directories only when justified by scan signals:
 
-- `docs/services/` if the repo is a monorepo or has multiple services/apps
-- `docs/contracts/` if schema/contract files exist
+- `docs/services/` for monorepo or multi-service layouts
+- `docs/contracts/` for OpenAPI, protobuf, GraphQL, AsyncAPI, or similar contracts
 
-Then create or update the root docs files:
+Then create or update:
 
 - `AGENTS.md`
 - `AGENT-LEARNINGS.md`
-- `CLAUDE.md` → symlink to `AGENTS.md`
-- `CODEX.md` → symlink to `AGENTS.md`
+- `CLAUDE.md` -> symlink to `AGENTS.md`
+- `CODEX.md` -> symlink to `AGENTS.md`
 
 If `CLAUDE.md` or `CODEX.md` already exist as real files, replace them with symlinks when safe and
-report the change. If symlink creation fails, write stub files pointing back to `AGENTS.md`.
+report the change. If symlink creation fails, write stub files that point to `AGENTS.md`.
 
-### Step 5: Populate First-Pass Canonical Docs
+### Step 5: Populate First-Pass Docs
 
-If governance-enhanced mode is active, use the canonical CLI populate pass first, then fill any
-remaining obvious gaps the CLI could not cover from repo facts.
+In governance-enhanced mode, run:
 
 ```bash
 <cli-command-prefix> recall-docs-governance populate --profile repo-docs
 ```
 
-If standalone scaffold mode is active, synthesize the same first-pass curated docs directly from
-repo facts using the canonical shape. Do not downgrade the structure just because the preset is
-absent.
+`populate` uses gap-fill semantics: it skips docs that already exist and only creates missing ones.
 
-Do not stop at an empty scaffold when the repo already contains enough structured source material to
-produce useful docs.
-
-Synthesize first-pass curated docs from the scan results plus existing sources such as:
-
-- root `README.md`
-- package/module `README.md` files
-- `package.json` scripts
-- CI workflows
-- existing `AGENTS.md`
-- package manifests and entrypoints
-
-Create concise, repo-specific docs with canonical frontmatter. Do not copy large blocks verbatim;
-synthesize and link back to source files when needed.
+Then, in either mode, fill any remaining obvious gaps from repo facts. Do not stop at an empty
+scaffold when the repo has enough structured source material to support real docs.
 
 Minimum expected outputs when signals exist:
 
@@ -359,44 +207,49 @@ Minimum expected outputs when signals exist:
 Requirements:
 
 - link every created doc from `docs/INDEX.md`
-- include `code_paths` where there is a clear code or config surface behind the doc
-- prefer `codebound` review policy for docs that should track code/config changes
-- avoid duplicating existing package README content line-for-line; summarize and point to the
-  original
-- if the repo truly lacks enough source material, say so explicitly; do not pretend the empty
-  scaffold is complete
+- include `code_paths` where there is a clear code or config surface
+- prefer `codebound` when the doc should track code/config changes
+- avoid copying large README blocks verbatim
 
-### Step 6: Generate AGENTS.md
+### Step 6: Migrate Existing Docs
 
-Write a first-pass `AGENTS.md` populated from the scan. It should be a compact index, not a dump.
-Target roughly 250 lines or fewer.
+If the repo already has docs, migrate them into the canonical structure:
 
-Sections to generate:
+- add missing canonical frontmatter
+- move docs into the correct taxonomy directory
+- rename files to canonical filename patterns
+- drop clearly obsolete non-canonical frontmatter fields
+- link migrated docs from `docs/INDEX.md`
 
-- Project name and one-line description
-- Doc taxonomy table using the canonical paths above
-- Tech stack table
-- Annotated tree (2 levels deep)
-- Key modules table
-- Key commands table
-- Code conventions summary
-- Environment variables table when applicable
-- Searching docs examples
-- Agent workflow guidance
+Use `git mv` for path changes. If any move fails, stop and report partial state. Emit a summary
+table of actions performed.
 
-Important:
+For detailed legacy mappings and upgrade caveats, use `references/migration.md`.
 
-- Reference `docs/INDEX.md`, not `docs/README.md`
-- Reference `docs/templates/`, not `docs/_templates/`
-- Use snake_case field names in examples (`doc_type`, `code_paths`, `related_docs`)
-- If a value cannot be determined, use `[unknown]` rather than guessing
+### Step 7: Generate Agent Docs
 
-If an `AGENTS.md` already exists, update it in place while preserving repo-specific guidance that is
-still accurate.
+Write a compact `AGENTS.md` from the post-migration repo state:
 
-### Step 7: Generate AGENT-LEARNINGS.md
+- project name and one-line description
+- compact doc taxonomy table
+- tech stack
+- 2-level annotated tree
+- key modules
+- key commands
+- code conventions
+- environment variables when applicable
+- searching examples
+- agent workflow guidance
 
-Create this skeleton if it does not already exist:
+Rules:
+
+- reference `docs/INDEX.md`, not `docs/README.md`
+- reference `docs/templates/`, not `docs/_templates/`
+- use snake_case field names in examples
+- use `[unknown]` instead of guessing
+- preserve accurate existing repo-specific guidance when updating an existing `AGENTS.md`
+
+If `AGENT-LEARNINGS.md` is missing, create:
 
 ```markdown
 # Agent Learnings
@@ -409,7 +262,7 @@ Durable directives from agent sessions. Newest first. Long investigations belong
 <!-- Entries below, newest first -->
 ```
 
-Entry shape remains:
+Entry shape:
 
 - `Insight`
 - `Detail`
@@ -417,188 +270,68 @@ Entry shape remains:
 - `Action`
 - `Context`
 
-### Step 8: Migrate Existing Docs
+### Step 8: Validate
 
-If existing documentation files were found during the scan:
-
-1. Determine all required moves, renames, and frontmatter fixes:
-   - docs living in the wrong taxonomy directory for their intended `doc_type`
-   - observations not using `YYYY-MM-DD-title-kebab-case.md`
-   - decisions not using `NNN-title-kebab-case.md`
-   - missing or non-canonical frontmatter fields
-2. Execute all changes autonomously using `git mv` for path changes
-3. If any move fails, stop immediately and report partial state
-4. Emit a summary table of actions performed:
-
-   | Original Path | New Path | Action |
-   | ------------- | -------- | ------ |
-
-Common migration patterns:
-
-| Legacy pattern                        | Canonical target                                   |
-| ------------------------------------- | -------------------------------------------------- |
-| `docs/README.md` as index             | `docs/INDEX.md`                                    |
-| `docs/adr/` or `docs/adrs/`           | `docs/decisions/NNN-title-kebab-case.md`           |
-| `docs/_templates/`                    | `docs/templates/`                                  |
-| Undated investigation docs            | `docs/observations/YYYY-MM-DD-title-kebab-case.md` |
-| Flat `docs/` with mixed doc types     | Split into taxonomy directories by `doc_type`      |
-| Non-canonical frontmatter field names | Rename to canonical snake_case fields              |
-
-If no existing docs were found, skip this step.
-
-### Step 9: Validate
-
-In governance-enhanced mode, run the repo's docs lint command and surface the output:
+In governance-enhanced mode:
 
 ```bash
 <script-command> docs:lint
 ```
 
-If `docs:lint` fails:
+`docs:lint` reads the repo's committed governance files from disk. If a preset upgrade introduces
+new canonical policy structure, rerun `init` or migrate the policy before treating failures as
+package-install-only issues.
 
-- fix deterministic docs issues when they are within the scope of the current init
-- otherwise report the failures clearly and stop
+If lint fails:
 
-If the repo has existing markdown validators (`.markdownlint.json`, `.markdownlint-cli2.jsonc`, a
-pre-existing `.remarkrc` separate from the generated one, `eslint-plugin-markdown` in dependencies,
-or similar), these may conflict with `docs:lint`. Either retire them or configure them to skip
-`docs/` paths, since `docs:lint` is now the authoritative enforcer for curated docs. Report any
-validator conflicts found and the resolution applied.
+- fix deterministic docs issues that are in scope
+- otherwise report the blockers clearly and stop
 
-The repo is not successfully initialized until the canonical docs lint passes or the remaining
-blocking failures are explicitly reported.
+If the repo already has markdown validators, retire them or scope them away from governed `docs/`
+paths so `docs:lint` is the authoritative check for curated docs.
 
 In standalone scaffold mode:
 
-- do not invent a fake `docs:lint` command
-- validate that the canonical structure, filenames, links from `docs/INDEX.md`, and frontmatter
-  field names are coherent
-- report explicitly that deterministic lint enforcement was not installed because the repo has no
-  active Node/package-manager path for the preset
-
----
+- do not invent a fake `docs:lint`
+- validate structure, naming, rooted links, and frontmatter coherence manually
+- report explicitly that deterministic lint is not installed in this repo
 
 ## Audit Mode
 
-Audit mode is **read-only**. It reports findings and suggested actions but does not modify files.
+Audit mode is read-only.
 
-If the repo is in governance-enhanced mode and `docs:lint` is available, run the canonical docs lint
-command first and treat it as the source of truth for:
+If `docs:lint` is available, run it first and treat it as the source of truth for:
 
-- frontmatter/schema violations
-- taxonomy/path/filename violations
-- freshness violations
-- reachability/orphan violations
+- schema/frontmatter
+- taxonomy/path/filename
+- freshness
+- reachability/orphans
 - broken markdown links
 
-Capture the `docs:lint` result in the audit report. Do not re-implement those checks as separate ad
-hoc logic when the command is available.
+If `docs:lint` is unavailable, state that clearly and continue with advisory-only checks.
 
-If the repo is in standalone scaffold mode or `docs:lint` is unavailable:
+Then run the advisory checks from `references/audit.md` and produce a report with:
 
-- state explicitly that deterministic docs lint is unavailable in this repo
-- skip deterministic enforcement checks that depend on the preset
-- continue with the read-only advisory audit below
-
-Then run these advisory checks:
-
-### Check 1: Staleness By Git Activity
-
-For each curated doc in `docs/` plus `AGENTS.md` and `AGENT-LEARNINGS.md`:
-
-```bash
-git log -1 --format="%ci" -- <file>
-```
-
-Severity:
-
-- Warning: 90–179 days since last modification
-- Critical: 180+ days since last modification
-
-Skip files with no git history. Exclude generated or derived docs.
-
-### Check 2: Code-Path Drift
-
-For curated docs that include both `code_paths` and `reviewed`:
-
-- find the latest commit touching any listed `code_paths` entry
-- compare that date with the doc's `reviewed` date
-- flag docs where code changed after the doc was reviewed
-
-### Check 3: Coverage Gaps
-
-Identify top-level code modules/packages and check whether each has corresponding docs coverage. A
-major module with no docs is a coverage gap.
-
-### Check 4: Learnings Promotion
-
-Read `AGENT-LEARNINGS.md` and look for recurring directives (similar entries 3+ times). Suggest
-promoting those into stable how-to or reference docs.
-
-### Check 5: AGENTS.md Drift
-
-Compare `AGENTS.md` against reality:
-
-- commands still exist
-- directory structure still matches
-- env vars are still current
-- file is still compact enough to act as an index
-
-### Check 6: Missing-Docs Heuristics
-
-Pattern-based suggestions:
-
-| Pattern Found                      | Suggested Doc    |
-| ---------------------------------- | ---------------- |
-| Dockerfile / docker-compose        | runbook          |
-| migrations directory               | database runbook |
-| route/api/endpoints dirs           | API reference    |
-| `.env.example` with many variables | config reference |
-
-### Check 7: Symlink Validity
-
-Verify that `CLAUDE.md` and `CODEX.md` point to `AGENTS.md`. Flag broken or divergent links.
-
-### Check 8: Report
-
-Compile a report with these sections:
-
-- Summary
+- summary
 - `docs:lint` findings
-- Stale files
-- Code-path drift
-- Coverage gaps
-- Promotion candidates
-- AGENTS drift
-- Missing-doc suggestions
-- Symlink issues
-- Suggested actions
+- stale files
+- code-path drift
+- coverage gaps
+- learnings promotion candidates
+- `AGENTS.md` drift
+- missing-doc suggestions
+- symlink issues
+- suggested actions
 
-After the report, stop. Audit mode remains read-only.
-
----
+After the report, stop.
 
 ## Rules
 
 - `remark-ai` owns the canonical repo-docs profile; this skill orchestrates it
-- Never define a competing docs schema, root-doc convention, or template directory in this skill
-- Move or reorganize existing files autonomously when the canonical target is clear; report what
-  changed
-- Update `AGENTS.md` autonomously while preserving accurate existing guidance where possible
-- Symlinks point TO `AGENTS.md` (`CLAUDE.md` → `AGENTS.md`, `CODEX.md` → `AGENTS.md`)
-- Audit mode is strictly read-only
-- `docs/INDEX.md` is the canonical root doc
-- `docs/templates/` is the canonical templates path
-- Observation files use `YYYY-MM-DD-title-kebab-case.md`
-- ADR files use `NNN-title-kebab-case.md`
-- Init mode is idempotent — skip existing files/directories unless canonical migration or in-place
-  updates are required to align the repo with the canonical structure
-- Use snake_case frontmatter names in all examples and generated guidance
-- When scanning for env vars, inspect structured sources and config-loading paths only
-- Exclude common non-source directories when scanning: `node_modules`, `.git`, `vendor`,
-  `__pycache__`, `dist`, `build`, `.next`, `.turbo`, `coverage`, `.venv`, `venv`
-- If the repo lacks a viable Node/package-manager path, run standalone scaffold mode instead of
-  stopping; state clearly that deterministic lint enforcement is not installed in that repo yet
-- In a repo with clear structured source material, init is not complete if `docs/` contains only
-  `INDEX.md`, policy/schema files, and templates; produce at least the first-pass curated docs or
-  explain the blocking gap
+- never define a competing docs schema, root-doc convention, or template directory
+- standalone scaffold mode must still use the same canonical shape
+- move or reorganize existing files autonomously when the canonical target is clear; report changes
+- audit mode is strictly read-only
+- init is idempotent except for canonical migration and in-place updates needed to align the repo
+- in repos with clear structured source material, init is not complete if `docs/` contains only
+  `INDEX.md`, policy/schema files, and templates
