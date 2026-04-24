@@ -3,7 +3,8 @@ set -euo pipefail
 
 reviewer="${1:-codex}"
 project_dir="${2:-$(pwd)}"
-output_file="${3:-$project_dir/.agent-review/review-$(date +%Y%m%d-%H%M%S)-${reviewer}.md}"
+tmp_dir="${TMPDIR:-/tmp}"
+output_file="${3:-$(mktemp "$tmp_dir/agent-review-${reviewer}.XXXXXX")}"
 
 if [[ "$reviewer" != "claude" && "$reviewer" != "codex" ]]; then
   echo "error: reviewer must be 'claude' or 'codex'" >&2
@@ -28,46 +29,25 @@ fi
 mkdir -p "$(dirname "$output_file")"
 tmp_raw="$(mktemp)"
 tmp_out="$(mktemp)"
+tmp_prompt="$(mktemp)"
 cleanup() {
-  rm -f "$tmp_raw" "$tmp_out"
+  rm -f "$tmp_raw" "$tmp_out" "$tmp_prompt"
 }
 trap cleanup EXIT
 
-review_prompt=$(
-  cat <<'PROMPT'
-You are an independent code reviewer operating in a fresh context.
+status_summary="$(git -C "$project_dir" status --short)"
+staged_diff="$(git -C "$project_dir" diff --cached --no-ext-diff)"
+unstaged_diff="$(git -C "$project_dir" diff --no-ext-diff)"
 
-Run a comprehensive PR-style review of the CURRENT UNCOMMITTED CHANGES in this repository.
-Use the same rigor as /pr-review:
-- prioritize real bugs, regressions, security issues, and missing tests
-- avoid style-only nits unless they impact maintainability
-- focus on changed lines and changed behavior
-
-Output constraints:
-- Output ONLY the final markdown report (no status updates, no process narration)
-- Keep findings concrete and actionable
-
-Output format:
-# Review Findings
-
-## High
-- ...
-
-## Medium
-- ...
-
-## Low
-- ...
-
-## Open Questions
-- ...
-
-## Suggested Actions
-- ...
-
-If no significant issues exist, state that explicitly and explain residual risks.
-PROMPT
-)
+{
+  printf '/pr-review\n\n'
+  printf 'Review the CURRENT UNCOMMITTED CHANGES in this repository.\n'
+  printf 'Do not switch to the branch diff against main or prior commits unless you need brief context.\n'
+  printf 'Use the working tree state below as the review scope.\n\n'
+  printf 'Status (`git status --short`):\n%s\n\n' "$status_summary"
+  printf 'Staged diff (`git diff --cached --no-ext-diff`):\n%s\n\n' "$staged_diff"
+  printf 'Unstaged diff (`git diff --no-ext-diff`):\n%s\n' "$unstaged_diff"
+} >"$tmp_prompt"
 
 if [[ "$reviewer" == "claude" ]]; then
   if ! command -v claude >/dev/null 2>&1; then
@@ -79,7 +59,7 @@ if [[ "$reviewer" == "claude" ]]; then
   while true; do
     if (
       cd "$project_dir"
-      claude --verbose --output-format stream-json -p "$review_prompt"
+      claude --verbose --output-format stream-json -p <"$tmp_prompt"
     ) >"$tmp_raw" 2>&1; then
       break
     fi
@@ -108,7 +88,7 @@ else
     exit 2
   fi
 
-  codex exec --json -C "$project_dir" "$review_prompt" \
+  codex exec --json -C "$project_dir" <"$tmp_prompt" \
     | jq -r '
       if .type == "item.completed" and .item.type == "agent_message" then
         .item.text
@@ -121,10 +101,6 @@ if [[ ! -s "$tmp_out" ]]; then
   exit 3
 fi
 
-if grep -q '^# Review Findings' "$tmp_out"; then
-  awk 'BEGIN{emit=0} /^# Review Findings/{emit=1} emit{print}' "$tmp_out" >"$output_file"
-else
-  cp "$tmp_out" "$output_file"
-fi
+cp "$tmp_out" "$output_file"
 
 echo "$output_file"

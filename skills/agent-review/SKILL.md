@@ -40,7 +40,7 @@ Use the bundled script to run the external reviewer and capture output:
 Default artifact location:
 
 ```text
-<project>/.agent-review/review-YYYYMMDD-HHMMSS-<reviewer>.md
+$TMPDIR/agent-review-<reviewer>.XXXXXX
 ```
 
 ## Workflow
@@ -64,7 +64,8 @@ Run:
 ~/.claude/skills/agent-review/scripts/run-review.sh "${REVIEWER}" "$(pwd)"
 ```
 
-Capture the returned file path.
+The script runs explicit `/pr-review` in the reviewer session and writes the captured review to a
+system temp file by default. Capture the returned file path.
 
 ### 3. Adjudicate In Current Session
 
@@ -92,7 +93,7 @@ Decision rules:
 Provide a concise summary:
 
 - reviewer used (`codex` or `claude`)
-- review artifact path
+- temp review artifact path
 - accepted findings and implemented fixes
 - rejected findings and rationale
 - verification commands run
