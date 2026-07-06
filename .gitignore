@@ -53,3 +53,7 @@ scripts/*.conf
 logs/
 scripts/__pycache__/
 backups/
+.last-cleanup
+
+# Generated Chrome native-host wrapper (version-pinned, machine-specific)
+chrome/

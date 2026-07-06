@@ -28,6 +28,9 @@
     ],
     "Notification": []
   },
+  "worktree": {
+    "symlinkDirectories": ["node_modules", ".cache", ".bin"]
+  },
   "statusLine": {
     "type": "command",
     "command": "~/.claude/scripts/statusline-p10k.sh"
@@ -37,6 +40,16 @@
     "frontend-design@claude-plugins-official": true
   },
   "alwaysThinkingEnabled": true,
+  "effortLevel": "xhigh",
+  "tui": "fullscreen",
+  "autoMemoryEnabled": true,
+  "autoDreamEnabled": true,
+  "showThinkingSummaries": true,
+  "skipDangerousModePermissionPrompt": true,
+  "editorMode": "vim",
+  "autoCompactEnabled": true,
+  "fileCheckpointingEnabled": true,
+  "showTurnDuration": true,
   "voiceEnabled": false,
-  "skipDangerousModePermissionPrompt": true
+  "remoteControlAtStartup": true
 }
