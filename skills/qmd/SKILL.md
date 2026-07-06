@@ -2,7 +2,7 @@
 name: qmd
 description: >
   Search across project memory, skills, and docs using QMD semantic search. Use when the user asks
-  to recall past decisions, find relevant context, or search their knowledge base. Requires QMD
+  to find past decisions, retrieve relevant context, or search their knowledge base. Requires QMD
   installed; gracefully falls back if unavailable.
 ---
 
@@ -56,7 +56,7 @@ For open-ended questions combining keyword and semantic understanding:
 qmd query "authentication patterns across projects" -n 5
 ```
 
-### 4. Temporal Recall (date-scoped conversations)
+### 4. Time-Scoped Lookup (date-scoped conversations)
 
 For questions about what happened on a specific day. Resolves natural language dates and searches
 conversation transcripts:
@@ -74,14 +74,15 @@ Accepts: `YYYY-MM-DD`, `today`, `yesterday`, `last Monday`, etc. Use `--source c
 
 Determine which search mode fits:
 
-| Query type       | Mode              | Example                              |
-| ---------------- | ----------------- | ------------------------------------ |
-| Exact term/error | `search`          | "ANTHROPIC_API_KEY", "exit code 126" |
-| Conceptual       | `vsearch`         | "how do I handle retries"            |
-| Open-ended       | `query`           | "what testing patterns do I use"     |
-| Date-scoped      | `temporal-recall` | "what did I do last Tuesday"         |
+| Query type       | Mode                 | Example                              |
+| ---------------- | -------------------- | ------------------------------------ |
+| Exact term/error | `search`             | "ANTHROPIC_API_KEY", "exit code 126" |
+| Conceptual       | `vsearch`            | "how do I handle retries"            |
+| Open-ended       | `query`              | "what testing patterns do I use"     |
+| Date-scoped      | `time-scoped lookup` | "what did I do last Tuesday"         |
 
-If unsure, default to `query` (deep search). For questions about specific days, use temporal recall.
+If unsure, default to `query` (deep search). For questions about specific days, use time-scoped
+lookup.
 
 ### Step 2: Search
 

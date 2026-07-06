@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Date-scoped recall helper for QMD conversation collections.
+"""Date-scoped lookup helper for QMD conversation collections.
 
 Usage examples:
   qmd-temporal-recall.py "yesterday" "where did we leave off" --source both
@@ -328,7 +328,7 @@ def rank_hits(query: str, hits: Iterable[Hit]) -> list[Hit]:
 # --- Main ---
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Date-scoped QMD recall helper.")
+    parser = argparse.ArgumentParser(description="Date-scoped QMD lookup helper.")
     parser.add_argument("date_phrase", help="YYYY-MM-DD, today, yesterday, or 'last Tuesday'")
     parser.add_argument("question", help="Question to match against conversations")
     parser.add_argument("--source", choices=["codex", "claude", "both"], default="both")

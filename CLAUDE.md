@@ -104,7 +104,7 @@ qmd query "open-ended question"   # hybrid with reranking (best quality)
 Default to `qmd query` when unsure. Only fall back to grep for code-level searches in project source
 files — QMD covers everything under `~/.claude/`.
 
-For date-scoped recall ("what did I do last Tuesday?"), use:
+For time-scoped lookup ("what did I do last Tuesday?"), use:
 
 ```bash
 ~/.claude/scripts/qmd-temporal-recall.py "last Tuesday" "what did I do?" --source both --top 5

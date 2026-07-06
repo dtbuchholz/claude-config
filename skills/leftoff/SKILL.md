@@ -1,14 +1,14 @@
 ---
 name: leftoff
 description: >
-  Recall where work left off across Claude and Codex sessions for a specific day. Summarizes active
-  threads and returns concrete next actions using QMD temporal recall.
+  Find where work left off across Claude and Codex sessions for a specific day. Summarizes active
+  threads and returns concrete next actions using QMD time-scoped lookup.
 argument-hint: "<date> [repo-only]"
 ---
 
 # Left Off
 
-Recall where work left off across Claude + Codex sessions for a specific day.
+Find where work left off across Claude + Codex sessions for a specific day.
 
 ## When This Skill Applies
 
@@ -42,7 +42,7 @@ Validate before proceeding:
 ```bash
 command -v qmd >/dev/null && echo "qmd: ok" || echo "qmd: missing"
 qmd status >/dev/null 2>&1 && echo "index: ok" || echo "index: missing"
-test -f ~/.claude/scripts/qmd-temporal-recall.py && echo "recall: ok" || echo "recall: missing"
+test -f ~/.claude/scripts/qmd-temporal-recall.py && echo "lookup: ok" || echo "lookup: missing"
 ```
 
 If `qmd` is not available or the index is empty, return a setup gap report:
@@ -69,9 +69,9 @@ Run a quick update to catch any recent transcripts:
 qmd update 2>&1 | tail -3
 ```
 
-### Step 2: Temporal Recall
+### Step 2: Time-Scoped Lookup
 
-Run the recall helper across both agent sources:
+Run the time-scoped helper across both agent sources:
 
 ```bash
 ~/.claude/scripts/qmd-temporal-recall.py "<date>" "where did we leave off" --source both --top 12

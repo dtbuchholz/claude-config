@@ -1,62 +1,50 @@
 ---
 name: repo-docs
 description: >
-  Bootstrap or audit agent-focused repository docs using Recall's canonical repo-docs governance
-  profile. Init mode scaffolds the canonical docs structure, AGENTS.md, and AGENT-LEARNINGS.md,
-  populates first-pass canonical docs from existing repo sources, and aligns repo docs to the
-  canonical structure. When a Node-compatible package-manager path exists, init also installs and
-  runs the docs governance preset for deterministic lint enforcement. Audit mode performs
-  higher-order advisory checks above deterministic docs lint.
+  Bootstrap or audit agent-focused repository docs using a tooling-agnostic canonical structure.
+  Init mode scaffolds the canonical docs tree and AGENTS.md, populates first-pass docs from existing
+  repo sources, and aligns existing docs to the canonical shape. Audit mode performs advisory checks
+  on structure, freshness, coverage, and drift. Requires no external packages or CLIs.
 argument-hint: "[init|audit]"
 ---
 
 ## Quick Reference
 
-Two tracks:
-
-- **Governance-enhanced**: Node/package-manager path exists; use the preset and `docs:lint`
-- **Standalone scaffold**: use the same canonical shape, but without the preset or deterministic
-  lint
+This skill scaffolds and maintains the canonical docs shape by hand — no package manager, preset, or
+CLI is required. It works in any git repo regardless of language or stack.
 
 ### Greenfield repo
 
-| Governance-enhanced                                                        | Standalone scaffold                                         |
-| -------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Install if needed: `<install-command> @recallnet/docs-governance-preset`   | Create canonical `docs/` tree manually                      |
-| `<cli-command-prefix> recall-docs-governance init --profile repo-docs`     | Create `AGENTS.md` and `AGENT-LEARNINGS.md`                 |
-| `<cli-command-prefix> recall-docs-governance populate --profile repo-docs` | Write first-pass docs by hand using the canonical shape     |
-| Generate/update `AGENTS.md`, `AGENT-LEARNINGS.md`, `CLAUDE.md`, `CODEX.md` | Validate structure, naming, links, and frontmatter manually |
-| Run `docs:lint` and fix violations                                         | Report that deterministic lint is not installed             |
+1. Create the canonical `docs/` tree manually (see `references/canonical-shape.md`)
+2. Create `AGENTS.md` plus `CLAUDE.md`/`CODEX.md` symlinks
+3. Write first-pass docs by hand from repo facts
+4. Validate structure, naming, links, and frontmatter manually
 
 ### Existing repo with docs
 
-| Governance-enhanced                                                                     | Standalone scaffold                             |
-| --------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Install if needed: `<install-command> @recallnet/docs-governance-preset`                | Create missing canonical structure manually     |
-| `<cli-command-prefix> recall-docs-governance init --profile repo-docs`                  | Migrate existing docs into canonical layout     |
-| Migrate existing docs into canonical layout                                             | Fill gaps by hand using the canonical shape     |
-| `<cli-command-prefix> recall-docs-governance populate --profile repo-docs` to fill gaps | Generate/update agent docs after migration      |
-| Generate/update agent docs after migration                                              | Validate manually                               |
-| Run `docs:lint` and fix or report violations                                            | Report that deterministic lint is not installed |
+1. Create any missing canonical structure
+2. Migrate existing docs into the canonical layout
+3. Fill gaps by hand using the canonical shape
+4. Regenerate/update agent docs after migration
+5. Validate manually
 
-Migration-heavy repos should expect validator cleanup and possible policy migration after init. See
-`references/migration.md`.
+Migration-heavy repos should expect cleanup after init. See `references/migration.md`.
 
 ## Purpose
 
-`repo-docs` is the orchestrator.
-
-`remark-ai` owns the machine-readable profile:
+`repo-docs` orchestrates a consistent, agent-focused documentation layout. This skill owns the
+canonical shape directly:
 
 - canonical doc taxonomy
 - frontmatter schema
-- freshness rules
-- reachability/orphan rules
-- path and filename enforcement
+- freshness conventions
+- reachability/orphan expectations
+- path and filename conventions
 
-This skill must not define a competing schema, template path, or root-doc convention. When the
-preset cannot be installed, scaffold the same canonical shape without claiming deterministic
-enforcement.
+Everything is enforced by hand — the skill validates structure, naming, links, and frontmatter
+through inspection rather than a deterministic linter. Keep the canonical shape defined in
+`references/canonical-shape.md` as the single source of truth; do not invent a competing schema,
+template path, or root-doc convention.
 
 ## References
 
@@ -69,8 +57,8 @@ Load these only as needed:
 ## When This Skill Applies
 
 - `/repo-docs` or `/repo-docs init` — bootstrap or reorganize docs
-- `/repo-docs audit` — advisory docs audit above deterministic lint
-- User asks to set up repo docs, create `AGENTS.md`, bootstrap docs governance, or audit repo docs
+- `/repo-docs audit` — advisory docs audit
+- User asks to set up repo docs, create `AGENTS.md`, bootstrap docs structure, or audit repo docs
 
 ## Guard
 
@@ -97,7 +85,7 @@ Gather:
 - 2-level tree
 - entrypoints and major modules/packages
 - existing docs and agent files
-- scripts, hooks, CI, validator config
+- scripts, hooks, CI
 - structured env/config sources
 - monorepo/service/contract signals
 
@@ -114,60 +102,15 @@ Scan constraints:
 - never include secret values
 - do not blind-grep the whole repo for env vars; use structured sources only
 
-### Step 2: Choose Mode And Commands
+### Step 2: Initialize Canonical Structure
 
-Use **governance-enhanced mode** when the repo already has a viable Node/package-manager path, or
-when the user explicitly wants one for docs governance.
+Create the canonical structure directly using `references/canonical-shape.md`. At minimum create
+`docs/INDEX.md`, the canonical taxonomy directories, and `docs/templates/`.
 
-Use **standalone scaffold mode** when no viable Node/package-manager path exists or the repo should
-not gain one just for docs governance.
+Init is idempotent: only create what is missing, and only reorganize existing files when the
+canonical target is clear.
 
-In governance-enhanced mode, detect package manager with this precedence:
-
-1. lockfile or `packageManager` field
-2. existing `package.json` scripts
-3. default to `pnpm` if the repo is Node-based but ambiguous
-
-Derive concrete command forms:
-
-| Package Manager | Install Command  | CLI Command Prefix | Script Command |
-| --------------- | ---------------- | ------------------ | -------------- |
-| `pnpm`          | `pnpm add -Dw`   | `pnpm exec`        | `pnpm`         |
-| `npm`           | `npm install -D` | `npx`              | `npm run`      |
-| `yarn`          | `yarn add -D`    | `yarn`             | `yarn`         |
-| `bun`           | `bun add -d`     | `bunx`             | `bun run`      |
-
-### Step 3: Initialize Canonical Structure
-
-In governance-enhanced mode:
-
-1. If `@recallnet/docs-governance-preset` is not already in package metadata, install it:
-
-   ```bash
-   <install-command> @recallnet/docs-governance-preset
-   ```
-
-2. Run init in all governance-enhanced cases:
-
-   ```bash
-   <cli-command-prefix> recall-docs-governance init --profile repo-docs
-   ```
-
-Important upgrade rule for already-governed repos:
-
-- bumping `@recallnet/docs-governance-preset` alone does **not** rewrite committed governance files
-- rerun `init` or explicitly migrate `docs/docs-policy.json`, `docs/docs-frontmatter.schema.json`,
-  and `.remarkrc.mjs` when the canonical profile gains new policy sections or rules
-- do not assume a dependency bump alone refreshes taxonomy or other checked-in policy content
-
-In standalone scaffold mode:
-
-- create the canonical structure directly using `references/canonical-shape.md`
-- at minimum create `docs/INDEX.md`, the canonical taxonomy directories, and `docs/templates/`
-- do **not** create `.remarkrc.mjs`, `docs/docs-policy.json`, `docs/docs-frontmatter.schema.json`,
-  or `docs:lint` scripts unless the preset is actually installed
-
-### Step 4: Add Optional Directories And Root Files
+### Step 3: Add Optional Directories And Root Files
 
 Create optional directories only when justified by scan signals:
 
@@ -177,7 +120,6 @@ Create optional directories only when justified by scan signals:
 Then create or update:
 
 - `AGENTS.md`
-- `AGENT-LEARNINGS.md`
 - `CLAUDE.md` -> symlink to `AGENTS.md`
 - `CODEX.md` -> symlink to `AGENTS.md`
 
@@ -187,18 +129,10 @@ trivial stub that only points readers back to `AGENTS.md`. If the file contains 
 content, merge that content into `AGENTS.md` first or leave the file in place and report why it was
 not replaced. If symlink creation fails, write stub files that point to `AGENTS.md`.
 
-### Step 5: Populate First-Pass Docs
+### Step 4: Populate First-Pass Docs
 
-In governance-enhanced mode, run:
-
-```bash
-<cli-command-prefix> recall-docs-governance populate --profile repo-docs
-```
-
-`populate` uses gap-fill semantics: it skips docs that already exist and only creates missing ones.
-
-Then, in either mode, fill any remaining obvious gaps from repo facts. Do not stop at an empty
-scaffold when the repo has enough structured source material to support real docs.
+Fill obvious gaps from repo facts. Do not stop at an empty scaffold when the repo has enough
+structured source material to support real docs.
 
 Minimum expected outputs when signals exist:
 
@@ -218,7 +152,7 @@ Requirements:
   workspace units, `src/`, `app/`, `internal/`, `services/`, or `executors/`) before treating init
   as complete
 
-### Step 6: Migrate Existing Docs
+### Step 5: Migrate Existing Docs
 
 If the repo already has docs, migrate them into the canonical structure:
 
@@ -231,9 +165,9 @@ If the repo already has docs, migrate them into the canonical structure:
 Use `git mv` for path changes. If any move fails, stop and report partial state. Emit a summary
 table of actions performed.
 
-For detailed legacy mappings and upgrade caveats, use `references/migration.md`.
+For detailed legacy mappings, use `references/migration.md`.
 
-### Step 7: Generate Agent Docs
+### Step 6: Generate Agent Docs
 
 Write a compact `AGENTS.md` from the post-migration repo state:
 
@@ -255,79 +189,31 @@ Rules:
 - use snake_case field names in examples
 - use `[unknown]` instead of guessing
 - preserve accurate existing repo-specific guidance when updating an existing `AGENTS.md`
-- if the preset has already appended a `Docs Governance` section, treat that as tool-owned seed
-  content and preserve it while rewriting the rest of `AGENTS.md` to match the post-migration repo
-  state
 
-If `AGENT-LEARNINGS.md` is missing, create:
+### Step 7: Validate
 
-```markdown
-# Agent Learnings
+There is no deterministic linter; validate by inspection:
 
-Durable directives from agent sessions. Newest first. Long investigations belong in
-`docs/observations/`, not here.
+- structure matches the canonical taxonomy
+- filenames match canonical patterns
+- every curated doc is reachable from `docs/INDEX.md` (no orphans)
+- frontmatter is present and coherent on all curated docs
+- internal links resolve
 
----
-
-<!-- Entries below, newest first -->
-```
-
-Entry shape:
-
-- `Insight`
-- `Detail`
-- `Directive`
-- `Action`
-- `Context`
-
-### Step 8: Validate
-
-In governance-enhanced mode:
-
-```bash
-<script-command> docs:lint
-```
-
-`docs:lint` reads the repo's committed governance files from disk. If a preset upgrade introduces
-new canonical policy structure, rerun `init` or migrate the policy before treating failures as
-package-install-only issues.
-
-If lint fails:
-
-- fix deterministic docs issues that are in scope
-- otherwise report the blockers clearly and stop
-
-If the repo already has markdown validators, retire them or scope them away from governed `docs/`
-paths so `docs:lint` is the authoritative check for curated docs.
-
-In standalone scaffold mode:
-
-- do not invent a fake `docs:lint`
-- validate structure, naming, rooted links, and frontmatter coherence manually
-- report explicitly that deterministic lint is not installed in this repo
+If the repo already has markdown validators, keep them if they are useful, or scope them away from
+governed `docs/` paths if they conflict with the canonical shape. Report any validation gaps
+clearly.
 
 ## Audit Mode
 
 Audit mode is read-only.
 
-If `docs:lint` is available, run it first and treat it as the source of truth for:
-
-- schema/frontmatter
-- taxonomy/path/filename
-- freshness
-- reachability/orphans
-- broken markdown links
-
-If `docs:lint` is unavailable, state that clearly and continue with advisory-only checks.
-
-Then run the advisory checks from `references/audit.md` and produce a report with:
+Run the advisory checks from `references/audit.md` and produce a report with:
 
 - summary
-- `docs:lint` findings
 - stale files
 - code-path drift
 - coverage gaps
-- learnings promotion candidates
 - `AGENTS.md` drift
 - missing-doc suggestions
 - symlink issues
@@ -337,11 +223,10 @@ After the report, stop.
 
 ## Rules
 
-- `remark-ai` owns the canonical repo-docs profile; this skill orchestrates it
+- this skill owns the canonical repo-docs shape; keep `references/canonical-shape.md` authoritative
 - never define a competing docs schema, root-doc convention, or template directory
-- standalone scaffold mode must still use the same canonical shape
 - move or reorganize existing files autonomously when the canonical target is clear; report changes
 - audit mode is strictly read-only
 - init is idempotent except for canonical migration and in-place updates needed to align the repo
 - in repos with clear structured source material, init is not complete if `docs/` contains only
-  `INDEX.md`, policy/schema files, and templates
+  `INDEX.md` and templates

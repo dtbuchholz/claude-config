@@ -32,35 +32,21 @@ instead of editing each file by hand.
 | `codePaths`                       | `code_paths`                                             |
 | `relatedDocs`                     | `related_docs`                                           |
 
-## Upgrade Rule For Already-Governed Repos
-
-Upgrading `@recallnet/docs-governance-preset` alone does **not** rewrite the repo's committed:
-
-- `docs/docs-policy.json`
-- `docs/docs-frontmatter.schema.json`
-- `.remarkrc.mjs`
-
-If the preset gains new canonical policy sections or rules:
-
-- rerun `recall-docs-governance init --profile repo-docs`
-- or explicitly migrate the committed governance files
-
-Do not assume a dependency bump alone refreshes taxonomy or any other checked-in policy content.
-
 ## Validator Cleanup
 
-If a repo already has markdown validators, they may conflict with governed docs:
+If a repo already has markdown validators, they may conflict with the canonical docs shape:
 
 - `.markdownlint.json`
 - `.markdownlint-cli2.jsonc`
-- pre-existing `.remarkrc`
+- `.remarkrc`
 - `eslint-plugin-markdown`
 - similar markdown lint rails
 
 Preferred outcome:
 
-- make `docs:lint` the authoritative validator for curated `docs/`
-- retire overlapping markdown validators, or scope them away from governed `docs/` paths
+- keep any validator that is genuinely useful to the repo
+- retire or scope away rules that fight the canonical taxonomy, frontmatter, or filename conventions
+  on curated `docs/` paths
 
-After migration, run `docs:lint` and treat remaining failures as the source of truth for schema,
-taxonomy, freshness, reachability, and link issues.
+After migration, validate the curated docs by inspection (structure, naming, frontmatter,
+reachability, and links) as described in the skill's Validate step.

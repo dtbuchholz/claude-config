@@ -64,7 +64,6 @@ git rev-list --count HEAD
 git tag --list
 
 # Check for key files
-test -f AGENT-LEARNINGS.md && echo "AGENT-LEARNINGS: yes" || echo "AGENT-LEARNINGS: no"
 test -f .claude/project-diary.md && echo "project-diary: yes" || echo "project-diary: no"
 test -d docs/decisions && echo "ADRs: yes" || echo "ADRs: no"
 test -f CHANGELOG.md && echo "CHANGELOG: yes" || echo "CHANGELOG: no"
@@ -79,27 +78,13 @@ Present a source inventory table to the user:
 | Source                 | Status                  | Details           |
 | ---------------------- | ----------------------- | ----------------- |
 | Git log                | Available               | N commits, M tags |
-| AGENT-LEARNINGS.md     | Available / Missing     | N entries         |
-| Project diary          | Available / Missing     | —                 |
+| Project diary          | Available / Missing     | N entries         |
 | ADRs (docs/decisions/) | Available / Missing     | N records         |
 | CHANGELOG              | Available / Missing     | —                 |
 | QMD (conversations)    | Available / Unavailable | —                 |
 ```
 
 ### Step 2: Bootstrap Missing Files
-
-**Create AGENT-LEARNINGS.md** if it does not exist:
-
-```markdown
-# Agent Learnings
-
-Operational insights from agent sessions. Newest first. Each entry includes a directive: a concrete
-"Do X, not Y" instruction.
-
----
-
-<!-- Entries below, newest first -->
-```
 
 **Create `docs/history/`** if it does not exist:
 
@@ -137,8 +122,8 @@ and velocity table.
 
 Prompt the agent to extract:
 
-- All entries from AGENT-LEARNINGS.md with dates, summaries, insights, and directives
-- All entries from .claude/project-diary.md with dates and topics (if it exists)
+- All entries from .claude/project-diary.md with dates, topics, insights, and directives (if it
+  exists)
 - All ADRs from docs/decisions/ with status, date, and decision summary
 - Correlate learnings to time periods where possible
 
@@ -321,7 +306,7 @@ Prompt the agent to analyze:
 
 - Weekly commit counts over the project lifetime
   (`git log --date=format:"%Y-W%V" --format="%ad" | sort | uniq -c`)
-- Cross-reference commit weeks with dates in AGENT-LEARNINGS.md and docs/decisions/
+- Cross-reference commit weeks with dates in .claude/project-diary.md and docs/decisions/
 - Calculate coverage: % of active weeks (1+ commits) that have at least one learning or decision
 - Conventional commit format compliance: % of commits matching `type(scope): message` or
   `type: message` pattern
@@ -334,13 +319,13 @@ Return: weekly activity table, coverage percentage, commit quality metrics.
 
 Prompt the agent to check:
 
-- Last modified date for every file in `docs/` and root doc files (AGENTS.md, AGENT-LEARNINGS.md,
-  README.md) using `git log -1 --format="%ci" -- <file>`
+- Last modified date for every file in `docs/` and root doc files (AGENTS.md, README.md) using
+  `git log -1 --format="%ci" -- <file>`
 - Staleness classification:
   - **OK:** < 90 days
   - **Warning:** 90–179 days
   - **Critical:** 180+ days
-- Missing expected files: check for AGENTS.md, AGENT-LEARNINGS.md, docs/decisions/, CHANGELOG.md
+- Missing expected files: check for AGENTS.md, docs/decisions/, CHANGELOG.md
 - If docs/history/TIMELINE.md exists, check if it's current (last entry vs. latest commits)
 
 Return: staleness table with severity, missing files list, overall health assessment.
@@ -427,7 +412,7 @@ Evidence from commits suggesting architectural decisions without formal ADRs:
 
 ### Ongoing Habits
 
-- [Process improvements to adopt, e.g., "use /recall-commit after each session"]
+- [Process improvements to adopt, e.g., "capture a project-diary entry after each session"]
 - [Periodic reviews, e.g., "run /project-history eval monthly"]
 ```
 
@@ -446,14 +431,13 @@ Show the user a summary:
 ## Rules
 
 - Build mode generates documents; eval mode only writes EVAL-REPORT-YYYY-MM-DD.md
-- Always create AGENT-LEARNINGS.md if missing (build mode only)
 - Never fabricate timeline events — only report what sources show
 - Present detected phases for user confirmation before writing the timeline
 - QMD/conversation mining is optional — gracefully skip if unavailable
 - Phase detection is heuristic — present with low confidence, ask for correction
 - Eval grades are directional, not authoritative — present as guidance, not judgment
 - Large repos (1000+ commits): sample last 500 unless user requests full history
-- Git operations are read-only (build mode creates AGENT-LEARNINGS.md and docs/history/ only)
+- Git operations are read-only (build mode creates docs/history/ only)
 - Respect existing docs/ structure — never move or reorganize files
 - Use relative paths when cross-linking to existing docs
 - Do not ask the user to reflect — the skill does its own analysis
