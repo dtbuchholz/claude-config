@@ -1,9 +1,13 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "permissions": {
     "allow": ["Read", "Edit", "Write", "Bash(*)"]
+  },
+  "skillOverrides": {
+    "anthropic-skills:quant-strategy-eval": "off"
   },
   "hooks": {
     "PreToolUse": [
@@ -25,8 +29,7 @@
           }
         ]
       }
-    ],
-    "Notification": []
+    ]
   },
   "worktree": {
     "symlinkDirectories": ["node_modules", ".cache", ".bin"]
@@ -50,6 +53,5 @@
   "autoCompactEnabled": true,
   "fileCheckpointingEnabled": true,
   "showTurnDuration": true,
-  "voiceEnabled": false,
   "remoteControlAtStartup": true
 }

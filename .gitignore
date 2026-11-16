@@ -57,3 +57,6 @@ backups/
 
 # Generated Chrome native-host wrapper (version-pinned, machine-specific)
 chrome/
+
+# Skills synced from claude.ai (managed by the CLI)
+skills/synced/

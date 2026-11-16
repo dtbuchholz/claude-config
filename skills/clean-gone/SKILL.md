@@ -3,6 +3,7 @@ name: clean-gone
 description:
   Clean up git branches marked as [gone] (deleted on remote but still exist locally), including
   removing associated worktrees.
+disable-model-invocation: true
 ---
 
 # Clean Gone Branches

@@ -1,7 +1,7 @@
 # Claude Code CLI Configuration
 
-Shared configuration for [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) to ensure
-consistent tooling, workflows, and best practices across projects.
+Shared configuration for [Claude Code CLI](https://code.claude.com/docs) to ensure consistent
+tooling, workflows, and best practices across projects.
 
 ## Prerequisites
 
@@ -9,15 +9,15 @@ Before using this configuration, ensure you have the following installed:
 
 ### Required
 
-| Tool                                                      | Purpose                    | Install                                |
-| --------------------------------------------------------- | -------------------------- | -------------------------------------- |
-| [Claude Code CLI](https://docs.anthropic.com/claude-code) | AI coding assistant        | `brew install claude`                  |
-| [Node.js](https://nodejs.org/) (v18+)                     | Runtime for tooling        | `brew install node`                    |
-| [pnpm](https://pnpm.io/)                                  | Package manager            | `brew install pnpm`                    |
-| [Prettier](https://prettier.io/)                          | Code formatter             | Installed via `pnpm install`           |
-| [GitHub CLI](https://cli.github.com/)                     | PR creation, git workflows | `brew install gh` then `gh auth login` |
-| [gitleaks](https://github.com/gitleaks/gitleaks)          | Secret scanning            | `brew install gitleaks`                |
-| [QMD](https://github.com/tobilu/qmd)                      | Semantic search over docs  | `npm install -g @tobilu/qmd`           |
+| Tool                                             | Purpose                    | Install                                |
+| ------------------------------------------------ | -------------------------- | -------------------------------------- |
+| [Claude Code CLI](https://code.claude.com/docs)  | AI coding assistant        | `brew install --cask claude-code`      |
+| [Node.js](https://nodejs.org/) (v18+)            | Runtime for tooling        | `brew install node`                    |
+| [pnpm](https://pnpm.io/)                         | Package manager            | `brew install pnpm`                    |
+| [Prettier](https://prettier.io/)                 | Code formatter             | Installed via `pnpm install`           |
+| [GitHub CLI](https://cli.github.com/)            | PR creation, git workflows | `brew install gh` then `gh auth login` |
+| [gitleaks](https://github.com/gitleaks/gitleaks) | Secret scanning            | `brew install gitleaks`                |
+| [QMD](https://github.com/tobilu/qmd)             | Semantic search over docs  | `npm install -g @tobilu/qmd`           |
 
 ### Optional (for notifications)
 
@@ -80,8 +80,9 @@ invoked directly with `/skill-name`.
 | `memory-rollup`       | Review, prune, and consolidate memory files                                      |
 | `performance`         | Performance optimization and profiling                                           |
 | `plan-review`         | Challenge and review a plan before implementation                                |
-| `pr-review`           | Comprehensive PR review with 6 specialized agents                                |
+| `pr-review`           | Multi-agent PR review (up to 7 reviewers, chosen to fit the diff)                |
 | `project-history`     | Reconstruct project timeline or evaluate process docs                            |
+| `quick-review`        | Single-pass comprehensive review for small changes (no subagents)                |
 | `qmd`                 | Semantic search across memory, skills, conversations via QMD                     |
 | `quant-strategy-eval` | Evaluate trading strategies (Sharpe, drawdown, etc.)                             |
 | `ralph-loop`          | Autonomous development loop with fresh context                                   |
@@ -91,6 +92,13 @@ invoked directly with `/skill-name`.
 | `sync`                | Sync current branch with main/master                                             |
 | `testing`             | TDD, testing pyramid, language-specific test patterns                            |
 | `watch-video`         | Extract frames from a video file to view and analyze                             |
+
+### Review packet builder (`scripts/review-packet.sh`)
+
+Shared by `pr-review`, `review-and-fix`, `agent-review`, and the Codex `pr-review --deep` pipeline.
+It picks the review scope, includes untracked files, excludes lockfiles (opt-in with
+`--include-lockfiles`), writes a read-only packet with its SHA-256, and `verify` detects checkout
+drift during a review. Tests: `bash scripts/tests/review-packet.test.sh`.
 
 ### Agents (`agents/`)
 
@@ -104,11 +112,10 @@ Agents are specialized AI personas that Claude can spawn for specific tasks.
 
 Shell scripts that run automatically at specific points in Claude's workflow.
 
-| Hook                       | Purpose                                         |
-| -------------------------- | ----------------------------------------------- |
-| `check-push-main.sh`       | Blocks direct pushes to main/master branches    |
-| `check-sensitive-files.sh` | Blocks edits to lockfiles and .git/             |
-| `notify.sh`                | Sends macOS notifications via terminal-notifier |
+| Hook                       | Purpose                                      |
+| -------------------------- | -------------------------------------------- |
+| `check-push-main.sh`       | Blocks direct pushes to main/master branches |
+| `check-sensitive-files.sh` | Blocks edits to lockfiles and .git/          |
 
 ### Git Hooks (`.husky/`)
 
@@ -131,25 +138,22 @@ Pre-built plugins from the official marketplace:
 
 ### Hook Configuration (in `settings.json`)
 
-| Hook Event     | What it does                                                   |
-| -------------- | -------------------------------------------------------------- |
-| `PreToolUse`   | Blocks edits to sensitive files via `check-sensitive-files.sh` |
-| `PreToolUse`   | Blocks direct pushes to main/master via `check-push-main.sh`   |
-| `Notification` | Sends macOS notification when Claude awaits input              |
-| `Stop`         | Sends macOS notification when task completes                   |
+| Hook Event   | What it does                                                   |
+| ------------ | -------------------------------------------------------------- |
+| `PreToolUse` | Blocks edits to sensitive files via `check-sensitive-files.sh` |
+| `PreToolUse` | Blocks direct pushes to main/master via `check-push-main.sh`   |
 
 ### Permissions (in `settings.json`)
 
-Pre-approved commands that Claude can run without asking:
+`Read`, `Edit`, `Write`, and `Bash(*)` are allowed globally, so Claude rarely prompts. The
+`PreToolUse` hooks above are the guardrails: pushes to `main`/`master` and edits to lockfiles or
+`.git/` are blocked regardless of permissions.
 
-- **Package manager**: `pnpm test`, `pnpm lint`, `pnpm build`, `pnpm dev`, etc.
-- **File utilities**: `ls`, `find`, `grep`, `sed`, `awk`, `jq`, etc.
-- **Git operations**: `git status`, `git add`, `git commit`, `git push`, etc.
-- **GitHub CLI**: `gh pr view`, `gh pr create`, `gh api`
-- **Shell config reads**: `~/.zshrc`, `~/.bashrc`, `~/.profile`, etc.
+### Skill overrides (in `settings.json`)
 
-**Note:** While `git push` is allowed, pushes to `main` or `master` are blocked by the
-`check-push-main.sh` hook.
+`skillOverrides` hides the claude.ai-synced copy of `quant-strategy-eval`, which duplicates the
+version-controlled one in `skills/`. Skills synced from claude.ai land in `skills/synced/`, which
+the CLI manages and `.gitignore` excludes.
 
 ## Configuration Files
 
@@ -159,7 +163,6 @@ Pre-approved commands that Claude can run without asking:
 | `package.json`       | Node.js dependencies (Prettier)                       |
 | `.prettierrc`        | Prettier formatting configuration                     |
 | `.prettierignore`    | Files excluded from formatting                        |
-| `.mcp.json`          | MCP server configuration (QMD semantic search)        |
 | `.gitignore`         | Files excluded from version control                   |
 | `CLAUDE.md`          | Global instructions for Claude Code                   |
 | `CLAUDE.md.template` | Template for project-specific CLAUDE.md files         |

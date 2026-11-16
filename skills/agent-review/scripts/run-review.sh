@@ -27,26 +27,46 @@ if [[ -z "$(git -C "$project_dir" status --porcelain)" ]]; then
 fi
 
 mkdir -p "$(dirname "$output_file")"
+packet_script="$HOME/.claude/scripts/review-packet.sh"
+if [[ ! -x "$packet_script" ]]; then
+  echo "error: shared packet builder not found: $packet_script" >&2
+  exit 2
+fi
+
 tmp_raw="$(mktemp)"
 tmp_out="$(mktemp)"
 tmp_prompt="$(mktemp)"
+packet_root="$(mktemp -d "$tmp_dir/agent-review-packet.XXXXXX")"
 cleanup() {
   rm -f "$tmp_raw" "$tmp_out" "$tmp_prompt"
+  chmod -R u+w "$packet_root" 2>/dev/null || true
+  rm -rf "${packet_root:?}"
 }
 trap cleanup EXIT
 
+# Shared builder: staged, unstaged, and untracked files; lockfiles excluded and listed.
+packet_meta="$("$packet_script" build "$project_dir" --uncommitted --out-dir "$packet_root/packet")"
+packet_value() { printf '%s\n' "$packet_meta" | sed -n "s/^$1=//p"; }
+packet_path="$(packet_value packet)"
+packet_sha="$(packet_value sha256)"
+packet_bytes="$(packet_value bytes)"
 status_summary="$(git -C "$project_dir" status --short)"
-staged_diff="$(git -C "$project_dir" diff --cached --no-ext-diff)"
-unstaged_diff="$(git -C "$project_dir" diff --no-ext-diff)"
 
 {
   printf '/pr-review\n\n'
-  printf 'Review the CURRENT UNCOMMITTED CHANGES in this repository.\n'
+  printf 'Review the CURRENT UNCOMMITTED CHANGES in this repository (staged, unstaged, and untracked files).\n'
   printf 'Do not switch to the branch diff against main or prior commits unless you need brief context.\n'
-  printf 'Use the working tree state below as the review scope.\n\n'
+  printf 'The frozen diff packet below is the review scope.\n\n'
   printf 'Status (`git status --short`):\n%s\n\n' "$status_summary"
-  printf 'Staged diff (`git diff --cached --no-ext-diff`):\n%s\n\n' "$staged_diff"
-  printf 'Unstaged diff (`git diff --no-ext-diff`):\n%s\n' "$unstaged_diff"
+  if [[ -s "$packet_root/packet/excluded-files.tsv" ]]; then
+    printf 'Excluded from review (reason, path):\n%s\n\n' "$(cat "$packet_root/packet/excluded-files.tsv")"
+  fi
+  if [[ "$packet_bytes" -le 24000 ]]; then
+    printf 'Diff to review:\n```diff\n%s\n```\n' "$(cat "$packet_path")"
+  else
+    printf 'Diff to review: read %s (%s bytes). First run `shasum -a 256 %s` and confirm it equals %s; if it does not, reply only PACKET HASH MISMATCH.\n' \
+      "$packet_path" "$packet_bytes" "$packet_path" "$packet_sha"
+  fi
 } >"$tmp_prompt"
 
 if [[ "$reviewer" == "claude" ]]; then

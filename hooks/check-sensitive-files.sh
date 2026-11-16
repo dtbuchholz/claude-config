@@ -19,7 +19,7 @@ FILENAME=$(basename "$FILE_PATH")
 
 # Block lockfiles
 case "$FILENAME" in
-    package-lock.json|pnpm-lock.yaml|yarn.lock|bun.lockb)
+    package-lock.json|pnpm-lock.yaml|yarn.lock|bun.lock|bun.lockb|uv.lock|poetry.lock|Cargo.lock)
         echo "BLOCKED: Editing lockfile '$FILENAME' not allowed." >&2
         exit 2
         ;;

@@ -30,13 +30,17 @@ only sees _what_ was done, which helps catch:
 
 ### Step 1: Capture Current Changes
 
-```bash
-# Get the diff that will be reviewed
-git diff main...HEAD 2>/dev/null || git diff HEAD~5
+Build the review packet with the shared builder. It picks the scope (branch changes vs the default
+branch when HEAD is ahead of it, otherwise uncommitted changes), includes untracked files, and
+excludes lockfiles (listed in `excluded-files.tsv`).
 
-# Get list of changed files
-git diff --name-only main...HEAD 2>/dev/null || git diff --name-only HEAD~5
+```bash
+S="<your session scratchpad dir, or $(mktemp -d) if none is listed>"
+~/.claude/scripts/review-packet.sh build "$(pwd)" --out-dir "$S/review/packet"
 ```
+
+Pass `--uncommitted`, `--base <ref>`, or `--range <r>` if the user named a scope. If it reports
+nothing to review, stop and say so. Note the printed `packet`, `sha256`, and `bytes`.
 
 ### Step 2: Read Project Guidelines
 
@@ -47,13 +51,14 @@ cat CLAUDE.md 2>/dev/null || true
 
 ### Step 3: Launch Fresh-Context Review Agent
 
-**CRITICAL: Use `Task (subagent_type: Explore)` to create a fresh-context reviewer.** This agent is
-read-only and has NO implementation context beyond what you pass it.
+**CRITICAL: Use `Agent (subagent_type: general-purpose)` to create a fresh-context reviewer.** It
+has NO implementation context beyond what you pass it. Tell it to report findings only and not edit
+files. (Explore is a search agent that reads excerpts, so it is not suited to reviewing.)
 
-If the diff is very large, split by file/chunk and launch multiple Explore agents in parallel.
+If the diff is very large, split by file/chunk and launch multiple reviewer agents in parallel.
 
 ```
-Task (subagent_type: Explore): "
+Agent (subagent_type: general-purpose): "
 You are reviewing code changes with NO prior context. You don't know why decisions were made -
 you only see the diff. This is intentional.
 
@@ -61,7 +66,9 @@ you only see the diff. This is intentional.
 [paste relevant CLAUDE.md content]
 
 ## Diff to Review
-[paste full diff]
+[packet ≤ 24000 bytes: paste the packet contents]
+[larger: 'Read <packet path>. First run shasum -a 256 <packet path> and confirm it equals
+<sha256>; if not, reply only PACKET HASH MISMATCH.']
 
 ## Your Task
 
@@ -95,8 +102,11 @@ End with a 1-2 sentence summary.
 
 Execution discipline:
 
-- Keep review agent read-only (Explore).
+- The reviewer must not modify the repository: no edits, installs, or state-changing git commands.
+  It may read files and run the project's existing tests as they are.
 - Parent agent evaluates findings and decides fixes.
+- Before applying fixes, run `~/.claude/scripts/review-packet.sh verify "$S/review/packet"`. If it
+  reports `drift`, the listed files changed during review; re-check findings on them.
 
 ### Step 4: Evaluate Review Findings
 
@@ -121,7 +131,7 @@ For issues you're fixing:
 1. Make the code change
 2. If the reviewer was confused by intentional code, consider adding a clarifying comment
 
-If delegating code changes, use `Task (subagent_type: general-purpose)` and assign explicit file
+If delegating code changes, use `Agent (subagent_type: general-purpose)` and assign explicit file
 ownership per agent to avoid conflicts.
 
 Do NOT fix:

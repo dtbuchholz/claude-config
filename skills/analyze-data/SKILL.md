@@ -61,10 +61,11 @@ Ask the user to clarify:
 
 ### Step 3: Launch Parallel Analysis Agents
 
-**Launch all independent analysis agents in parallel using `Task (subagent_type: Explore)`.**
+**Launch all independent analysis agents in parallel using
+`Agent (subagent_type: general-purpose)`.**
 
 ```
-Task (subagent_type: Explore): "DISTRIBUTION ANALYSIS
+Agent (subagent_type: general-purpose): "DISTRIBUTION ANALYSIS
 
 Analyze distributions for this dataset:
 - Load: [data_path]
@@ -78,7 +79,7 @@ Output:
 - List of columns needing transformation
 - Anomalies found"
 
-Task (subagent_type: Explore): "MISSING DATA ANALYSIS
+Agent (subagent_type: general-purpose): "MISSING DATA ANALYSIS
 
 Analyze missing data patterns:
 - Load: [data_path]
@@ -92,7 +93,7 @@ Output:
 - Pattern analysis
 - Imputation recommendations"
 
-Task (subagent_type: Explore): "CORRELATION ANALYSIS
+Agent (subagent_type: general-purpose): "CORRELATION ANALYSIS
 
 Analyze relationships:
 - Load: [data_path]
@@ -106,7 +107,7 @@ Output:
 - Multicollinearity warnings
 - Feature importance ranking (if target)"
 
-Task (subagent_type: Explore): "OUTLIER ANALYSIS
+Agent (subagent_type: general-purpose): "OUTLIER ANALYSIS
 
 Detect outliers:
 - Load: [data_path]
@@ -120,7 +121,7 @@ Output:
 - Most extreme values
 - Recommended handling"
 
-Task (subagent_type: general-purpose): "VISUALIZATION GENERATION
+Agent (subagent_type: general-purpose): "VISUALIZATION GENERATION
 
 Create key visualizations:
 - Load: [data_path]
@@ -148,7 +149,7 @@ Execution discipline:
 Launch additional modeling agents:
 
 ```
-Task (subagent_type: general-purpose): "BASELINE MODELING
+Agent (subagent_type: general-purpose): "BASELINE MODELING
 
 Build baseline models:
 - Load: [data_path]
@@ -164,7 +165,7 @@ Report:
 - Feature importances from tree model
 - Recommended next steps"
 
-Task (subagent_type: Explore): "FEATURE ENGINEERING SUGGESTIONS
+Agent (subagent_type: general-purpose): "FEATURE ENGINEERING SUGGESTIONS
 
 Based on data profile, suggest features:
 - Log transforms for skewed numerics

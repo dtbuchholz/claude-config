@@ -4,6 +4,7 @@ description:
   Autonomous development loop with fresh context per iteration. Uses an external bash loop that
   spawns fresh Claude sessions, storing state in files to prevent context drift. Based on the
   original Ralph Wiggum technique by Geoffrey Huntley.
+disable-model-invocation: true
 ---
 
 # Ralph Loop

@@ -97,7 +97,7 @@ structure — but continue regardless.
 
 ### Step 3: Parallel Mining
 
-Launch 2-3 agents in a single message using `Task (subagent_type: Explore)`. The third agent
+Launch 2-3 agents in a single message using `Agent (subagent_type: Explore)`. The third agent
 (Conversations) is only dispatched if QMD is available.
 
 For repos with 1000+ commits, instruct agents to focus on the last 500 commits unless the user
@@ -295,7 +295,7 @@ Eval mode is **read-only**. It analyzes process documentation quality but does n
 
 ### Step 1: Parallel Evaluation
 
-Launch 3 agents in a single message using `Task (subagent_type: Explore)`.
+Launch 3 agents in a single message using `Agent (subagent_type: Explore)`.
 
 For repos with 1000+ commits, instruct agents to focus on the last 500 commits unless the user
 explicitly requests full history.

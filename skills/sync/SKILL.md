@@ -1,6 +1,7 @@
 ---
 name: sync
 description: Sync current branch with main/master (fetch, checkout, pull, rebase).
+disable-model-invocation: true
 ---
 
 # Sync Branch

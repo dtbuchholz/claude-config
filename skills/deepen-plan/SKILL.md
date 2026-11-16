@@ -99,19 +99,19 @@ For each learning file:
 
 ### 4. Launch Parallel Research Agents
 
-**Launch all independent research agents in parallel using `Task (subagent_type: Explore)`.**
+**Launch all independent research agents in parallel using `Agent (subagent_type: Explore)`.**
 
 Based on the plan's technologies and sections, spawn these agents IN PARALLEL:
 
 ```
-Task (subagent_type: Explore): "Research best practices for: [technology 1]
+Agent (subagent_type: Explore): "Research best practices for: [technology 1]
 Find: industry standards, performance tips, common pitfalls, documentation.
 Return concrete, actionable recommendations."
 
-Task (subagent_type: Explore): "Research best practices for: [technology 2]
+Agent (subagent_type: Explore): "Research best practices for: [technology 2]
 ..."
 
-Task (subagent_type: Explore): "Research implementation patterns for: [section topic]
+Agent (subagent_type: Explore): "Research implementation patterns for: [section topic]
 ..."
 ```
 
@@ -133,31 +133,32 @@ find ~/.claude -path "*/agents/*.md" 2>/dev/null
 find .claude/agents -name "*.md" 2>/dev/null
 ```
 
-**Launch all review agents in parallel using `Task (subagent_type: Explore)`** — they are read-only.
+**Launch all review agents in parallel using `Agent (subagent_type: general-purpose)`** — tell each
+to report findings only, without editing files.
 
 ```
-Task (subagent_type: Explore): "ARCHITECTURE REVIEW
+Agent (subagent_type: general-purpose): "ARCHITECTURE REVIEW
 Review this plan for architectural concerns:
 - Scalability issues
 - Coupling problems
 - Missing components
 Plan: [content]"
 
-Task (subagent_type: Explore): "SECURITY REVIEW
+Agent (subagent_type: general-purpose): "SECURITY REVIEW
 Review this plan for security concerns:
 - Auth/authz gaps
 - Data exposure risks
 - Input validation
 Plan: [content]"
 
-Task (subagent_type: Explore): "SIMPLICITY REVIEW
+Agent (subagent_type: general-purpose): "SIMPLICITY REVIEW
 Review this plan for over-engineering:
 - Unnecessary complexity
 - Simpler alternatives
 - YAGNI violations
 Plan: [content]"
 
-Task (subagent_type: Explore): "TESTABILITY REVIEW
+Agent (subagent_type: general-purpose): "TESTABILITY REVIEW
 Review this plan for testing concerns:
 - Hard-to-test patterns
 - Missing test strategies

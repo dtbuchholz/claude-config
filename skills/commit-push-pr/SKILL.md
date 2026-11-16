@@ -3,6 +3,7 @@ name: commit-push-pr
 description:
   Stage changes, create a git commit, push to remote, and open a pull request. Follows conventional
   commits format.
+disable-model-invocation: true
 ---
 
 # Commit, Push, and PR

@@ -57,13 +57,13 @@ git diff main...HEAD --name-only 2>/dev/null || git diff HEAD~5 --name-only
 
 ### Step 2: Launch Parallel Detection Agents
 
-**Launch all detection agents in one parallel wave using `Task (subagent_type: Explore)`** — they
-are read-only.
+**Launch all detection agents in one parallel wave using `Agent (subagent_type: general-purpose)`**
+— tell each to report findings only, without editing files.
 
 For EACH changed file, spawn a detection agent:
 
 ```
-Task (subagent_type: Explore): "SLOP DETECTION for [filename]
+Agent (subagent_type: general-purpose): "SLOP DETECTION for [filename]
 
 Analyze this file for AI-generated slop patterns. Read the file and identify:
 
@@ -101,7 +101,7 @@ After all detection agents complete:
 
 1. Collect all findings by file
 2. For each file with findings, apply edits yourself or delegate to
-   `Task (subagent_type: general-purpose)` agents with explicit file ownership per agent to avoid
+   `Agent (subagent_type: general-purpose)` agents with explicit file ownership per agent to avoid
    conflicts
 3. Keep changes minimal - only remove clear slop
 
